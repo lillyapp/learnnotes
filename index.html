@@ -1397,6 +1397,40 @@
         console.log("[WebMIDIViewer] _callback_addDestination", ...args);
       };
 
+      window._callback_receiveMIDIMessage = (...args) => {
+        console.log("[WebMIDIViewer] _callback_receiveMIDIMessage", ...args);
+
+        const dataArg = args.find((value) =>
+          Array.isArray(value) ||
+          value instanceof Uint8Array ||
+          (value && typeof value.length === "number" && typeof value !== "string")
+        );
+
+        if (!dataArg) {
+          return;
+        }
+
+        let data;
+        try {
+          data = Array.from(dataArg);
+        } catch (_error) {
+          return;
+        }
+
+        if (data.length < 3) {
+          return;
+        }
+
+        const [status, noteNumber, velocity] = data;
+        const messageType = status & 0xf0;
+
+        sendMidiToOutputs(data);
+
+        if (messageType === 0x90 && velocity > 0) {
+          handlePlayedMidi(noteNumber);
+        }
+      };
+
       function setAuthStatus(message, state = "") {
         authStatus.textContent = message;
         if (state) {
