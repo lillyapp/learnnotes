@@ -638,8 +638,8 @@
         font-size: 13px;
         line-height: 1.2;
         white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
+        opacity: 1;
+        pointer-events: auto;
         transition: opacity 120ms ease;
       }
 
@@ -648,13 +648,105 @@
         color: #ffffff;
       }
 
-      .midi-indicator:hover .midi-tooltip,
-      .midi-indicator:focus-within .midi-tooltip {
-        opacity: 1;
-      }
-
       .midi-tooltip.is-hidden {
         display: none;
+      }
+
+      .debug-console {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(17, 17, 17, 0.42);
+        backdrop-filter: blur(8px);
+      }
+
+      .debug-console.is-hidden {
+        display: none;
+      }
+
+      .debug-console-panel {
+        width: min(94vw, 900px);
+        height: min(76vh, 680px);
+        border-radius: 22px;
+        background: #0f1115;
+        color: #f3f5f7;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+
+      .debug-console-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .debug-console-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #b9c2cf;
+      }
+
+      .debug-console-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .debug-console-button {
+        min-width: 72px;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: #f3f5f7;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .debug-console-log {
+        margin: 0;
+        padding: 16px 18px;
+        overflow: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 12px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .debug-console-entry {
+        padding: 0 0 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .debug-console-entry + .debug-console-entry {
+        margin-top: 10px;
+      }
+
+      .debug-console-entry[data-level="warn"] {
+        color: #ffd27c;
+      }
+
+      .debug-console-entry[data-level="error"] {
+        color: #ff8f8f;
+      }
+
+      .debug-console-footer {
+        padding: 12px 18px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+        color: #98a2b3;
       }
 
       @keyframes midiPulse {
@@ -1029,6 +1121,20 @@
       </div>
       <div class="midi-tooltip" id="midi-tooltip">Klavier nicht verbunden</div>
     </div>
+    <div class="debug-console is-hidden" id="debug-console" aria-hidden="true">
+      <div class="debug-console-panel">
+        <div class="debug-console-header">
+          <h2 class="debug-console-title">Debug Console</h2>
+          <div class="debug-console-actions">
+            <button class="debug-console-button" id="debug-console-copy-button" type="button">Copy</button>
+            <button class="debug-console-button" id="debug-console-clear-button" type="button">Clear</button>
+            <button class="debug-console-button" id="debug-console-close-button" type="button">Close</button>
+          </div>
+        </div>
+        <pre class="debug-console-log" id="debug-console-log"></pre>
+        <div class="debug-console-footer">Tippe auf die MIDI-Fehlermeldung, um diese Konsole zu oeffnen.</div>
+      </div>
+    </div>
     <script type="module">
       import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -1076,6 +1182,11 @@
       const blackKeysContainer = document.getElementById("black-keys");
       const midiIndicatorButton = document.getElementById("midi-indicator-button");
       const midiTooltip = document.getElementById("midi-tooltip");
+      const debugConsole = document.getElementById("debug-console");
+      const debugConsoleLog = document.getElementById("debug-console-log");
+      const debugConsoleCopyButton = document.getElementById("debug-console-copy-button");
+      const debugConsoleClearButton = document.getElementById("debug-console-clear-button");
+      const debugConsoleCloseButton = document.getElementById("debug-console-close-button");
       const noteCount = 4;
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -1163,6 +1274,7 @@
       let midiAccessRef = null;
       let midiOutputsRef = [];
       let isMidiConnecting = false;
+      let debugConsoleEntries = [];
       let activeSrsMode = null;
       let supabaseClient = null;
       let authUser = null;
@@ -1188,6 +1300,94 @@
         toggleInfoButton.classList.toggle("is-active", isInfoVisible);
         trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
       }
+
+      function formatDebugValue(value) {
+        if (typeof value === "string") {
+          return value;
+        }
+
+        if (value instanceof Error) {
+          return `${value.name}: ${value.message}`;
+        }
+
+        try {
+          return JSON.stringify(value, null, 2);
+        } catch (_error) {
+          return String(value);
+        }
+      }
+
+      function renderDebugConsole() {
+        debugConsoleLog.replaceChildren();
+
+        if (debugConsoleEntries.length === 0) {
+          debugConsoleLog.textContent = "Noch keine Logs.";
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        for (const entry of debugConsoleEntries) {
+          const line = document.createElement("div");
+          line.className = "debug-console-entry";
+          line.dataset.level = entry.level;
+          line.textContent = `[${entry.time}] ${entry.level.toUpperCase()} ${entry.message}`;
+          fragment.appendChild(line);
+        }
+        debugConsoleLog.replaceChildren(fragment);
+        debugConsoleLog.scrollTop = debugConsoleLog.scrollHeight;
+      }
+
+      function pushDebugEntry(level, parts) {
+        const message = parts.map((part) => formatDebugValue(part)).join(" ");
+        debugConsoleEntries.push({
+          level,
+          message,
+          time: new Date().toLocaleTimeString("de-DE", { hour12: false })
+        });
+
+        if (debugConsoleEntries.length > 250) {
+          debugConsoleEntries = debugConsoleEntries.slice(-250);
+        }
+
+        renderDebugConsole();
+      }
+
+      function setDebugConsoleOpen(isOpen) {
+        debugConsole.classList.toggle("is-hidden", !isOpen);
+        debugConsole.setAttribute("aria-hidden", isOpen ? "false" : "true");
+      }
+
+      const nativeConsole = {
+        log: console.log.bind(console),
+        warn: console.warn.bind(console),
+        error: console.error.bind(console)
+      };
+
+      console.log = (...args) => {
+        nativeConsole.log(...args);
+        pushDebugEntry("log", args);
+      };
+
+      console.warn = (...args) => {
+        nativeConsole.warn(...args);
+        pushDebugEntry("warn", args);
+      };
+
+      console.error = (...args) => {
+        nativeConsole.error(...args);
+        pushDebugEntry("error", args);
+      };
+
+      window.addEventListener("error", (event) => {
+        pushDebugEntry("error", [
+          event.message || "Unbekannter Fehler",
+          event.filename ? `@ ${event.filename}:${event.lineno}:${event.colno}` : ""
+        ]);
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        pushDebugEntry("error", ["Unhandled rejection", event.reason]);
+      });
 
       function setAuthStatus(message, state = "") {
         authStatus.textContent = message;
@@ -2940,9 +3140,33 @@
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
       midiIndicatorButton.addEventListener("click", () => initMidi());
+      midiTooltip.addEventListener("click", () => setDebugConsoleOpen(true));
+      debugConsoleCloseButton.addEventListener("click", () => setDebugConsoleOpen(false));
+      debugConsoleClearButton.addEventListener("click", () => {
+        debugConsoleEntries = [];
+        renderDebugConsole();
+      });
+      debugConsoleCopyButton.addEventListener("click", async () => {
+        const payload = debugConsoleEntries
+          .map((entry) => `[${entry.time}] ${entry.level.toUpperCase()} ${entry.message}`)
+          .join("\n");
+
+        try {
+          await navigator.clipboard.writeText(payload);
+          console.log("[DebugConsole] copied");
+        } catch (error) {
+          console.error("[DebugConsole] copy failed", error);
+        }
+      });
+      debugConsole.addEventListener("click", (event) => {
+        if (event.target === debugConsole) {
+          setDebugConsoleOpen(false);
+        }
+      });
 
       buildKeyboard();
       renderLibraryPanel();
+      renderDebugConsole();
       keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
       currentClef = "treble";
       updateInfoUi();
