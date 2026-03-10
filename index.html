@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Noten lernen</title>
+    <title>Beethoven's Ode to Joy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -55,6 +55,10 @@
         background: rgba(255, 255, 255, 0.94);
         display: grid;
         gap: 10px;
+      }
+
+      .auth-panel.is-hidden {
+        display: none;
       }
 
       .auth-panel.is-disabled {
@@ -871,12 +875,15 @@
           <button class="toolbar-button" id="toggle-srs-bass-button" type="button" aria-label="SRS-Modus Bass ein- oder ausschalten" title="SRS Bass" data-badge="B">
             <i data-lucide="brain"></i>
           </button>
+          <button class="toolbar-button" id="toggle-auth-button" type="button" aria-label="Anmeldung ein- oder ausblenden" title="Anmeldung">
+            <i data-lucide="user-round"></i>
+          </button>
           <div class="level-indicator is-hidden" id="level-indicator" aria-live="polite">
             <span class="level-indicator-label" id="level-indicator-label">Level</span>
             <span class="level-indicator-value" id="level-indicator-value">1 / 5</span>
           </div>
         </div>
-        <div class="auth-panel" id="auth-panel" aria-label="Supabase Anmeldung">
+        <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
           <div class="auth-row">
             <input class="auth-field" id="auth-email" type="email" placeholder="E-Mail" autocomplete="email">
             <input class="auth-field" id="auth-password" type="password" placeholder="Passwort" autocomplete="current-password">
@@ -957,6 +964,7 @@
       const toggleDoubleButton = document.getElementById("toggle-double-button");
       const toggleSrsTrebleButton = document.getElementById("toggle-srs-treble-button");
       const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
+      const toggleAuthButton = document.getElementById("toggle-auth-button");
       const authPanel = document.getElementById("auth-panel");
       const authEmailInput = document.getElementById("auth-email");
       const authPasswordInput = document.getElementById("auth-password");
@@ -988,7 +996,7 @@
       const whiteKeysContainer = document.getElementById("white-keys");
       const blackKeysContainer = document.getElementById("black-keys");
       const midiIndicatorButton = document.getElementById("midi-indicator-button");
-    const midiTooltip = document.getElementById("midi-tooltip");12
+      const midiTooltip = document.getElementById("midi-tooltip");
       const noteCount = 4;
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -1067,6 +1075,7 @@
         bass: [...levelRangesByMode.bass[0]],
         treble: [...levelRangesByMode.treble[0]]
       };
+      let isAuthPanelVisible = false;
       let isRangeSelectorVisible = false;
       let isKeyboardVisible = false;
       let isInfoVisible = false;
@@ -1114,6 +1123,8 @@
       }
 
       function updateAuthUi() {
+        toggleAuthButton.classList.toggle("is-active", isAuthPanelVisible);
+        authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
         authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
@@ -1271,6 +1282,9 @@
         }
 
         authUser = data.user || data.session?.user || null;
+        if (authUser) {
+          isAuthPanelVisible = false;
+        }
         updateAuthUi();
 
         if (authUser) {
@@ -1337,8 +1351,11 @@
       function updateModeUi() {
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null;
-        sheetMusic.classList.toggle("is-hidden", isDoubleModeEnabled || isLibraryVisible);
-        sheetMusicDouble.classList.toggle("is-hidden", !isDoubleModeEnabled || isLibraryVisible);
+        sheetMusic.classList.toggle("is-hidden", isAuthPanelVisible || isDoubleModeEnabled || isLibraryVisible);
+        sheetMusicDouble.classList.toggle("is-hidden", isAuthPanelVisible || !isDoubleModeEnabled || isLibraryVisible);
+        trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
+        keyboard.classList.toggle("is-hidden", isAuthPanelVisible || !isKeyboardVisible);
+        libraryPanel.classList.toggle("is-hidden", isAuthPanelVisible || !isLibraryVisible);
       }
 
       function noteStatFor(mode, noteName) {
@@ -2625,6 +2642,10 @@
       toggleLibraryButton.addEventListener("click", () => {
         isLibraryVisible = !isLibraryVisible;
         updateLibraryUi();
+      });
+      toggleAuthButton.addEventListener("click", () => {
+        isAuthPanelVisible = !isAuthPanelVisible;
+        updateAuthUi();
       });
       toggleDoubleButton.addEventListener("click", () => {
         isDoubleModeEnabled = !isDoubleModeEnabled;
