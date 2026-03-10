@@ -1665,12 +1665,64 @@
         midiTooltip.classList.remove("is-hidden");
       }
 
+      function midiPortsToArray(portCollection) {
+        if (!portCollection) {
+          return [];
+        }
+
+        if (Array.isArray(portCollection)) {
+          return portCollection;
+        }
+
+        if (typeof portCollection.values === "function") {
+          try {
+            return Array.from(portCollection.values());
+          } catch (_error) {
+            return [];
+          }
+        }
+
+        if (typeof portCollection.length === "number") {
+          try {
+            return Array.from(portCollection);
+          } catch (_error) {
+            return [];
+          }
+        }
+
+        return [];
+      }
+
+      function listMidiInputs(midiAccess) {
+        if (!midiAccess) {
+          return [];
+        }
+
+        if (typeof midiAccess.inputs === "function") {
+          return midiPortsToArray(midiAccess.inputs());
+        }
+
+        return midiPortsToArray(midiAccess.inputs);
+      }
+
+      function listMidiOutputs(midiAccess) {
+        if (!midiAccess) {
+          return [];
+        }
+
+        if (typeof midiAccess.outputs === "function") {
+          return midiPortsToArray(midiAccess.outputs());
+        }
+
+        return midiPortsToArray(midiAccess.outputs);
+      }
+
       function hasConnectedMidiOutput(midiAccess) {
         if (!midiAccess) {
           return false;
         }
 
-        for (const output of midiAccess.outputs.values()) {
+        for (const output of listMidiOutputs(midiAccess)) {
           if (output.state === "connected") {
             return true;
           }
@@ -1686,7 +1738,7 @@
           return;
         }
 
-        for (const output of midiAccess.outputs.values()) {
+        for (const output of listMidiOutputs(midiAccess)) {
           if (output.state === "connected") {
             midiOutputsRef.push(output);
           }
@@ -1712,7 +1764,7 @@
           return false;
         }
 
-        for (const input of midiAccess.inputs.values()) {
+        for (const input of listMidiInputs(midiAccess)) {
           if (input.state === "connected") {
             return true;
           }
@@ -2547,7 +2599,7 @@
       }
 
       function bindMidiInputs(midiAccess) {
-        for (const input of midiAccess.inputs.values()) {
+        for (const input of listMidiInputs(midiAccess)) {
           input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
         }
 
