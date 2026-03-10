@@ -1389,6 +1389,14 @@
         pushDebugEntry("error", ["Unhandled rejection", event.reason]);
       });
 
+      window._callback_addSource = (...args) => {
+        console.log("[WebMIDIViewer] _callback_addSource", ...args);
+      };
+
+      window._callback_addDestination = (...args) => {
+        console.log("[WebMIDIViewer] _callback_addDestination", ...args);
+      };
+
       function setAuthStatus(message, state = "") {
         authStatus.textContent = message;
         if (state) {
