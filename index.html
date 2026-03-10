@@ -643,6 +643,11 @@
         transition: opacity 120ms ease;
       }
 
+      .midi-tooltip[data-state="error"] {
+        background: #b22b2b;
+        color: #ffffff;
+      }
+
       .midi-indicator:hover .midi-tooltip,
       .midi-indicator:focus-within .midi-tooltip {
         opacity: 1;
@@ -1157,6 +1162,7 @@
       let isDoubleModeEnabled = false;
       let midiAccessRef = null;
       let midiOutputsRef = [];
+      let isMidiConnecting = false;
       let activeSrsMode = null;
       let supabaseClient = null;
       let authUser = null;
@@ -1180,7 +1186,7 @@
 
       function updateInfoUi() {
         toggleInfoButton.classList.toggle("is-active", isInfoVisible);
-        trainerInfo.classList.toggle("is-hidden", !isInfoVisible);
+        trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
       }
 
       function setAuthStatus(message, state = "") {
@@ -1639,9 +1645,24 @@
         return [...currentLevelRange(mode)];
       }
 
-      function updateMidiUi(isConnected) {
+      function updateMidiUi(isConnected, message = null, state = "") {
         midiIndicatorButton.dataset.state = isConnected ? "connected" : "disconnected";
-        midiTooltip.classList.toggle("is-hidden", isConnected);
+        if (state) {
+          midiTooltip.dataset.state = state;
+        } else {
+          delete midiTooltip.dataset.state;
+        }
+
+        if (isConnected) {
+          midiTooltip.classList.add("is-hidden");
+          if (message) {
+            midiTooltip.textContent = message;
+          }
+          return;
+        }
+
+        midiTooltip.textContent = message || "Klavier nicht verbunden";
+        midiTooltip.classList.remove("is-hidden");
       }
 
       function hasConnectedMidiOutput(midiAccess) {
@@ -2535,17 +2556,31 @@
       }
 
       async function initMidi() {
-        if (!("requestMIDIAccess" in navigator)) {
-          updateMidiUi(false);
+        if (isMidiConnecting) {
           return;
         }
+
+        if (!("requestMIDIAccess" in navigator)) {
+          updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfuegbar.", "error");
+          return;
+        }
+
+        isMidiConnecting = true;
+        updateMidiUi(false, "MIDI wird verbunden...", "");
 
         try {
           midiAccessRef = await navigator.requestMIDIAccess();
           bindMidiInputs(midiAccessRef);
           midiAccessRef.onstatechange = () => bindMidiInputs(midiAccessRef);
+          updateMidiUi(
+            hasConnectedMidiInput(midiAccessRef) || hasConnectedMidiOutput(midiAccessRef),
+            "Klavier nicht verbunden"
+          );
         } catch (error) {
-          updateMidiUi(false);
+          const errorMessage = error?.message || "MIDI Freigabe fehlgeschlagen.";
+          updateMidiUi(false, errorMessage, "error");
+        } finally {
+          isMidiConnecting = false;
         }
       }
 
@@ -2852,6 +2887,7 @@
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
+      midiIndicatorButton.addEventListener("click", () => initMidi());
 
       buildKeyboard();
       renderLibraryPanel();
@@ -2864,7 +2900,7 @@
       updateClefUi();
       updateSrsUi();
       generateRound();
-      initMidi();
+      updateMidiUi(false, "Tippe zum Verbinden auf das MIDI-Symbol.");
       initSupabase();
     </script>
   </body>
