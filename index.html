@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beethoven's Ode to Joy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --svg-stave: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%20192%22%20preserveAspectRatio%3D%22none%20slice%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%2224%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%2224%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%2224%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%2224%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%2224%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
+        --svg-stave-header: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave-header%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%22192%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%22192%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%22192%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%22192%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%22192%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
+        --svg-bar-line: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2098%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Ebar-line%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20x1%3D%2211%22%20x2%3D%2211%22%20y2%3D%2298%22%2F%3E%3C%2Fsvg%3E");
+        --svg-quarter-up: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2034%20192%22%3E%3Ctitle%3Equarter-note-up%3C%2Ftitle%3E%3Cpath%20d%3D%22M31.16%2C87.72c2.73%2C4.8-1.39%2C12.39-9.21%2C17s-16.37%2C4.4-19.1-.4%2C1.39-12.39%2C9.21-17S28.42%2C82.92%2C31.16%2C87.72Z%22%2F%3E%3Crect%20x%3D%22-2.5%22%20y%3D%2256.5%22%20width%3D%2267%22%20height%3D%222%22%20transform%3D%22translate(88.5%2026.5)%20rotate(90)%22%2F%3E%3C%2Fsvg%3E");
+        --svg-quarter-down: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2034%20192%22%3E%3Ctitle%3Equarter-note-down%3C%2Ftitle%3E%3Cpath%20d%3D%22M2.84%2C104.28c-2.73-4.8%2C1.39-12.39%2C9.21-17s16.37-4.4%2C19.1.4-1.39%2C12.39-9.21%2C17S5.58%2C109.08%2C2.84%2C104.28Z%22%2F%3E%3Crect%20x%3D%22-30.5%22%20y%3D%22133.5%22%20width%3D%2267%22%20height%3D%222%22%20transform%3D%22translate(-131.5%20137.5)%20rotate(-90)%22%2F%3E%3C%2Fsvg%3E");
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        background: #ffffff;
+      }
+
+      main {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 20px);
+        margin: 10px;
+        display: grid;
+        place-items: center;
+      }
+
+      .trainer {
+        width: 100%;
+        max-width: 100%;
+        display: grid;
+        gap: 2.5vh;
+        align-content: center;
+        justify-items: center;
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .level-indicator {
+        min-width: 124px;
+        padding: 8px 14px;
+        border: 1px solid #d7d7d7;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.86);
+        text-align: center;
+        line-height: 1.1;
+      }
+
+      .level-indicator[data-signal="low"] {
+        border-color: #d95c5c;
+        background: rgba(255, 235, 235, 0.95);
+      }
+
+      .level-indicator[data-signal="mid"] {
+        border-color: #d9a43b;
+        background: rgba(255, 245, 217, 0.95);
+      }
+
+      .level-indicator[data-signal="high"] {
+        border-color: #3eaf63;
+        background: rgba(231, 250, 236, 0.95);
+      }
+
+      .level-indicator.is-hidden {
+        display: none;
+      }
+
+      .level-indicator-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #7a7a7a;
+      }
+
+      .level-indicator[data-signal="low"] .level-indicator-label,
+      .level-indicator[data-signal="low"] .level-indicator-value {
+        color: #9f1f1f;
+      }
+
+      .level-indicator[data-signal="mid"] .level-indicator-label,
+      .level-indicator[data-signal="mid"] .level-indicator-value {
+        color: #8a5a00;
+      }
+
+      .level-indicator[data-signal="high"] .level-indicator-label,
+      .level-indicator[data-signal="high"] .level-indicator-value {
+        color: #1d7a3c;
+      }
+
+      .level-indicator-value {
+        display: block;
+        margin-top: 3px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #111111;
+      }
+
+      .toolbar-button {
+        width: 46px;
+        height: 46px;
+        border: 1px solid #d7d7d7;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: #ffffff;
+        color: #111111;
+        cursor: pointer;
+      }
+
+      .toolbar-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .toolbar-button.is-active {
+        border-color: #111111;
+        background: #111111;
+        color: #ffffff;
+      }
+
+      .toolbar-button svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.25;
+      }
+
+      .toolbar-button[data-badge] {
+        position: relative;
+      }
+
+      .toolbar-button[data-badge]::after {
+        content: attr(data-badge);
+        position: absolute;
+        right: -1px;
+        bottom: -1px;
+        width: 16px;
+        height: 16px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: #111111;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .library-panel {
+        width: min(92vw, 760px);
+        padding: 18px 20px;
+        border: 1px solid #d7d7d7;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        display: grid;
+        gap: 18px;
+      }
+
+      .library-panel.is-hidden {
+        display: none;
+      }
+
+      .sheet-music.is-hidden {
+        display: none;
+      }
+
+      .library-group {
+        display: grid;
+        gap: 10px;
+      }
+
+      .library-group-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #666666;
+      }
+
+      .library-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+        gap: 10px;
+      }
+
+      .library-note {
+        padding: 10px 12px;
+        border: 1px solid #d7d7d7;
+        border-radius: 14px;
+        background: #ffffff;
+        display: grid;
+        gap: 4px;
+        text-align: center;
+      }
+
+      .library-note.is-unknown {
+        border-color: #dcdcdc;
+        background: #f2f2f2;
+        color: #9a9a9a;
+      }
+
+      .library-note-score {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .library-note-preview {
+        position: relative;
+        height: 76px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .library-note-stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      .library-note-preview .staff-line,
+      .library-note-preview .ledger-line {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 28px;
+        height: 2px;
+        background: #161616;
+        transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
+      }
+
+      .library-note-preview .note {
+        top: 50%;
+        left: 50%;
+        width: 18px;
+        height: 54px;
+        background-color: #111111;
+        transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
+      }
+
+      .sheet-music {
+        font-size: min(2.52vw, 1.6vh);
+        width: max-content;
+        max-width: 100%;
+        margin: 0 auto;
+        padding-left: 16em;
+        overflow: visible;
+      }
+
+      .sheet-music-double {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(44px, 5vw, 92px);
+        width: calc(100vw - 80px);
+        max-width: 100%;
+        padding: 0 10px;
+        position: relative;
+        font-size: min(1.5vw, 1.02vh);
+        align-items: start;
+      }
+
+      .sheet-music-double::before {
+        content: "";
+        position: absolute;
+        top: 2em;
+        bottom: 2em;
+        left: 50%;
+        border-left: 2px dashed rgba(17, 17, 17, 0.35);
+        transform: translateX(-50%);
+      }
+
+      .sheet-music-double.is-hidden {
+        display: none;
+      }
+
+      .sheet-music-double .bar {
+        width: min(100%, 26em);
+      }
+
+      .sheet-music-double .bar:first-child {
+        justify-self: end;
+      }
+
+      .sheet-music-double .bar:last-child {
+        justify-self: start;
+      }
+
+      .sheet-music-double .stave-header {
+        left: -11em;
+        width: 11em;
+      }
+
+      .sheet-music-double .clef-symbol[data-clef="treble"] {
+        left: -8.9em;
+      }
+
+      .sheet-music-double .clef-symbol[data-clef="bass"] {
+        left: -8.1em;
+      }
+
+      .bar {
+        position: relative;
+        width: 40em;
+        height: 34em;
+        background-color: #ffffff;
+        background-image: var(--svg-stave);
+        background-repeat: repeat-x;
+        background-position: center;
+        background-size: auto 16em;
+      }
+
+      .stave-header {
+        position: absolute;
+        top: 0;
+        left: -16em;
+        width: 16em;
+        height: 34em;
+        background-color: #ffffff;
+        background-image: var(--svg-stave-header);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: auto 16em;
+        z-index: 0;
+      }
+
+      .clef-symbol {
+        position: absolute;
+        left: -13.3em;
+        top: 50%;
+        width: 6.8em;
+        height: 20em;
+        transform: translateY(-50%);
+        user-select: none;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .clef-symbol[data-clef="treble"] {
+        width: 6.8em;
+        height: 20em;
+      }
+
+      .clef-symbol[data-clef="bass"] {
+        left: -12.7em;
+        width: 1.6em;
+        height: auto;
+        text-align: center;
+        font-size: 11.8em;
+        line-height: 1;
+      }
+
+      .clef-symbol svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .clef-symbol path,
+      .clef-symbol circle {
+        fill: #000000;
+        stroke: none;
+      }
+
+      .bar-line {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1em;
+        height: 34em;
+        background-color: transparent;
+        background-image: var(--svg-bar-line);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+
+      .bar-notes {
+        position: absolute;
+        inset: 0 1em 0 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        z-index: 1;
+      }
+
+      .note-slot {
+        position: relative;
+        height: 100%;
+      }
+
+      .note-badge {
+        position: absolute;
+        top: 50%;
+        left: calc(50% + 1.25em);
+        transform: translate(-50%, calc(-50% + var(--offset)));
+        font-size: 1.9em;
+        font-weight: 800;
+        line-height: 1;
+        color: #d62424;
+        user-select: none;
+        pointer-events: none;
+        animation: noteBadgeFloat 1.5s ease-in-out infinite;
+      }
+
+      @keyframes noteBadgeFloat {
+        0%,
+        100% {
+          transform: translate(-50%, calc(-50% + var(--offset)));
+        }
+
+        50% {
+          transform: translate(-50%, calc(-50% + var(--offset) - 0.22em));
+        }
+      }
+
+      .note {
+        --note-color: #000000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2.83em;
+        height: 16em;
+        background-color: var(--note-color);
+        transform: translate(-50%, calc(-50% + var(--offset)));
+        transition: background-color 120ms ease, filter 120ms ease;
+      }
+
+      .note.note-down {
+        -webkit-mask-image: var(--svg-quarter-down);
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-size: auto 100%;
+        mask-image: var(--svg-quarter-down);
+        mask-repeat: no-repeat;
+        mask-size: auto 100%;
+      }
+
+      .note.note-up {
+        -webkit-mask-image: var(--svg-quarter-up);
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-size: auto 100%;
+        mask-image: var(--svg-quarter-up);
+        mask-repeat: no-repeat;
+        mask-size: auto 100%;
+      }
+
+      .ledger-line {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 4.8em;
+        height: 0.28em;
+        background: #000000;
+        transform: translate(-50%, calc(-50% + var(--offset)));
+      }
+
+      .note-slot.is-current .note {
+        filter: drop-shadow(0 0 0.4em rgba(0, 76, 255, 0.35));
+      }
+
+      .note.is-correct {
+        --note-color: #1d9b39;
+      }
+
+      .note.is-wrong {
+        --note-color: #d62424;
+      }
+
+      .midi-indicator {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        z-index: 20;
+      }
+
+      .midi-indicator-button {
+        display: grid;
+        place-items: center;
+        color: #111111;
+        cursor: default;
+      }
+
+      .midi-indicator-button svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2.2;
+      }
+
+      .midi-indicator-button[data-state="disconnected"] {
+        animation: midiPulse 1.8s ease-in-out infinite;
+      }
+
+      .midi-indicator-button[data-state="connected"] {
+        color: #1d9b39;
+      }
+
+      .midi-tooltip {
+        position: absolute;
+        left: 58px;
+        bottom: 50%;
+        transform: translateY(50%);
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #111111;
+        color: #ffffff;
+        font-size: 13px;
+        line-height: 1.2;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 120ms ease;
+      }
+
+      .midi-indicator:hover .midi-tooltip,
+      .midi-indicator:focus-within .midi-tooltip {
+        opacity: 1;
+      }
+
+      .midi-tooltip.is-hidden {
+        display: none;
+      }
+
+      @keyframes midiPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.06);
+        }
+      }
+
+      .keyboard {
+        position: relative;
+        width: 100%;
+        height: min(24vh, 220px);
+        border: 1px solid #d9d9d9;
+        border-radius: 10px;
+        background: #f3f3f3;
+        overflow: hidden;
+      }
+
+      .keyboard-levels {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 8px;
+        height: 10px;
+        pointer-events: none;
+        z-index: 4;
+      }
+
+      .keyboard-levels.is-hidden {
+        display: none;
+      }
+
+      .keyboard-level-segment {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: rgba(217, 164, 59, 0.2);
+      }
+
+      .keyboard-level-segment.is-active {
+        background: rgba(217, 164, 59, 0.6);
+      }
+
+      .keyboard-range-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .keyboard-keys {
+        position: absolute;
+        inset: 0;
+      }
+
+      .keyboard-keys.is-cut-mode {
+        opacity: 0.5;
+      }
+
+      .range-bracket {
+        position: absolute;
+        top: 8px;
+        width: 28px;
+        height: calc(100% - 16px);
+        border: 3px solid #111111;
+        background: rgba(255, 255, 255, 0.26);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
+        pointer-events: auto;
+        touch-action: none;
+        cursor: grab;
+      }
+
+      .range-bracket::after {
+        content: attr(data-note);
+        position: absolute;
+        top: -34px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #111111;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .range-bracket.is-dragging {
+        cursor: grabbing;
+      }
+
+      .range-bracket-start {
+        border-right: 0;
+        border-radius: 12px 0 0 12px;
+        transform: translateX(-100%);
+      }
+
+      .range-bracket-end {
+        border-left: 0;
+        border-radius: 0 12px 12px 0;
+      }
+
+      .range-bracket.is-passive {
+        border-color: rgba(17, 17, 17, 0.72);
+        background: rgba(255, 255, 255, 0.12);
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .range-bracket.is-passive::after {
+        background: rgba(17, 17, 17, 0.84);
+      }
+
+      .range-bracket[data-range-role="bass"] {
+        border-color: rgba(27, 111, 212, 0.92);
+      }
+
+      .range-bracket[data-range-role="treble"] {
+        border-color: rgba(187, 40, 40, 0.92);
+      }
+
+      .range-bracket[data-range-role="bass"]::after {
+        background: rgba(27, 111, 212, 0.92);
+      }
+
+      .range-bracket[data-range-role="treble"]::after {
+        background: rgba(187, 40, 40, 0.92);
+      }
+
+      .white-keys {
+        display: grid;
+        grid-template-columns: repeat(52, 1fr);
+        width: 100%;
+        height: 100%;
+      }
+
+      .white-key {
+        position: relative;
+        border-right: 1px solid #d7d7d7;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .white-key[data-label]::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        font-size: 12px;
+        font-weight: 600;
+        color: #222222;
+      }
+
+      .white-key.is-in-range {
+        background: #ffffff;
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.55);
+      }
+
+      .white-key.is-range-start,
+      .white-key.is-range-end {
+        background: #ffffff;
+        box-shadow: inset 0 0 0 3px #000000;
+      }
+
+      .white-key.is-target {
+        background: #dcecff;
+      }
+
+      .white-key.is-correct {
+        background: #d9f5df;
+      }
+
+      .white-key.is-wrong {
+        background: #ffdede;
+      }
+
+      .black-keys {
+        position: absolute;
+        inset: 0;
+      }
+
+      .black-key {
+        position: absolute;
+        top: 0;
+        width: calc(100% / 52 * 0.62);
+        height: 62%;
+        transform: translateX(-50%);
+        border-radius: 0 0 4px 4px;
+        background: #111111;
+        cursor: pointer;
+      }
+
+      .black-key[data-label]::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .black-key.is-in-range {
+        background: #111111;
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75);
+      }
+
+      .black-key.is-range-start,
+      .black-key.is-range-end {
+        background: #111111;
+        box-shadow: inset 0 0 0 3px #ffffff;
+      }
+
+      .black-key.is-target {
+        background: #4c8df6;
+      }
+
+      .black-key.is-correct {
+        background: #2ea44f;
+      }
+
+      .black-key.is-wrong {
+        background: #d84f4f;
+      }
+
+      .target-description {
+        margin: 0;
+        text-align: center;
+        font-size: clamp(16px, 1.3vw, 22px);
+        color: #111111;
+      }
+
+      .target-description strong {
+        color: #111111;
+        font-weight: 600;
+      }
+
+      .trainer-info.is-hidden {
+        display: none;
+      }
+
+      .keyboard.is-hidden {
+        display: none;
+      }
+
+      .keyboard.is-cut-mode {
+        opacity: 0.5;
+      }
+
+      @supports (display: grid) {
+        .sheet-music {
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+        }
+      }
+
+      @media (max-aspect-ratio: 4 / 3) {
+        .sheet-music {
+          font-size: min(2.4vw, 1.28vh);
+        }
+
+        .keyboard {
+          height: min(20vh, 180px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="trainer">
+        <div class="toolbar" aria-label="Ansicht">
+          <button class="toolbar-button" id="toggle-range-button" type="button" aria-label="Bereichswahl ein- oder ausblenden" title="Bereichswahl">
+            <i data-lucide="scissors"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-keyboard-button" type="button" aria-label="Klavier ein- oder ausblenden" title="Klavier">
+            <i data-lucide="piano"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-info-button" type="button" aria-label="Informationen ein- oder ausblenden" title="Informationen">
+            <i data-lucide="info"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-library-button" type="button" aria-label="Notenbibliothek ein- oder ausblenden" title="Notenbibliothek">
+            <i data-lucide="library-big"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-double-button" type="button" aria-label="Double-Modus ein- oder ausschalten" title="Double-Modus" data-badge="D">
+            <i data-lucide="columns-2"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-srs-treble-button" type="button" aria-label="SRS-Modus Violine ein- oder ausschalten" title="SRS Violine" data-badge="V">
+            <i data-lucide="brain"></i>
+          </button>
+          <button class="toolbar-button" id="toggle-srs-bass-button" type="button" aria-label="SRS-Modus Bass ein- oder ausschalten" title="SRS Bass" data-badge="B">
+            <i data-lucide="brain"></i>
+          </button>
+          <div class="level-indicator is-hidden" id="level-indicator" aria-live="polite">
+            <span class="level-indicator-label" id="level-indicator-label">Level</span>
+            <span class="level-indicator-value" id="level-indicator-value">1 / 5</span>
+          </div>
+        </div>
+        <div class="sheet-music">
+          <div class="bar">
+            <div class="stave-header"></div>
+            <div class="clef-symbol" id="clef-symbol" data-clef="treble" aria-hidden="true"></div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
+            <div class="bar-line" aria-label="bar-line"></div>
+          </div>
+        </div>
+        <div class="sheet-music-double is-hidden" id="sheet-music-double">
+          <div class="bar">
+            <div class="stave-header"></div>
+            <div class="clef-symbol" data-clef="bass" id="double-bass-clef" aria-hidden="true"></div>
+            <div class="bar-notes" id="double-bass-notes" aria-live="polite"></div>
+            <div class="bar-line" aria-label="bar-line"></div>
+          </div>
+          <div class="bar">
+            <div class="stave-header"></div>
+            <div class="clef-symbol" data-clef="treble" id="double-treble-clef" aria-hidden="true"></div>
+            <div class="bar-notes" id="double-treble-notes" aria-live="polite"></div>
+            <div class="bar-line" aria-label="bar-line"></div>
+          </div>
+        </div>
+        <div class="trainer-info" id="trainer-info">
+          <p class="target-description" id="target-description" aria-live="polite"></p>
+        </div>
+        <div class="library-panel is-hidden" id="library-panel" aria-live="polite"></div>
+        <div class="keyboard is-hidden" id="keyboard" aria-label="Virtuelles Klavier">
+          <div class="keyboard-levels is-hidden" id="keyboard-levels" aria-hidden="true"></div>
+          <div class="keyboard-keys" id="keyboard-keys">
+            <div class="white-keys" id="white-keys"></div>
+            <div class="black-keys" id="black-keys"></div>
+          </div>
+          <div class="keyboard-range-overlay" aria-hidden="true">
+            <div class="range-bracket range-bracket-start" id="range-bracket-start"></div>
+            <div class="range-bracket range-bracket-end" id="range-bracket-end"></div>
+            <div class="range-bracket range-bracket-start is-passive" data-range-role="bass" id="double-range-bass-start"></div>
+            <div class="range-bracket range-bracket-end is-passive" data-range-role="bass" id="double-range-bass-end"></div>
+            <div class="range-bracket range-bracket-start is-passive" data-range-role="treble" id="double-range-treble-start"></div>
+            <div class="range-bracket range-bracket-end is-passive" data-range-role="treble" id="double-range-treble-end"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div class="midi-indicator" id="midi-indicator">
+      <div class="midi-indicator-button" id="midi-indicator-button" data-state="disconnected" aria-label="MIDI Status">
+        <i data-lucide="chevrons-left-right-ellipsis"></i>
+      </div>
+      <div class="midi-tooltip" id="midi-tooltip">Klavier nicht verbunden</div>
+    </div>
+    <script>
+      lucide.createIcons();
+
+      const notesContainer = document.getElementById("bar-notes");
+      const clefSymbol = document.getElementById("clef-symbol");
+      const toggleRangeButton = document.getElementById("toggle-range-button");
+      const toggleKeyboardButton = document.getElementById("toggle-keyboard-button");
+      const toggleInfoButton = document.getElementById("toggle-info-button");
+      const toggleLibraryButton = document.getElementById("toggle-library-button");
+      const toggleDoubleButton = document.getElementById("toggle-double-button");
+      const toggleSrsTrebleButton = document.getElementById("toggle-srs-treble-button");
+      const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
+      const sheetMusic = document.querySelector(".sheet-music");
+      const sheetMusicDouble = document.getElementById("sheet-music-double");
+      const keyboard = document.getElementById("keyboard");
+      const keyboardLevels = document.getElementById("keyboard-levels");
+      const keyboardKeys = document.getElementById("keyboard-keys");
+      const rangeBracketStart = document.getElementById("range-bracket-start");
+      const rangeBracketEnd = document.getElementById("range-bracket-end");
+      const doubleRangeBassStart = document.getElementById("double-range-bass-start");
+      const doubleRangeBassEnd = document.getElementById("double-range-bass-end");
+      const doubleRangeTrebleStart = document.getElementById("double-range-treble-start");
+      const doubleRangeTrebleEnd = document.getElementById("double-range-treble-end");
+      const levelIndicator = document.getElementById("level-indicator");
+      const levelIndicatorLabel = document.getElementById("level-indicator-label");
+      const levelIndicatorValue = document.getElementById("level-indicator-value");
+      const trainerInfo = document.getElementById("trainer-info");
+      const libraryPanel = document.getElementById("library-panel");
+      const targetDescription = document.getElementById("target-description");
+      const doubleBassClef = document.getElementById("double-bass-clef");
+      const doubleTrebleClef = document.getElementById("double-treble-clef");
+      const doubleBassNotesContainer = document.getElementById("double-bass-notes");
+      const doubleTrebleNotesContainer = document.getElementById("double-treble-notes");
+      const whiteKeysContainer = document.getElementById("white-keys");
+      const blackKeysContainer = document.getElementById("black-keys");
+      const midiIndicatorButton = document.getElementById("midi-indicator-button");
+      const midiTooltip = document.getElementById("midi-tooltip");
+      const noteCount = 4;
+      const srsConfig = {
+        minimumWindowSize: 5,
+        sampleSize: 20,
+        growThreshold: 0.98,
+        shrinkThreshold: 0.7,
+        maxLevel: 5
+      };
+      const keyboardRange = { start: 21, end: 108 };
+      const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
+      const levelLabels = ["Mittlere C-Lage", "C-Lage", "D-Lage", "E-Lage", "F-Lage"];
+      const clefSvgMarkup = {
+        treble: `
+          <svg viewBox="0 0 88 192" aria-hidden="true">
+            <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"/>
+          </svg>
+        `,
+        bass: `
+          <span aria-hidden="true">𝄢</span>
+        `
+      };
+      const clefConfigs = {
+        treble: {
+          label: "Violinschluessel",
+          reference: "B4",
+          range: ["C4", "C8"],
+          handLabel: "rechte Hand"
+        },
+        bass: {
+          label: "Bassschluessel",
+          reference: "D3",
+          range: ["A0", "B3"],
+          handLabel: "linke Hand"
+        }
+      };
+      const srsModeConfigs = {
+        treble: {
+          label: "Violine",
+          initialStart: "C4"
+        },
+        bass: {
+          label: "Bass",
+          initialStart: "C2"
+        }
+      };
+      const levelRangesByMode = {
+        treble: [
+          ["C4", "G4"],
+          ["C5", "G5"],
+          ["D5", "A5"],
+          ["E5", "B5"],
+          ["F5", "C6"]
+        ],
+        bass: [
+          ["F2", "C3"],
+          ["C3", "G3"],
+          ["D3", "A3"],
+          ["E3", "B3"],
+          ["F3", "C4"]
+        ]
+      };
+      const selectableRange = ["A0", "C8"];
+      let currentNotes = [];
+      let activeIndex = 0;
+      let lastPlayedMidi = null;
+      let correctMidiNotes = new Set();
+      let currentClef = "treble";
+      let selectedRange = ["C4", "C8"];
+      let manualSelectedRange = [...selectedRange];
+      let activeDragEdge = null;
+      let doubleSelectedRanges = {
+        bass: [...levelRangesByMode.bass[0]],
+        treble: [...levelRangesByMode.treble[0]]
+      };
+      let isRangeSelectorVisible = false;
+      let isKeyboardVisible = false;
+      let isInfoVisible = false;
+      let isLibraryVisible = false;
+      let isDoubleModeEnabled = false;
+      let midiAccessRef = null;
+      let activeSrsMode = null;
+      let srsStates = {
+        treble: null,
+        bass: null
+      };
+      let noteStats = {
+        treble: {},
+        bass: {}
+      };
+      let doubleRound = {
+        bass: [],
+        treble: []
+      };
+      let doublePairState = [];
+
+      function updateInfoUi() {
+        toggleInfoButton.classList.toggle("is-active", isInfoVisible);
+        trainerInfo.classList.toggle("is-hidden", !isInfoVisible);
+      }
+
+      function updateModeUi() {
+        toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
+        toggleRangeButton.disabled = activeSrsMode !== null;
+        sheetMusic.classList.toggle("is-hidden", isDoubleModeEnabled || isLibraryVisible);
+        sheetMusicDouble.classList.toggle("is-hidden", !isDoubleModeEnabled || isLibraryVisible);
+      }
+
+      function noteStatFor(mode, noteName) {
+        return noteStats[mode]?.[noteName] || null;
+      }
+
+      function recordNoteStat(mode, noteName, isCorrect) {
+        if (!mode || !noteName) {
+          return;
+        }
+
+        const stats = noteStats[mode][noteName] || { attempts: 0, correct: 0 };
+        stats.attempts += 1;
+        if (isCorrect) {
+          stats.correct += 1;
+        }
+        noteStats[mode][noteName] = stats;
+        renderLibraryPanel();
+      }
+
+      function createLibraryNotePreview(note, mode) {
+        const preview = document.createElement("div");
+        preview.className = "library-note-preview";
+        preview.setAttribute("aria-hidden", "true");
+
+        const decoratedNote = decorateNote(note, mode);
+        const stage = document.createElement("div");
+        stage.className = "library-note-stage";
+        stage.style.setProperty("--focus-offset", `${decoratedNote.step}em`);
+
+        for (const step of [-4, -2, 0, 2, 4]) {
+          const staffLine = document.createElement("div");
+          staffLine.className = "staff-line";
+          staffLine.style.setProperty("--offset", noteOffset(step));
+          stage.appendChild(staffLine);
+        }
+
+        for (const step of ledgerSteps(decoratedNote.step)) {
+          const ledgerLine = document.createElement("div");
+          ledgerLine.className = "ledger-line";
+          ledgerLine.style.setProperty("--offset", noteOffset(step));
+          stage.appendChild(ledgerLine);
+        }
+
+        const noteElement = document.createElement("div");
+        noteElement.className = `note ${stemDirection(decoratedNote.step)}`;
+        noteElement.style.setProperty("--offset", noteOffset(decoratedNote.step));
+        stage.appendChild(noteElement);
+
+        preview.appendChild(stage);
+
+        return preview;
+      }
+
+      function createLibraryGroup(mode) {
+        const group = document.createElement("section");
+        group.className = "library-group";
+
+        const title = document.createElement("h3");
+        title.className = "library-group-title";
+        title.textContent = srsModeConfigs[mode].label;
+        group.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = "library-grid";
+
+        for (const note of rangeOptionsForMode(mode)) {
+          const stat = noteStatFor(mode, note.name);
+          const item = document.createElement("div");
+          item.className = "library-note";
+
+          if (!stat || stat.attempts === 0) {
+            item.classList.add("is-unknown");
+          }
+
+          item.appendChild(createLibraryNotePreview(note, mode));
+
+          const score = document.createElement("span");
+          score.className = "library-note-score";
+          score.textContent = !stat || stat.attempts === 0
+            ? "noch nicht gelernt"
+            : `${Math.round((stat.correct / stat.attempts) * 100)}% sicher`;
+          item.appendChild(score);
+
+          grid.appendChild(item);
+        }
+
+        group.appendChild(grid);
+        return group;
+      }
+
+      function renderLibraryPanel() {
+        libraryPanel.replaceChildren(
+          createLibraryGroup("treble"),
+          createLibraryGroup("bass")
+        );
+      }
+
+      function updateLibraryUi() {
+        toggleLibraryButton.classList.toggle("is-active", isLibraryVisible);
+        libraryPanel.classList.toggle("is-hidden", !isLibraryVisible);
+        updateModeUi();
+      }
+
+      function levelProgressForMode(mode) {
+        const state = mode ? srsStates[mode] : null;
+
+        if (!mode || !state) {
+          return null;
+        }
+
+        return {
+          level: Math.max(1, Math.min(srsConfig.maxLevel, state.level || 1)),
+          maxLevel: srsConfig.maxLevel
+        };
+      }
+
+      function updateLevelUi() {
+        const progress = levelProgressForMode(activeSrsMode);
+
+        if (!progress || !activeSrsMode) {
+          levelIndicator.classList.add("is-hidden");
+          delete levelIndicator.dataset.signal;
+          renderKeyboardLevels();
+          return;
+        }
+
+        let signal = "low";
+
+        if (progress.level >= 4) {
+          signal = "high";
+        } else if (progress.level >= 2) {
+          signal = "mid";
+        }
+
+        levelIndicator.classList.remove("is-hidden");
+        levelIndicator.dataset.signal = signal;
+        levelIndicatorLabel.textContent = `${srsModeConfigs[activeSrsMode].label} ${levelLabels[progress.level - 1] || "Level"}`;
+        levelIndicatorValue.textContent = `${progress.level} / ${progress.maxLevel}`;
+        renderKeyboardLevels();
+      }
+
+      function levelRangesForMode(mode) {
+        return levelRangesByMode[mode] || [];
+      }
+
+      function renderKeyboardLevels() {
+        const progress = levelProgressForMode(activeSrsMode);
+
+        if (!isKeyboardVisible || !activeSrsMode || !progress) {
+          keyboardLevels.classList.add("is-hidden");
+          keyboardLevels.replaceChildren();
+          return;
+        }
+
+        const levelRanges = levelRangesForMode(activeSrsMode);
+        const fragment = document.createDocumentFragment();
+        const keyboardRect = keyboard.getBoundingClientRect();
+
+        for (let index = 0; index < levelRanges.length; index += 1) {
+          const [startNote, endNote] = levelRanges[index];
+          const startCenter = keyCenterInKeyboard(startNote);
+          const endCenter = keyCenterInKeyboard(endNote);
+
+          if (startCenter === null || endCenter === null) {
+            continue;
+          }
+
+          const startKey = findKeyByNote(startNote);
+          const endKey = findKeyByNote(endNote);
+          if (!startKey || !endKey) {
+            continue;
+          }
+
+          const startRect = startKey.getBoundingClientRect();
+          const endRect = endKey.getBoundingClientRect();
+          const left = startRect.left - keyboardRect.left;
+          const right = endRect.right - keyboardRect.left;
+
+          const segment = document.createElement("div");
+          segment.className = "keyboard-level-segment";
+          if (index < progress.level) {
+            segment.classList.add("is-active");
+          }
+          segment.style.left = `${left}px`;
+          segment.style.width = `${Math.max(8, right - left)}px`;
+          fragment.appendChild(segment);
+        }
+
+        keyboardLevels.replaceChildren(fragment);
+        keyboardLevels.classList.remove("is-hidden");
+      }
+
+      function currentLevelRange(mode) {
+        const state = srsStates[mode] || createInitialSrsState(mode);
+        return srsRangeFromState(mode, state);
+      }
+
+      function activeDoubleRange(mode) {
+        const customRange = doubleSelectedRanges[mode];
+        if (customRange) {
+          return customRange;
+        }
+
+        return [...currentLevelRange(mode)];
+      }
+
+      function updateMidiUi(isConnected) {
+        midiIndicatorButton.dataset.state = isConnected ? "connected" : "disconnected";
+        midiTooltip.classList.toggle("is-hidden", isConnected);
+      }
+
+      function hasConnectedMidiInput(midiAccess) {
+        if (!midiAccess) {
+          return false;
+        }
+
+        for (const input of midiAccess.inputs.values()) {
+          if (input.state === "connected") {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function midiNumberToName(midi) {
+        const semitone = semitoneNames[midi % 12];
+        const octave = Math.floor(midi / 12) - 1;
+        return `${semitone}${octave}`;
+      }
+
+      function displayNoteName(name) {
+        if (name.startsWith("B")) {
+          return `H${name.slice(1)}`;
+        }
+
+        return name;
+      }
+
+      function parseNoteName(name) {
+        const [, letter, octaveText] = name.match(/^([A-G])(\d)$/);
+        return { letter, octave: Number(octaveText) };
+      }
+
+      function diatonicValue(name) {
+        const { letter, octave } = parseNoteName(name);
+        return octave * 7 + noteLetters.indexOf(letter);
+      }
+
+      function semitoneValue(name) {
+        const midiMap = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+        const { letter, octave } = parseNoteName(name);
+        return (octave + 1) * 12 + midiMap[letter];
+      }
+
+      function buildRange(start, end, reference) {
+        const startMidi = semitoneValue(start);
+        const endMidi = semitoneValue(end);
+        const referenceValue = diatonicValue(reference);
+        const notes = [];
+
+        for (let midi = startMidi; midi <= endMidi; midi += 1) {
+          if (isBlackKey(midi)) {
+            continue;
+          }
+
+          const name = midiNumberToName(midi);
+          notes.push({
+            name,
+            midi,
+            step: diatonicValue(name) - referenceValue
+          });
+        }
+
+        return notes;
+      }
+
+      function activeNoteRange() {
+        if (activeSrsMode) {
+          const config = clefConfigs[activeSrsMode];
+          return buildRange(selectedRange[0], selectedRange[1], config.reference);
+        }
+
+        return buildRange(selectedRange[0], selectedRange[1], clefConfigs.treble.reference);
+      }
+
+      function deriveClefForNote(noteName) {
+        return semitoneValue(noteName) < semitoneValue("C4") ? "bass" : "treble";
+      }
+
+      function decorateNote(note, forcedClef = null) {
+        const clef = forcedClef || deriveClefForNote(note.name);
+        return {
+          ...note,
+          clef,
+          step: diatonicValue(note.name) - diatonicValue(clefConfigs[clef].reference)
+        };
+      }
+
+      function selectableRangeOptions() {
+        return buildRange(selectableRange[0], selectableRange[1], clefConfigs.treble.reference);
+      }
+
+      function isBlackKey(midi) {
+        return midiNumberToName(midi).includes("#");
+      }
+
+      function buildKeyboard() {
+        let whiteIndex = 0;
+        const whiteFragment = document.createDocumentFragment();
+        const blackFragment = document.createDocumentFragment();
+
+        for (let midi = keyboardRange.start; midi <= keyboardRange.end; midi += 1) {
+          const keyName = midiNumberToName(midi);
+
+          if (isBlackKey(midi)) {
+            const key = document.createElement("div");
+            key.className = "black-key";
+            key.dataset.midi = String(midi);
+            key.dataset.note = keyName;
+            key.setAttribute("aria-hidden", "true");
+            key.style.left = `calc((100% / 52) * ${whiteIndex})`;
+            blackFragment.appendChild(key);
+            continue;
+          }
+
+          whiteIndex += 1;
+          const key = document.createElement("div");
+          key.className = "white-key";
+          key.dataset.midi = String(midi);
+          key.dataset.note = keyName;
+          key.setAttribute("aria-hidden", "true");
+          whiteFragment.appendChild(key);
+        }
+
+        whiteKeysContainer.replaceChildren(whiteFragment);
+        blackKeysContainer.replaceChildren(blackFragment);
+      }
+
+      function randomNote() {
+        const availableNotes = activeNoteRange();
+        const randomIndex = Math.floor(Math.random() * availableNotes.length);
+        const note = decorateNote(availableNotes[randomIndex], activeSrsMode);
+        const state = activeSrsState();
+        return {
+          ...note,
+          isNew: Boolean(state?.newNotes?.includes(note.name))
+        };
+      }
+
+      function rangeOptionsForMode(mode) {
+        if (!mode) {
+          return selectableRangeOptions();
+        }
+
+        const config = clefConfigs[mode];
+        return buildRange(config.range[0], config.range[1], config.reference);
+      }
+
+      function clampSrsWindowStart(startIndex, windowSize, total) {
+        return Math.min(Math.max(0, startIndex), Math.max(0, total - windowSize));
+      }
+
+      function createInitialSrsState(mode) {
+        return {
+          level: 1,
+          attempts: [],
+          newNotes: []
+        };
+      }
+
+      function activeSrsState() {
+        return activeSrsMode ? srsStates[activeSrsMode] : null;
+      }
+
+      function srsRangeFromState(mode, state) {
+        const ranges = levelRangesForMode(mode);
+        return ranges[Math.max(0, Math.min(ranges.length - 1, (state.level || 1) - 1))];
+      }
+
+      function notesInRange(mode, range) {
+        const allNotes = rangeOptionsForMode(mode).map((note) => note.name);
+        const startIndex = allNotes.indexOf(range[0]);
+        const endIndex = allNotes.indexOf(range[1]);
+        if (startIndex === -1 || endIndex === -1) {
+          return [];
+        }
+
+        return allNotes.slice(startIndex, endIndex + 1);
+      }
+
+      function applySrsRange() {
+        const state = activeSrsState();
+
+        if (!activeSrsMode || !state) {
+          return;
+        }
+
+        selectedRange = srsRangeFromState(activeSrsMode, state);
+      }
+
+      function currentSrsAccuracy() {
+        const state = activeSrsState();
+
+        if (!state || state.attempts.length === 0) {
+          return null;
+        }
+
+        const correctAttempts = state.attempts.filter(Boolean).length;
+        return correctAttempts / state.attempts.length;
+      }
+
+      function logSrsEvent(eventType, mode, state, extra = {}) {
+        if (!mode || !state) {
+          return;
+        }
+
+        const range = srsRangeFromState(mode, state);
+        const accuracy = state.attempts.length
+          ? Math.round((state.attempts.filter(Boolean).length / state.attempts.length) * 100)
+          : null;
+
+        console.log("[SRS]", {
+          event: eventType,
+          mode,
+          level: state.level,
+          range: `${range[0]}-${range[1]}`,
+          attempts: state.attempts.length,
+          accuracy,
+          newNotes: state.newNotes,
+          ...extra
+        });
+      }
+
+      function updateSrsUi() {
+        toggleSrsTrebleButton.classList.toggle("is-active", activeSrsMode === "treble");
+        toggleSrsBassButton.classList.toggle("is-active", activeSrsMode === "bass");
+        toggleRangeButton.disabled = activeSrsMode !== null;
+        updateLevelUi();
+      }
+
+      function maybeAdjustSrsRange() {
+        const state = activeSrsState();
+
+        if (!activeSrsMode || !state || state.attempts.length < srsConfig.sampleSize) {
+          return false;
+        }
+
+        const accuracy = currentSrsAccuracy();
+        const canGrow = state.level < levelRangesForMode(activeSrsMode).length;
+        const canShrink = state.level > 1;
+
+        if (accuracy >= srsConfig.growThreshold && canGrow) {
+          const previousRange = srsRangeFromState(activeSrsMode, state);
+          state.level += 1;
+
+          state.attempts = [];
+          const nextRange = srsRangeFromState(activeSrsMode, state);
+          const previousNotes = new Set(notesInRange(activeSrsMode, previousRange));
+          state.newNotes = notesInRange(activeSrsMode, nextRange).filter((noteName) => !previousNotes.has(noteName));
+          applySrsRange();
+          logSrsEvent("level-up", activeSrsMode, state, {
+            previousRange: `${previousRange[0]}-${previousRange[1]}`,
+            nextRange: `${nextRange[0]}-${nextRange[1]}`
+          });
+          updateSrsUi();
+          return true;
+        }
+
+        if (accuracy < srsConfig.shrinkThreshold && canShrink) {
+          const previousRange = srsRangeFromState(activeSrsMode, state);
+          state.level -= 1;
+          state.attempts = [];
+          state.newNotes = [];
+          applySrsRange();
+          const nextRange = srsRangeFromState(activeSrsMode, state);
+          logSrsEvent("level-down", activeSrsMode, state, {
+            previousRange: `${previousRange[0]}-${previousRange[1]}`,
+            nextRange: `${nextRange[0]}-${nextRange[1]}`
+          });
+          updateSrsUi();
+          return true;
+        }
+
+        return false;
+      }
+
+      function recordSrsAttempt(isCorrect) {
+        const state = activeSrsState();
+
+        if (!activeSrsMode || !state) {
+          return false;
+        }
+
+        state.attempts.push(isCorrect);
+
+        if (state.attempts.length > srsConfig.sampleSize) {
+          state.attempts.shift();
+        }
+
+        logSrsEvent("attempt", activeSrsMode, state, {
+          result: isCorrect ? "correct" : "wrong"
+        });
+
+        const changedRange = maybeAdjustSrsRange();
+        updateSrsUi();
+        return changedRange;
+      }
+
+      function applyManualSrsLevel(mode, nextLevel) {
+        const ranges = levelRangesForMode(mode);
+
+        if (!mode || ranges.length === 0) {
+          return false;
+        }
+
+        const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
+        const previousRange = srsRangeFromState(mode, state);
+        const clampedLevel = Math.max(1, Math.min(ranges.length, nextLevel));
+
+        if (state.level === clampedLevel) {
+          logSrsEvent("level-unchanged", mode, state);
+          return false;
+        }
+
+        state.level = clampedLevel;
+        state.attempts = [];
+        const nextRange = srsRangeFromState(mode, state);
+        const previousNotes = new Set(notesInRange(mode, previousRange));
+        state.newNotes = notesInRange(mode, nextRange).filter((noteName) => !previousNotes.has(noteName));
+
+        if (activeSrsMode === mode) {
+          applySrsRange();
+        }
+
+        logSrsEvent("level-manual", mode, state, {
+          previousRange: `${previousRange[0]}-${previousRange[1]}`,
+          nextRange: `${nextRange[0]}-${nextRange[1]}`
+        });
+        updateSrsUi();
+        syncRangeBracketPositions();
+        generateRound();
+        return true;
+      }
+
+      function resolveSrsCommandMode(mode) {
+        if (mode === "treble" || mode === "bass") {
+          return mode;
+        }
+
+        return activeSrsMode;
+      }
+
+      function findKeyByNote(noteName) {
+        return keyboard.querySelector(`[data-note="${noteName}"]`);
+      }
+
+      function keyCenterInKeyboard(noteName) {
+        const key = findKeyByNote(noteName);
+
+        if (!key) {
+          return null;
+        }
+
+        const keyboardRect = keyboard.getBoundingClientRect();
+        const keyRect = key.getBoundingClientRect();
+        return keyRect.left - keyboardRect.left + (keyRect.width / 2);
+      }
+
+      function positionRangeBracketPair(startElement, endElement, range, labelPrefix = "") {
+        const [rangeStart, rangeEnd] = range;
+        const startCenter = keyCenterInKeyboard(rangeStart);
+        const endCenter = keyCenterInKeyboard(rangeEnd);
+
+        if (startCenter !== null) {
+          startElement.style.left = `${startCenter}px`;
+          startElement.dataset.note = labelPrefix ? `${labelPrefix} ${rangeStart}` : rangeStart;
+        }
+
+        if (endCenter !== null) {
+          endElement.style.left = `${endCenter}px`;
+          endElement.dataset.note = labelPrefix ? `${labelPrefix} ${rangeEnd}` : rangeEnd;
+        }
+      }
+
+      function syncRangeBracketPositions() {
+        positionRangeBracketPair(rangeBracketStart, rangeBracketEnd, selectedRange);
+
+        const showManualRange = isRangeSelectorVisible && !isDoubleModeEnabled;
+        rangeBracketStart.style.display = showManualRange ? "" : "none";
+        rangeBracketEnd.style.display = showManualRange ? "" : "none";
+
+        if (!isDoubleModeEnabled) {
+          doubleRangeBassStart.style.display = "none";
+          doubleRangeBassEnd.style.display = "none";
+          doubleRangeTrebleStart.style.display = "none";
+          doubleRangeTrebleEnd.style.display = "none";
+          return;
+        }
+
+        positionRangeBracketPair(doubleRangeBassStart, doubleRangeBassEnd, activeDoubleRange("bass"), "Bass");
+        positionRangeBracketPair(doubleRangeTrebleStart, doubleRangeTrebleEnd, activeDoubleRange("treble"), "Violine");
+        const isEditable = isRangeSelectorVisible;
+        doubleRangeBassStart.classList.toggle("is-passive", !isEditable);
+        doubleRangeBassEnd.classList.toggle("is-passive", !isEditable);
+        doubleRangeTrebleStart.classList.toggle("is-passive", !isEditable);
+        doubleRangeTrebleEnd.classList.toggle("is-passive", !isEditable);
+        doubleRangeBassStart.style.display = "";
+        doubleRangeBassEnd.style.display = "";
+        doubleRangeTrebleStart.style.display = "";
+        doubleRangeTrebleEnd.style.display = "";
+      }
+
+      function noteOffset(step) {
+        return `${step * -1}em`;
+      }
+
+      function stemDirection(step) {
+        return step >= 5 ? "note-down" : "note-up";
+      }
+
+      function ledgerSteps(step) {
+        if (step <= -6) {
+          const steps = [];
+          const lowestLedgerStep = step % 2 === 0 ? step : step + 1;
+
+          for (let ledgerStep = -6; ledgerStep >= lowestLedgerStep; ledgerStep -= 2) {
+            steps.push(ledgerStep);
+          }
+
+          return steps;
+        }
+
+        if (step >= 6) {
+          const steps = [];
+          const highestLedgerStep = step % 2 === 0 ? step : step - 1;
+
+          for (let ledgerStep = 6; ledgerStep <= highestLedgerStep; ledgerStep += 2) {
+            steps.push(ledgerStep);
+          }
+
+          return steps;
+        }
+
+        return [];
+      }
+
+      function createNoteSlot(note, index) {
+        const slot = document.createElement("div");
+        slot.className = "note-slot";
+
+        if (index === activeIndex) {
+          slot.classList.add("is-current");
+        }
+
+        for (const step of ledgerSteps(note.step)) {
+          const ledgerLine = document.createElement("div");
+          ledgerLine.className = "ledger-line";
+          ledgerLine.style.setProperty("--offset", noteOffset(step));
+          slot.appendChild(ledgerLine);
+        }
+
+        const noteElement = document.createElement("div");
+        noteElement.className = `note ${stemDirection(note.step)}`;
+        noteElement.style.setProperty("--offset", noteOffset(note.step));
+        noteElement.setAttribute("role", "img");
+        noteElement.setAttribute("aria-label", note.name);
+
+        if (note.state === "correct") {
+          noteElement.classList.add("is-correct");
+        }
+
+        if (note.state === "wrong") {
+          noteElement.classList.add("is-wrong");
+        }
+
+        slot.appendChild(noteElement);
+
+        if (note.isNew) {
+          const badgeElement = document.createElement("div");
+          badgeElement.className = "note-badge";
+          badgeElement.style.setProperty("--offset", noteOffset(note.step));
+          badgeElement.setAttribute("aria-hidden", "true");
+          badgeElement.textContent = "!";
+          slot.appendChild(badgeElement);
+        }
+
+        return slot;
+      }
+
+      function renderNotes() {
+        const fragment = document.createDocumentFragment();
+
+        currentNotes.forEach((note, index) => {
+          fragment.appendChild(createNoteSlot(note, index));
+        });
+
+        notesContainer.replaceChildren(fragment);
+        renderKeyboardState();
+      }
+
+      function renderDoubleNotes() {
+        const bassFragment = document.createDocumentFragment();
+        const trebleFragment = document.createDocumentFragment();
+
+        doubleRound.bass.forEach((note, index) => {
+          bassFragment.appendChild(createNoteSlot(note, index));
+        });
+
+        doubleRound.treble.forEach((note, index) => {
+          trebleFragment.appendChild(createNoteSlot(note, index));
+        });
+
+        doubleBassNotesContainer.replaceChildren(bassFragment);
+        doubleTrebleNotesContainer.replaceChildren(trebleFragment);
+        renderKeyboardState();
+      }
+
+      function clearKeyboardStates() {
+        for (const key of document.querySelectorAll(".white-key, .black-key")) {
+          key.classList.remove("is-target", "is-correct", "is-wrong", "is-in-range", "is-range-start", "is-range-end");
+          delete key.dataset.label;
+        }
+      }
+
+      function renderKeyboardState() {
+        clearKeyboardStates();
+
+        const [rangeStart, rangeEnd] = selectedRange;
+        const startMidi = semitoneValue(rangeStart);
+        const endMidi = semitoneValue(rangeEnd);
+
+        for (const key of document.querySelectorAll(".white-key, .black-key")) {
+          const keyMidi = Number(key.dataset.midi);
+
+          if (keyMidi >= startMidi && keyMidi <= endMidi) {
+            key.classList.add("is-in-range");
+          }
+
+          if (keyMidi === startMidi) {
+            key.classList.add("is-range-start");
+          }
+
+          if (keyMidi === endMidi) {
+            key.classList.add("is-range-end");
+          }
+        }
+
+        syncRangeBracketPositions();
+        renderKeyboardLevels();
+
+        for (const midi of correctMidiNotes) {
+          const correctKey = document.querySelector(`[data-midi="${midi}"]`);
+          if (correctKey) {
+            correctKey.classList.add("is-correct");
+            correctKey.dataset.label = displayNoteName(correctKey.dataset.note);
+          }
+        }
+
+        const activeNote = isDoubleModeEnabled
+          ? [
+              doubleRound.bass[activeIndex] && !doublePairState[activeIndex]?.bassDone ? doubleRound.bass[activeIndex] : null,
+              doubleRound.treble[activeIndex] && !doublePairState[activeIndex]?.trebleDone ? doubleRound.treble[activeIndex] : null
+            ].filter(Boolean)
+          : currentNotes[activeIndex];
+
+        if ((!isDoubleModeEnabled && !activeNote) || (isDoubleModeEnabled && activeNote.length === 0)) {
+          targetDescription.innerHTML = "Alle Noten geschafft.";
+          return;
+        }
+
+        if (isDoubleModeEnabled) {
+          const descriptions = [];
+
+          activeNote.forEach((note) => {
+            const targetKey = document.querySelector(`[data-midi="${note.midi}"]`);
+            descriptions.push(`${clefConfigs[note.clef].label}: ${displayNoteName(note.name)}`);
+
+            if (targetKey) {
+              targetKey.dataset.label = displayNoteName(note.name);
+
+              if (!targetKey.classList.contains("is-correct") && !targetKey.classList.contains("is-wrong")) {
+                targetKey.classList.add("is-target");
+              }
+
+              if (note.state === "correct") {
+                targetKey.classList.remove("is-target");
+                targetKey.classList.add("is-correct");
+              }
+
+              if (note.state === "wrong") {
+                targetKey.classList.remove("is-target");
+                targetKey.classList.add("is-wrong");
+              }
+            }
+          });
+
+          targetDescription.innerHTML = `<strong>${descriptions.join(" | ")}</strong>`;
+        } else {
+          syncClefToActiveNote();
+
+          const handLabel = clefConfigs[currentClef].handLabel ? `, ${clefConfigs[currentClef].handLabel}` : "";
+          targetDescription.innerHTML = `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`;
+
+          const targetKey = document.querySelector(`[data-midi="${activeNote.midi}"]`);
+          if (targetKey) {
+            targetKey.dataset.label = displayNoteName(activeNote.name);
+
+            if (!targetKey.classList.contains("is-correct") && !targetKey.classList.contains("is-wrong")) {
+              targetKey.classList.add("is-target");
+            }
+
+            if (activeNote.state === "correct") {
+              targetKey.classList.remove("is-target");
+              targetKey.classList.add("is-correct");
+            }
+
+            if (activeNote.state === "wrong") {
+              targetKey.classList.remove("is-target");
+              targetKey.classList.add("is-wrong");
+            }
+          }
+        }
+
+        if (lastPlayedMidi !== null && lastPlayedMidi !== activeNote.midi) {
+          const wrongKey = document.querySelector(`[data-midi="${lastPlayedMidi}"]`);
+          if (wrongKey) {
+            wrongKey.classList.add("is-wrong");
+            wrongKey.dataset.label = displayNoteName(wrongKey.dataset.note);
+          }
+        }
+      }
+
+      function syncClefToActiveNote() {
+        const activeNote = currentNotes[activeIndex];
+        const nextClef = activeNote?.clef || "treble";
+
+        if (nextClef === currentClef) {
+          return;
+        }
+
+        currentClef = nextClef;
+        updateClefUi();
+      }
+
+      function generateRound() {
+        if (isDoubleModeEnabled) {
+          generateDoubleRound();
+          return;
+        }
+
+        if (activeSrsMode) {
+          applySrsRange();
+        }
+
+        currentNotes = Array.from({ length: noteCount }, () => ({
+          ...randomNote(),
+          state: "idle"
+        }));
+        activeIndex = 0;
+        currentClef = currentNotes[0]?.clef || "treble";
+        lastPlayedMidi = null;
+        correctMidiNotes = new Set();
+        updateClefUi();
+        renderNotes();
+        updateSrsUi();
+      }
+
+      function generateDoubleRound() {
+        const bassSelectedRange = activeDoubleRange("bass");
+        const trebleSelectedRange = activeDoubleRange("treble");
+        const bassRange = buildRange(bassSelectedRange[0], bassSelectedRange[1], clefConfigs.bass.reference);
+        const trebleRange = buildRange(trebleSelectedRange[0], trebleSelectedRange[1], clefConfigs.treble.reference);
+
+        doubleRound = {
+          bass: Array.from({ length: noteCount }, () => ({
+            ...decorateNote(bassRange[Math.floor(Math.random() * bassRange.length)], "bass"),
+            state: "idle"
+          })),
+          treble: Array.from({ length: noteCount }, () => ({
+            ...decorateNote(trebleRange[Math.floor(Math.random() * trebleRange.length)], "treble"),
+            state: "idle"
+          }))
+        };
+        doublePairState = Array.from({ length: noteCount }, () => ({ bassDone: false, trebleDone: false }));
+        activeIndex = 0;
+        lastPlayedMidi = null;
+        correctMidiNotes = new Set();
+        currentClef = "treble";
+        doubleBassClef.innerHTML = clefSvgMarkup.bass || "";
+        doubleTrebleClef.innerHTML = clefSvgMarkup.treble || "";
+        renderDoubleNotes();
+        updateSrsUi();
+      }
+
+      function refreshCurrentMarker() {
+        Array.from(notesContainer.children).forEach((slot, index) => {
+          slot.classList.toggle("is-current", index === activeIndex);
+        });
+      }
+
+      function setActiveState(state) {
+        const activeNote = currentNotes[activeIndex];
+
+        if (!activeNote) {
+          return;
+        }
+
+        activeNote.state = state;
+        renderNotes();
+      }
+
+      function handlePlayedMidi(midiNote) {
+        if (isDoubleModeEnabled) {
+          handlePlayedMidiDouble(midiNote);
+          return;
+        }
+
+        const activeNote = currentNotes[activeIndex];
+        lastPlayedMidi = midiNote;
+
+        if (!activeNote) {
+          return;
+        }
+
+        if (midiNote === activeNote.midi) {
+          const rangeChanged = recordSrsAttempt(true);
+          const state = activeSrsState();
+          recordNoteStat(activeNote.clef, activeNote.name, true);
+          if (activeNote.isNew && state) {
+            state.newNotes = state.newNotes.filter((noteName) => noteName !== activeNote.name);
+          }
+          correctMidiNotes.add(midiNote);
+          lastPlayedMidi = null;
+          activeNote.state = "correct";
+          activeIndex += 1;
+
+          if (rangeChanged) {
+            generateRound();
+            return;
+          }
+
+          renderNotes();
+          refreshCurrentMarker();
+
+          if (activeIndex >= currentNotes.length) {
+            window.setTimeout(generateRound, 900);
+          }
+
+          return;
+        }
+
+        const rangeChanged = recordSrsAttempt(false);
+        recordNoteStat(activeNote.clef, activeNote.name, false);
+        setActiveState("wrong");
+
+        if (rangeChanged) {
+          window.setTimeout(generateRound, 350);
+          return;
+        }
+
+        window.setTimeout(() => {
+          lastPlayedMidi = null;
+          if (currentNotes[activeIndex] && currentNotes[activeIndex].state === "wrong") {
+            setActiveState("idle");
+          }
+        }, 350);
+      }
+
+      function handlePlayedMidiDouble(midiNote) {
+        const bassNote = doubleRound.bass[activeIndex];
+        const trebleNote = doubleRound.treble[activeIndex];
+        const pairState = doublePairState[activeIndex];
+        lastPlayedMidi = midiNote;
+
+        if (!bassNote || !trebleNote || !pairState) {
+          return;
+        }
+
+        let matched = false;
+
+        if (!pairState.bassDone && midiNote === bassNote.midi) {
+          matched = true;
+          pairState.bassDone = true;
+          bassNote.state = "correct";
+          correctMidiNotes.add(midiNote);
+          recordNoteStat("bass", bassNote.name, true);
+        }
+
+        if (!pairState.trebleDone && midiNote === trebleNote.midi) {
+          matched = true;
+          pairState.trebleDone = true;
+          trebleNote.state = "correct";
+          correctMidiNotes.add(midiNote);
+          recordNoteStat("treble", trebleNote.name, true);
+        }
+
+        if (matched) {
+          lastPlayedMidi = null;
+          renderDoubleNotes();
+
+          if (pairState.bassDone && pairState.trebleDone) {
+            activeIndex += 1;
+            renderDoubleNotes();
+
+            if (activeIndex >= noteCount) {
+              window.setTimeout(generateRound, 900);
+            }
+          }
+
+          return;
+        }
+
+        if (!pairState.bassDone) {
+          bassNote.state = "wrong";
+          recordNoteStat("bass", bassNote.name, false);
+        }
+
+        if (!pairState.trebleDone) {
+          trebleNote.state = "wrong";
+          recordNoteStat("treble", trebleNote.name, false);
+        }
+
+        renderDoubleNotes();
+
+        window.setTimeout(() => {
+          lastPlayedMidi = null;
+          if (doubleRound.bass[activeIndex] && !doublePairState[activeIndex]?.bassDone) {
+            doubleRound.bass[activeIndex].state = "idle";
+          }
+          if (doubleRound.treble[activeIndex] && !doublePairState[activeIndex]?.trebleDone) {
+            doubleRound.treble[activeIndex].state = "idle";
+          }
+          renderDoubleNotes();
+        }, 350);
+      }
+
+      function onMidiMessage(event) {
+        const [status, noteNumber, velocity] = event.data;
+        const messageType = status & 0xf0;
+
+        if (messageType === 0x90 && velocity > 0) {
+          handlePlayedMidi(noteNumber);
+        }
+      }
+
+      function bindMidiInputs(midiAccess) {
+        for (const input of midiAccess.inputs.values()) {
+          input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
+        }
+
+        updateMidiUi(hasConnectedMidiInput(midiAccess));
+      }
+
+      async function initMidi() {
+        if (!("requestMIDIAccess" in navigator)) {
+          updateMidiUi(false);
+          return;
+        }
+
+        try {
+          midiAccessRef = await navigator.requestMIDIAccess();
+          bindMidiInputs(midiAccessRef);
+          midiAccessRef.onstatechange = () => bindMidiInputs(midiAccessRef);
+        } catch (error) {
+          updateMidiUi(false);
+        }
+      }
+
+      function updateClefUi() {
+        const config = clefConfigs[currentClef];
+        clefSymbol.innerHTML = clefSvgMarkup[currentClef] || "";
+        clefSymbol.dataset.clef = currentClef;
+        syncRangeBracketPositions();
+      }
+
+      function updateSelectedRangeByEdge(edge, noteName) {
+        if (activeSrsMode) {
+          return;
+        }
+
+        const options = selectableRangeOptions().map((note) => note.name);
+
+        if (!options.includes(noteName)) {
+          return;
+        }
+
+        const [currentStart, currentEnd] = selectedRange;
+        const nextIndex = options.indexOf(noteName);
+        let nextRange = selectedRange;
+
+        if (edge === "start") {
+          const endIndex = options.indexOf(currentEnd);
+          nextRange = nextIndex > endIndex ? [noteName, noteName] : [noteName, currentEnd];
+        } else {
+          const startIndex = options.indexOf(currentStart);
+          nextRange = nextIndex < startIndex ? [noteName, noteName] : [currentStart, noteName];
+        }
+
+        if (nextRange[0] === currentStart && nextRange[1] === currentEnd) {
+          return;
+        }
+
+        selectedRange = nextRange;
+        manualSelectedRange = [...selectedRange];
+        generateRound();
+      }
+
+      function updateDoubleSelectedRange(mode, edge, noteName) {
+        const options = rangeOptionsForMode(mode).map((note) => note.name);
+
+        if (!options.includes(noteName)) {
+          return;
+        }
+
+        const currentRange = activeDoubleRange(mode);
+        const [currentStart, currentEnd] = currentRange;
+        const nextIndex = options.indexOf(noteName);
+        let nextRange = currentRange;
+
+        if (edge === "start") {
+          const endIndex = options.indexOf(currentEnd);
+          nextRange = nextIndex > endIndex ? [noteName, noteName] : [noteName, currentEnd];
+        } else {
+          const startIndex = options.indexOf(currentStart);
+          nextRange = nextIndex < startIndex ? [noteName, noteName] : [currentStart, noteName];
+        }
+
+        if (nextRange[0] === currentStart && nextRange[1] === currentEnd) {
+          return;
+        }
+
+        doubleSelectedRanges[mode] = nextRange;
+        syncRangeBracketPositions();
+        generateDoubleRound();
+      }
+
+      function nearestAvailableNoteFromPointer(clientX, mode = null) {
+        const options = mode ? rangeOptionsForMode(mode) : selectableRangeOptions();
+        let nearest = null;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        for (const option of options) {
+          const center = keyCenterInKeyboard(option.name);
+
+          if (center === null) {
+            continue;
+          }
+
+          const distance = Math.abs(clientX - (keyboard.getBoundingClientRect().left + center));
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearest = option.name;
+          }
+        }
+
+        return nearest;
+      }
+
+      function updateDraggedRange(clientX) {
+        if (!activeDragEdge) {
+          return;
+        }
+
+        const [mode, edge] = activeDragEdge.split(":");
+        const targetMode = mode === "manual" ? null : mode;
+        const targetEdge = edge || mode;
+        const nextNote = nearestAvailableNoteFromPointer(clientX, targetMode);
+        if (!nextNote) {
+          return;
+        }
+
+        if (targetMode) {
+          updateDoubleSelectedRange(targetMode, targetEdge, nextNote);
+          return;
+        }
+
+        updateSelectedRangeByEdge(targetEdge, nextNote);
+      }
+
+      function beginRangeDrag(edge, event) {
+        activeDragEdge = edge;
+        event.currentTarget.classList.add("is-dragging");
+        event.currentTarget.setPointerCapture(event.pointerId);
+        updateDraggedRange(event.clientX);
+      }
+
+      function moveRangeDrag(event) {
+        if (!activeDragEdge) {
+          return;
+        }
+
+        updateDraggedRange(event.clientX);
+      }
+
+      function endRangeDrag(event) {
+        activeDragEdge = null;
+        event.currentTarget.classList.remove("is-dragging");
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      toggleRangeButton.addEventListener("click", () => {
+        if (activeSrsMode) {
+          return;
+        }
+
+        isRangeSelectorVisible = !isRangeSelectorVisible;
+        toggleRangeButton.classList.toggle("is-active", isRangeSelectorVisible);
+        keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
+        if (isRangeSelectorVisible && !isKeyboardVisible) {
+          isKeyboardVisible = true;
+          toggleKeyboardButton.classList.add("is-active");
+          keyboard.classList.remove("is-hidden");
+          window.requestAnimationFrame(syncRangeBracketPositions);
+        }
+        syncRangeBracketPositions();
+      });
+      toggleKeyboardButton.addEventListener("click", () => {
+        isKeyboardVisible = !isKeyboardVisible;
+        toggleKeyboardButton.classList.toggle("is-active", isKeyboardVisible);
+        keyboard.classList.toggle("is-hidden", !isKeyboardVisible);
+        if (isKeyboardVisible) {
+          window.requestAnimationFrame(syncRangeBracketPositions);
+        }
+        window.requestAnimationFrame(renderKeyboardLevels);
+      });
+      toggleInfoButton.addEventListener("click", () => {
+        isInfoVisible = !isInfoVisible;
+        updateInfoUi();
+      });
+      toggleLibraryButton.addEventListener("click", () => {
+        isLibraryVisible = !isLibraryVisible;
+        updateLibraryUi();
+      });
+      toggleDoubleButton.addEventListener("click", () => {
+        isDoubleModeEnabled = !isDoubleModeEnabled;
+
+        if (isDoubleModeEnabled) {
+          activeSrsMode = null;
+          updateSrsUi();
+        }
+
+        toggleRangeButton.classList.toggle("is-active", isRangeSelectorVisible);
+        keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
+        syncRangeBracketPositions();
+        updateModeUi();
+        generateRound();
+      });
+      function toggleSrsMode(mode) {
+        if (isDoubleModeEnabled) {
+          isDoubleModeEnabled = false;
+          updateModeUi();
+        }
+
+        const nextMode = activeSrsMode === mode ? null : mode;
+
+        if (activeSrsMode === null) {
+          manualSelectedRange = [...selectedRange];
+        }
+
+        activeSrsMode = nextMode;
+
+        if (activeSrsMode) {
+          isRangeSelectorVisible = false;
+          toggleRangeButton.classList.remove("is-active");
+          keyboardKeys.classList.remove("is-cut-mode");
+          srsStates[activeSrsMode] = srsStates[activeSrsMode] || createInitialSrsState(activeSrsMode);
+          applySrsRange();
+        } else {
+          selectedRange = [...manualSelectedRange];
+        }
+
+        updateSrsUi();
+        syncRangeBracketPositions();
+        generateRound();
+      }
+
+      toggleSrsTrebleButton.addEventListener("click", () => toggleSrsMode("treble"));
+      toggleSrsBassButton.addEventListener("click", () => toggleSrsMode("bass"));
+      rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("manual:end", event));
+      rangeBracketStart.addEventListener("pointerdown", (event) => beginRangeDrag("manual:start", event));
+      rangeBracketStart.addEventListener("pointermove", moveRangeDrag);
+      rangeBracketEnd.addEventListener("pointermove", moveRangeDrag);
+      rangeBracketStart.addEventListener("pointerup", endRangeDrag);
+      rangeBracketEnd.addEventListener("pointerup", endRangeDrag);
+      rangeBracketStart.addEventListener("pointercancel", endRangeDrag);
+      rangeBracketEnd.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeBassStart.addEventListener("pointerdown", (event) => beginRangeDrag("bass:start", event));
+      doubleRangeBassEnd.addEventListener("pointerdown", (event) => beginRangeDrag("bass:end", event));
+      doubleRangeTrebleStart.addEventListener("pointerdown", (event) => beginRangeDrag("treble:start", event));
+      doubleRangeTrebleEnd.addEventListener("pointerdown", (event) => beginRangeDrag("treble:end", event));
+      doubleRangeBassStart.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeBassEnd.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeTrebleStart.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeTrebleEnd.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeBassStart.addEventListener("pointerup", endRangeDrag);
+      doubleRangeBassEnd.addEventListener("pointerup", endRangeDrag);
+      doubleRangeTrebleStart.addEventListener("pointerup", endRangeDrag);
+      doubleRangeTrebleEnd.addEventListener("pointerup", endRangeDrag);
+      doubleRangeBassStart.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeBassEnd.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeTrebleStart.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeTrebleEnd.addEventListener("pointercancel", endRangeDrag);
+      window.addEventListener("resize", () => {
+        syncRangeBracketPositions();
+        renderKeyboardLevels();
+      });
+
+      window.srsLevelUp = (mode = null) => {
+        const targetMode = resolveSrsCommandMode(mode);
+        if (!targetMode) {
+          console.warn("[SRS] Kein Modus aktiv. Nutze srsLevelUp('treble') oder srsLevelUp('bass').");
+          return false;
+        }
+
+        const state = srsStates[targetMode] = srsStates[targetMode] || createInitialSrsState(targetMode);
+        return applyManualSrsLevel(targetMode, state.level + 1);
+      };
+
+      window.srsLevelDown = (mode = null) => {
+        const targetMode = resolveSrsCommandMode(mode);
+        if (!targetMode) {
+          console.warn("[SRS] Kein Modus aktiv. Nutze srsLevelDown('treble') oder srsLevelDown('bass').");
+          return false;
+        }
+
+        const state = srsStates[targetMode] = srsStates[targetMode] || createInitialSrsState(targetMode);
+        return applyManualSrsLevel(targetMode, state.level - 1);
+      };
+
+      window.srsSetLevel = (level, mode = null) => {
+        const targetMode = resolveSrsCommandMode(mode);
+        if (!targetMode) {
+          console.warn("[SRS] Kein Modus aktiv. Nutze srsSetLevel(3, 'treble') oder srsSetLevel(2, 'bass').");
+          return false;
+        }
+
+        return applyManualSrsLevel(targetMode, Number(level));
+      };
+
+      window.srsStatus = (mode = null) => {
+        const targetMode = resolveSrsCommandMode(mode);
+        if (!targetMode) {
+          console.warn("[SRS] Kein Modus aktiv. Nutze srsStatus('treble') oder srsStatus('bass').");
+          return null;
+        }
+
+        const state = srsStates[targetMode] = srsStates[targetMode] || createInitialSrsState(targetMode);
+        const range = srsRangeFromState(targetMode, state);
+        const status = {
+          mode: targetMode,
+          level: state.level,
+          range,
+          attempts: state.attempts.length,
+          accuracy: currentSrsAccuracy()
+        };
+        console.log("[SRS]", status);
+        return status;
+      };
+
+      buildKeyboard();
+      renderLibraryPanel();
+      keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
+      currentClef = "treble";
+      updateInfoUi();
+      updateLibraryUi();
+      updateModeUi();
+      updateLevelUi();
+      updateClefUi();
+      updateSrsUi();
+      generateRound();
+      initMidi();
+    </script>
+  </body>
+</html>
