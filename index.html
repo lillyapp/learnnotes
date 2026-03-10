@@ -20,6 +20,7 @@
         --text: #111111;
         --text-soft: #666666;
         --text-muted: #7a7a7a;
+        --staff-ink: #000000;
         --tooltip-bg: #111111;
         --tooltip-text: #ffffff;
         --keyboard-bg: #f3f3f3;
@@ -27,14 +28,18 @@
 
       @media (prefers-color-scheme: dark) {
         :root {
+          --svg-stave: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%20192%22%20preserveAspectRatio%3D%22none%20slice%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%2224%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%2224%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%2224%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%2224%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%2224%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
+          --svg-stave-header: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave-header%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%22192%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%22192%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%22192%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%22192%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%22192%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
+          --svg-bar-line: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2098%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Ebar-line%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20x1%3D%2211%22%20x2%3D%2211%22%20y2%3D%2298%22%2F%3E%3C%2Fsvg%3E");
           --bg: #0f1218;
-          --surface: #171b22;
-          --surface-soft: rgba(23, 27, 34, 0.94);
-          --surface-muted: rgba(23, 27, 34, 0.88);
+          --surface: #0f1218;
+          --surface-soft: rgba(15, 18, 24, 0.96);
+          --surface-muted: rgba(15, 18, 24, 0.9);
           --border: #323845;
           --text: #f3f5f7;
           --text-soft: #b7bec8;
           --text-muted: #98a2b3;
+          --staff-ink: #ffffff;
           --tooltip-bg: #20252f;
           --tooltip-text: #f3f5f7;
           --keyboard-bg: #1b2028;
@@ -390,7 +395,7 @@
         left: 50%;
         width: 28px;
         height: 2px;
-        background: #161616;
+        background: var(--staff-ink);
         transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
       }
 
@@ -399,7 +404,7 @@
         left: 50%;
         width: 18px;
         height: 54px;
-        background-color: #111111;
+        background-color: var(--staff-ink);
         transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
       }
 
@@ -467,7 +472,7 @@
         position: relative;
         width: 40em;
         height: 34em;
-        background-color: var(--surface);
+        background-color: transparent;
         background-image: var(--svg-stave);
         background-repeat: repeat-x;
         background-position: center;
@@ -480,7 +485,7 @@
         left: -16em;
         width: 16em;
         height: 34em;
-        background-color: var(--surface);
+        background-color: transparent;
         background-image: var(--svg-stave-header);
         background-repeat: no-repeat;
         background-position: center;
@@ -522,8 +527,12 @@
 
       .clef-symbol path,
       .clef-symbol circle {
-        fill: #000000;
+        fill: var(--staff-ink);
         stroke: none;
+      }
+
+      .clef-symbol[data-clef="bass"] {
+        color: var(--staff-ink);
       }
 
       .bar-line {
@@ -577,7 +586,7 @@
       }
 
       .note {
-        --note-color: #000000;
+        --note-color: var(--staff-ink);
         position: absolute;
         top: 50%;
         left: 50%;
@@ -607,7 +616,7 @@
       }
 
       .ledger-line {
-        --ledger-color: #000000;
+        --ledger-color: var(--staff-ink);
         position: absolute;
         top: 50%;
         left: 50%;
