@@ -47,6 +47,51 @@
         gap: 12px;
       }
 
+      .auth-panel {
+        width: min(92vw, 760px);
+        padding: 12px 14px;
+        border: 1px solid #d7d7d7;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.94);
+        display: grid;
+        gap: 10px;
+      }
+
+      .auth-panel.is-disabled {
+        opacity: 0.72;
+      }
+
+      .auth-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .auth-field {
+        min-width: min(240px, 42vw);
+        padding: 10px 12px;
+        border: 1px solid #d7d7d7;
+        border-radius: 12px;
+        font: inherit;
+      }
+
+      .auth-status {
+        margin: 0;
+        text-align: center;
+        font-size: 14px;
+        color: #5f5f5f;
+      }
+
+      .auth-status[data-state="error"] {
+        color: #b22b2b;
+      }
+
+      .auth-status[data-state="success"] {
+        color: #1d7a3c;
+      }
+
       .level-indicator {
         min-width: 124px;
         padding: 8px 14px;
@@ -831,6 +876,24 @@
             <span class="level-indicator-value" id="level-indicator-value">1 / 5</span>
           </div>
         </div>
+        <div class="auth-panel" id="auth-panel" aria-label="Supabase Anmeldung">
+          <div class="auth-row">
+            <input class="auth-field" id="auth-email" type="email" placeholder="E-Mail" autocomplete="email">
+            <input class="auth-field" id="auth-password" type="password" placeholder="Passwort" autocomplete="current-password">
+          </div>
+          <div class="auth-row">
+            <button class="toolbar-button" id="auth-sign-in-button" type="button" aria-label="Anmelden" title="Anmelden">
+              <i data-lucide="log-in"></i>
+            </button>
+            <button class="toolbar-button" id="auth-sign-up-button" type="button" aria-label="Registrieren" title="Registrieren">
+              <i data-lucide="user-plus"></i>
+            </button>
+            <button class="toolbar-button" id="auth-sign-out-button" type="button" aria-label="Abmelden" title="Abmelden">
+              <i data-lucide="log-out"></i>
+            </button>
+          </div>
+          <p class="auth-status" id="auth-status">Supabase nicht verbunden</p>
+        </div>
         <div class="sheet-music">
           <div class="bar">
             <div class="stave-header"></div>
@@ -880,7 +943,9 @@
       </div>
       <div class="midi-tooltip" id="midi-tooltip">Klavier nicht verbunden</div>
     </div>
-    <script>
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
       lucide.createIcons();
 
       const notesContainer = document.getElementById("bar-notes");
@@ -892,6 +957,13 @@
       const toggleDoubleButton = document.getElementById("toggle-double-button");
       const toggleSrsTrebleButton = document.getElementById("toggle-srs-treble-button");
       const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
+      const authPanel = document.getElementById("auth-panel");
+      const authEmailInput = document.getElementById("auth-email");
+      const authPasswordInput = document.getElementById("auth-password");
+      const authSignInButton = document.getElementById("auth-sign-in-button");
+      const authSignUpButton = document.getElementById("auth-sign-up-button");
+      const authSignOutButton = document.getElementById("auth-sign-out-button");
+      const authStatus = document.getElementById("auth-status");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
       const keyboard = document.getElementById("keyboard");
@@ -918,6 +990,9 @@
       const midiIndicatorButton = document.getElementById("midi-indicator-button");
       const midiTooltip = document.getElementById("midi-tooltip");
       const noteCount = 4;
+      const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
+      const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
+      const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
       const srsConfig = {
         minimumWindowSize: 5,
         sampleSize: 20,
@@ -998,7 +1073,14 @@
       let isLibraryVisible = false;
       let isDoubleModeEnabled = false;
       let midiAccessRef = null;
+      let midiOutputsRef = [];
       let activeSrsMode = null;
+      let supabaseClient = null;
+      let authUser = null;
+      let authSubscription = null;
+      let remoteSaveTimer = null;
+      let isRemoteStateApplying = false;
+      let authBusy = false;
       let srsStates = {
         treble: null,
         bass: null
@@ -1016,6 +1098,240 @@
       function updateInfoUi() {
         toggleInfoButton.classList.toggle("is-active", isInfoVisible);
         trainerInfo.classList.toggle("is-hidden", !isInfoVisible);
+      }
+
+      function setAuthStatus(message, state = "") {
+        authStatus.textContent = message;
+        if (state) {
+          authStatus.dataset.state = state;
+        } else {
+          delete authStatus.dataset.state;
+        }
+      }
+
+      function isSupabaseConfigured() {
+        return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+      }
+
+      function updateAuthUi() {
+        authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
+        authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
+        authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
+        authSignInButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
+        authSignUpButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
+        authSignOutButton.disabled = authBusy || !authUser;
+
+        if (!isSupabaseConfigured()) {
+          setAuthStatus("Supabase Anon Key fehlt. Setze window.SUPABASE_ANON_KEY im HTML.", "error");
+          return;
+        }
+
+        if (authBusy) {
+          setAuthStatus("Supabase arbeitet...", "");
+          return;
+        }
+
+        if (authUser) {
+          setAuthStatus(`Angemeldet als ${authUser.email}. Fortschritt wird automatisch gespeichert.`, "success");
+          return;
+        }
+
+        setAuthStatus("Noch nicht angemeldet. Login oder Registrierung mit E-Mail und Passwort.", "");
+      }
+
+      function collectPersistedState() {
+        return {
+          srs_states: srsStates,
+          note_stats: noteStats,
+          selected_range: selectedRange,
+          manual_selected_range: manualSelectedRange,
+          double_selected_ranges: doubleSelectedRanges,
+          active_srs_mode: activeSrsMode
+        };
+      }
+
+      function applyPersistedState(record) {
+        if (!record) {
+          return;
+        }
+
+        isRemoteStateApplying = true;
+        srsStates = record.srs_states || { treble: null, bass: null };
+        noteStats = record.note_stats || { treble: {}, bass: {} };
+        selectedRange = Array.isArray(record.selected_range) ? record.selected_range : ["C4", "C8"];
+        manualSelectedRange = Array.isArray(record.manual_selected_range) ? record.manual_selected_range : [...selectedRange];
+        doubleSelectedRanges = record.double_selected_ranges || {
+          bass: [...levelRangesByMode.bass[0]],
+          treble: [...levelRangesByMode.treble[0]]
+        };
+        activeSrsMode = record.active_srs_mode === "treble" || record.active_srs_mode === "bass"
+          ? record.active_srs_mode
+          : null;
+
+        if (activeSrsMode) {
+          applySrsRange();
+        }
+
+        renderLibraryPanel();
+        updateModeUi();
+        updateSrsUi();
+        syncRangeBracketPositions();
+        generateRound();
+        isRemoteStateApplying = false;
+      }
+
+      async function saveRemoteProgress(reason = "auto") {
+        if (!supabaseClient || !authUser || isRemoteStateApplying) {
+          return false;
+        }
+
+        const payload = {
+          user_id: authUser.id,
+          email: authUser.email,
+          ...collectPersistedState()
+        };
+
+        const { error } = await supabaseClient
+          .from("trainer_progress")
+          .upsert(payload, { onConflict: "user_id" });
+
+        if (error) {
+          setAuthStatus(`Speichern fehlgeschlagen: ${error.message}`, "error");
+          return false;
+        }
+
+        setAuthStatus(`Angemeldet als ${authUser.email}. Fortschritt gespeichert (${reason}).`, "success");
+        return true;
+      }
+
+      function queueRemoteSave(reason = "auto") {
+        if (!supabaseClient || !authUser || isRemoteStateApplying) {
+          return;
+        }
+
+        window.clearTimeout(remoteSaveTimer);
+        remoteSaveTimer = window.setTimeout(() => {
+          saveRemoteProgress(reason);
+        }, 600);
+      }
+
+      async function loadRemoteProgress() {
+        if (!supabaseClient || !authUser) {
+          return;
+        }
+
+        const { data, error } = await supabaseClient
+          .from("trainer_progress")
+          .select("*")
+          .eq("user_id", authUser.id)
+          .maybeSingle();
+
+        if (error) {
+          setAuthStatus(`Laden fehlgeschlagen: ${error.message}`, "error");
+          return;
+        }
+
+        if (!data) {
+          setAuthStatus(`Angemeldet als ${authUser.email}. Noch kein gespeicherter Fortschritt.`, "success");
+          await saveRemoteProgress("initial");
+          return;
+        }
+
+        applyPersistedState(data);
+        setAuthStatus(`Angemeldet als ${authUser.email}. Fortschritt geladen.`, "success");
+      }
+
+      async function handleAuthAction(action) {
+        if (!supabaseClient || authBusy) {
+          return;
+        }
+
+        const email = authEmailInput.value.trim();
+        const password = authPasswordInput.value;
+
+        if (!email || !password) {
+          setAuthStatus("Bitte E-Mail und Passwort eingeben.", "error");
+          return;
+        }
+
+        authBusy = true;
+        updateAuthUi();
+
+        const request = action === "sign-up"
+          ? supabaseClient.auth.signUp({ email, password })
+          : supabaseClient.auth.signInWithPassword({ email, password });
+
+        const { data, error } = await request;
+        authBusy = false;
+
+        if (error) {
+          updateAuthUi();
+          setAuthStatus(error.message, "error");
+          return;
+        }
+
+        authUser = data.user || data.session?.user || null;
+        updateAuthUi();
+
+        if (authUser) {
+          await loadRemoteProgress();
+        } else if (action === "sign-up") {
+          setAuthStatus("Registrierung angelegt. Falls Mail-Bestätigung aktiv ist, bestätige zuerst deine E-Mail.", "success");
+        }
+      }
+
+      async function handleSignOut() {
+        if (!supabaseClient || !authUser || authBusy) {
+          return;
+        }
+
+        authBusy = true;
+        updateAuthUi();
+        await saveRemoteProgress("sign-out");
+        const { error } = await supabaseClient.auth.signOut();
+        authBusy = false;
+
+        if (error) {
+          updateAuthUi();
+          setAuthStatus(error.message, "error");
+          return;
+        }
+
+        authUser = null;
+        authEmailInput.value = "";
+        authPasswordInput.value = "";
+        updateAuthUi();
+      }
+
+      async function initSupabase() {
+        if (!isSupabaseConfigured()) {
+          updateAuthUi();
+          return;
+        }
+
+        supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        authSubscription = supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+          authUser = session?.user || null;
+          updateAuthUi();
+
+          if (authUser) {
+            await loadRemoteProgress();
+          }
+        });
+
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error) {
+          setAuthStatus(error.message, "error");
+          updateAuthUi();
+          return;
+        }
+
+        authUser = data.session?.user || null;
+        updateAuthUi();
+
+        if (authUser) {
+          await loadRemoteProgress();
+        }
       }
 
       function updateModeUi() {
@@ -1041,6 +1357,7 @@
         }
         noteStats[mode][noteName] = stats;
         renderLibraryPanel();
+        queueRemoteSave("note-stats");
       }
 
       function createLibraryNotePreview(note, mode) {
@@ -1233,6 +1550,48 @@
       function updateMidiUi(isConnected) {
         midiIndicatorButton.dataset.state = isConnected ? "connected" : "disconnected";
         midiTooltip.classList.toggle("is-hidden", isConnected);
+      }
+
+      function hasConnectedMidiOutput(midiAccess) {
+        if (!midiAccess) {
+          return false;
+        }
+
+        for (const output of midiAccess.outputs.values()) {
+          if (output.state === "connected") {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function bindMidiOutputs(midiAccess) {
+        midiOutputsRef = [];
+
+        if (!midiAccess) {
+          return;
+        }
+
+        for (const output of midiAccess.outputs.values()) {
+          if (output.state === "connected") {
+            midiOutputsRef.push(output);
+          }
+        }
+      }
+
+      function sendMidiToOutputs(data) {
+        if (!Array.isArray(data) && !(data instanceof Uint8Array)) {
+          return;
+        }
+
+        for (const output of midiOutputsRef) {
+          try {
+            output.send(data);
+          } catch (error) {
+            console.warn("[MIDI] Output senden fehlgeschlagen", output.name, error);
+          }
+        }
       }
 
       function hasConnectedMidiInput(midiAccess) {
@@ -1529,6 +1888,7 @@
         });
 
         const changedRange = maybeAdjustSrsRange();
+        queueRemoteSave("srs-attempt");
         updateSrsUi();
         return changedRange;
       }
@@ -1563,6 +1923,7 @@
           previousRange: `${previousRange[0]}-${previousRange[1]}`,
           nextRange: `${nextRange[0]}-${nextRange[1]}`
         });
+        queueRemoteSave("manual-level");
         updateSrsUi();
         syncRangeBracketPositions();
         generateRound();
@@ -2065,6 +2426,8 @@
         const [status, noteNumber, velocity] = event.data;
         const messageType = status & 0xf0;
 
+        sendMidiToOutputs(Array.from(event.data));
+
         if (messageType === 0x90 && velocity > 0) {
           handlePlayedMidi(noteNumber);
         }
@@ -2075,7 +2438,8 @@
           input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
         }
 
-        updateMidiUi(hasConnectedMidiInput(midiAccess));
+        bindMidiOutputs(midiAccess);
+        updateMidiUi(hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess));
       }
 
       async function initMidi() {
@@ -2129,6 +2493,7 @@
 
         selectedRange = nextRange;
         manualSelectedRange = [...selectedRange];
+        queueRemoteSave("manual-range");
         generateRound();
       }
 
@@ -2158,6 +2523,7 @@
 
         doubleSelectedRanges[mode] = nextRange;
         syncRangeBracketPositions();
+        queueRemoteSave("double-range");
         generateDoubleRound();
       }
 
@@ -2300,6 +2666,7 @@
 
         updateSrsUi();
         syncRangeBracketPositions();
+        queueRemoteSave("srs-mode");
         generateRound();
       }
 
@@ -2386,6 +2753,10 @@
         return status;
       };
 
+      authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
+      authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
+      authSignOutButton.addEventListener("click", () => handleSignOut());
+
       buildKeyboard();
       renderLibraryPanel();
       keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
@@ -2398,6 +2769,7 @@
       updateSrsUi();
       generateRound();
       initMidi();
+      initSupabase();
     </script>
   </body>
 </html>
