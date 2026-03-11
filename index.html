@@ -114,13 +114,14 @@
 
       .home-modules {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
         gap: 22px;
         justify-content: start;
       }
 
       .home-module {
-        min-height: 260px;
+        width: 280px;
+        aspect-ratio: 1 / 1;
         border: 1px solid var(--border);
         border-radius: 32px;
         overflow: hidden;
@@ -128,27 +129,50 @@
         cursor: pointer;
         display: grid;
         grid-template-rows: 1fr auto;
+        text-align: left;
+      }
+
+      .home-module.is-hidden {
+        display: none;
+      }
+
+      .home-module:hover {
         box-shadow: 0 18px 40px rgba(17, 17, 17, 0.08);
       }
 
       .home-module-art {
         position: relative;
         overflow: hidden;
-        background:
-          radial-gradient(circle at 18% 28%, rgba(255, 110, 110, 0.92), transparent 26%),
-          radial-gradient(circle at 72% 22%, rgba(255, 193, 99, 0.92), transparent 24%),
-          radial-gradient(circle at 58% 76%, rgba(87, 171, 255, 0.9), transparent 28%),
-          radial-gradient(circle at 20% 88%, rgba(88, 214, 160, 0.9), transparent 24%),
-          linear-gradient(135deg, #f4efe8, #f8f7f3 46%, #f2efe8);
+        isolation: isolate;
+        background: linear-gradient(135deg, #f4efe8, #f8f7f3 46%, #f2efe8);
+        display: grid;
+        place-items: center;
+      }
+
+      .home-module[data-theme="notes"] .home-module-art {
+        background: transparent;
+      }
+
+      .home-module.is-muted .home-module-art {
+        opacity: 0.5;
+      }
+
+      .home-module-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.86);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
       }
 
       .home-module[data-theme="dummy"] .home-module-art {
-        background:
-          radial-gradient(circle at 22% 30%, rgba(98, 118, 255, 0.88), transparent 28%),
-          radial-gradient(circle at 74% 28%, rgba(255, 99, 163, 0.9), transparent 24%),
-          radial-gradient(circle at 50% 72%, rgba(255, 165, 76, 0.9), transparent 26%),
-          radial-gradient(circle at 24% 82%, rgba(145, 216, 108, 0.82), transparent 22%),
-          linear-gradient(135deg, #eef2f8, #f6f3ef 52%, #f5f8fb);
+        background: linear-gradient(135deg, #d7d7d7, #ececec 55%, #cfcfcf);
       }
 
       .home-module-art::after {
@@ -163,6 +187,56 @@
         pointer-events: none;
       }
 
+      .home-module[data-theme="notes"] .home-module-art::after {
+        display: none;
+      }
+
+      .home-module-graphic {
+        position: absolute;
+        inset: 2px 14px 18px;
+        z-index: 1;
+        pointer-events: none;
+        display: grid;
+        place-items: end center;
+      }
+
+      .home-module-illustration {
+        width: 86%;
+        height: 86%;
+        object-fit: contain;
+        object-position: center bottom;
+        display: block;
+      }
+
+      .home-module[data-theme="notes"] .home-module-illustration {
+        width: 84%;
+        height: 84%;
+      }
+
+      #home-module-notes .home-module-illustration {
+        width: 78%;
+        height: 78%;
+        object-position: center 70%;
+      }
+
+      #home-module-ice-cream .home-module-illustration {
+        width: 76%;
+        height: 76%;
+        object-position: center 72%;
+      }
+
+      #home-module-tutor .home-module-illustration {
+        width: 76%;
+        height: 76%;
+        object-position: center 68%;
+      }
+
+      #home-module-bookworm .home-module-illustration {
+        width: 74%;
+        height: 74%;
+        object-position: center 72%;
+      }
+
       .home-module-label {
         min-height: 33.333%;
         padding: 20px 22px 22px;
@@ -171,6 +245,9 @@
         align-content: center;
         justify-items: start;
         gap: 8px;
+        width: 100%;
+        text-align: left;
+        align-items: start;
       }
 
       .home-module-title {
@@ -179,6 +256,10 @@
         font-weight: 800;
         letter-spacing: -0.03em;
         color: #111111;
+        width: 100%;
+        text-align: left;
+        line-height: 1.05;
+        min-height: 2.1em;
       }
 
       .home-module-copy {
@@ -187,6 +268,238 @@
         line-height: 1.4;
         color: #5f5f5f;
         text-align: left;
+        width: 100%;
+        min-height: 4.2em;
+      }
+
+      .tutor-view {
+        width: min(92vw, 1120px);
+        display: grid;
+        gap: 22px;
+        align-content: start;
+      }
+
+      .tutor-view.is-hidden {
+        display: none;
+      }
+
+      .tutor-view-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 18px;
+      }
+
+      .tutor-view-copy {
+        display: grid;
+        gap: 8px;
+      }
+
+      .tutor-view-kicker {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .tutor-view-title {
+        margin: 0;
+        font-size: clamp(40px, 5vw, 64px);
+        line-height: 0.95;
+        color: var(--text);
+      }
+
+      .tutor-view-subtitle {
+        margin: 0;
+        max-width: 760px;
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--text-soft);
+      }
+
+      .tutor-back {
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .tutor-dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .tutor-column {
+        display: grid;
+        gap: 18px;
+      }
+
+      .tutor-card {
+        padding: 22px 24px;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: var(--surface-soft);
+        display: grid;
+        gap: 14px;
+      }
+
+      .tutor-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .tutor-card-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .tutor-card-copy {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.45;
+        color: var(--text-soft);
+      }
+
+      .tutor-card-note {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .tutor-calendar-list,
+      .tutor-assignment-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .tutor-calendar-entry,
+      .tutor-assignment-entry {
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        display: grid;
+        gap: 8px;
+      }
+
+      .tutor-calendar-entry.is-empty,
+      .tutor-assignment-entry.is-empty {
+        color: var(--text-soft);
+      }
+
+      .tutor-entry-topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .tutor-entry-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .tutor-entry-meta,
+      .tutor-entry-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text-soft);
+      }
+
+      .tutor-entry-pill {
+        width: fit-content;
+        min-height: 26px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.08);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .tutor-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .tutor-calendar-day {
+        min-height: 138px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        display: grid;
+        align-content: start;
+        gap: 10px;
+      }
+
+      .tutor-calendar-day.is-empty {
+        opacity: 0.72;
+      }
+
+      .tutor-calendar-day-label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .tutor-calendar-day-items {
+        display: grid;
+        gap: 8px;
+      }
+
+      .tutor-calendar-chip {
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: var(--surface-soft);
+        display: grid;
+        gap: 4px;
+      }
+
+      .tutor-calendar-chip strong {
+        font-size: 13px;
+        color: var(--text);
+      }
+
+      .tutor-calendar-chip span {
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--text-soft);
+      }
+
+      @media (max-width: 1024px) {
+        .tutor-dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .tutor-calendar-grid {
+          grid-template-columns: 1fr;
+        }
       }
 
       .auth-panel {
@@ -1504,6 +1817,9 @@
           <button class="toolbar-button" id="toggle-library-button" type="button" aria-label="Notenbibliothek ein- oder ausblenden" title="Notenbibliothek">
             <i data-lucide="library-big"></i>
           </button>
+          <button class="toolbar-button" id="toggle-home-button" type="button" aria-label="Startseite ein- oder ausblenden" title="Startseite">
+            <i data-lucide="component"></i>
+          </button>
           <button class="toolbar-button" id="toggle-double-button" type="button" aria-label="Double-Modus ein- oder ausschalten" title="Double-Modus" data-badge="D">
             <i data-lucide="columns-2"></i>
           </button>
@@ -1512,9 +1828,6 @@
           </button>
           <button class="toolbar-button" id="toggle-srs-bass-button" type="button" aria-label="SRS-Modus Bass ein- oder ausschalten" title="SRS Bass" data-badge="B">
             <i data-lucide="brain"></i>
-          </button>
-          <button class="toolbar-button is-hidden" id="toggle-school-button" type="button" aria-label="Tutor-Modul ein- oder ausblenden" title="Tutor-Modul">
-            <i data-lucide="school"></i>
           </button>
           <button class="toolbar-button" id="toggle-auth-button" type="button" aria-label="Anmeldung ein- oder ausblenden" title="Anmeldung">
             <i data-lucide="user-round"></i>
@@ -1525,77 +1838,210 @@
           </div>
         </div>
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
-          <button class="auth-back" id="auth-back-button" type="button">Zurueck</button>
+          <button class="auth-back" id="auth-back-button" type="button">Zurück</button>
           <div class="auth-heading">
             <p class="auth-kicker">Klaviertrainer</p>
             <h1 class="auth-title">Fortschritt laden</h1>
             <p class="auth-copy">Melde dich an, damit dein SRS-Stand, deine Notensicherheit und deine Lernbereiche dauerhaft gespeichert bleiben.</p>
           </div>
-          <div class="auth-row">
-            <input class="auth-field" id="auth-email" type="email" placeholder="E-Mail" autocomplete="email">
-            <input class="auth-field" id="auth-password" type="password" placeholder="Passwort" autocomplete="current-password">
-          </div>
-          <div class="auth-actions">
-            <button class="auth-submit" id="auth-sign-in-button" type="button">Anmelden</button>
-            <button class="auth-submit is-secondary" id="auth-sign-up-button" type="button">Registrieren</button>
-          </div>
+          <form id="auth-form">
+            <div class="auth-row">
+              <input class="auth-field" id="auth-email" type="email" placeholder="E-Mail" autocomplete="email">
+              <input class="auth-field" id="auth-password" type="password" placeholder="Passwort" autocomplete="current-password">
+            </div>
+            <div class="auth-actions">
+              <button class="auth-submit" id="auth-sign-in-button" type="submit">Anmelden</button>
+              <button class="auth-submit is-secondary" id="auth-sign-up-button" type="button">Registrieren</button>
+            </div>
+          </form>
           <button class="auth-submit is-secondary" id="auth-sign-out-button" type="button">Abmelden</button>
           <p class="auth-status" id="auth-status">Supabase nicht verbunden</p>
         </div>
-        <div class="school-panel is-hidden" id="school-panel" aria-live="polite">
-          <div class="school-panel-header">
-            <h2 class="school-panel-title" id="school-panel-title">Tutor-Modul</h2>
-            <button class="school-submit is-secondary" id="school-close-button" type="button">Schliessen</button>
+        <section class="home-view" id="home-view" aria-label="Startseite">
+          <h1 class="home-heading">Start</h1>
+          <div class="home-modules">
+            <button class="home-module" id="home-module-notes" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-man-showing-his-love.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Noten lernen</h2>
+                <p class="home-module-copy">Direkt in den Trainer mit Notensystem, SRS und Aufgabenmodus.</p>
+              </div>
+            </button>
+            <button class="home-module is-muted" id="home-module-ice-cream" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <span class="home-module-badge">DEMNÄCHST</span>
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-ice-cream.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Taktgefühl</h2>
+                <p class="home-module-copy">Beübe immer im Takt zu bleiben.</p>
+              </div>
+            </button>
+            <button class="home-module is-hidden" id="home-module-tutor" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-running.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Tutorenansicht</h2>
+                <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
+              </div>
+            </button>
+            <button class="home-module is-muted" id="home-module-bookworm" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <span class="home-module-badge">DEMNÄCHST</span>
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/bookworm-immersed-in-book-leisure-or-self-education.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Lerne die Grundlagen</h2>
+                <p class="home-module-copy">Lerne die Grundlagen des Notenlesens Schritt für Schritt.</p>
+              </div>
+            </button>
           </div>
-          <p class="school-panel-copy" id="school-panel-copy">Lege eine Hausaufgabe fest oder pruefe die aktuelle Zuweisung.</p>
-          <div class="school-summary is-hidden" id="school-student-summary"></div>
-          <div class="school-grid" id="school-assignment-form">
-            <label>
-              Schueler E-Mail
-              <input class="school-field" id="school-student-email" type="email" placeholder="student@example.com">
-            </label>
-            <label>
-              Modus
-              <select class="school-select" id="school-mode-select">
-                <option value="treble">Violine</option>
-                <option value="bass">Bass</option>
-                <option value="double">Dual</option>
-              </select>
-            </label>
-            <label>
-              Violine Start
-              <select class="school-select" id="school-treble-start"></select>
-            </label>
-            <label>
-              Violine Ende
-              <select class="school-select" id="school-treble-end"></select>
-            </label>
-            <label>
-              Bass Start
-              <select class="school-select" id="school-bass-start"></select>
-            </label>
-            <label>
-              Bass Ende
-              <select class="school-select" id="school-bass-end"></select>
-            </label>
-            <label>
-              Ziel in Prozent
-              <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
-            </label>
-            <label>
-              Faellig bis
-              <input class="school-field" id="school-due-date" type="date">
-            </label>
-            <label style="grid-column: 1 / -1;">
-              Beschreibung
-              <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage taeglich langsam und achte auf sichere Zuordnung."></textarea>
-            </label>
+        </section>
+        <section class="tutor-view is-hidden" id="tutor-view" aria-label="Tutorenansicht">
+          <div class="tutor-view-header">
+            <div class="tutor-view-copy">
+              <p class="tutor-view-kicker">Tutorenansicht</p>
+              <h1 class="tutor-view-title">Unterrichte & Hausaufgaben</h1>
+              <p class="tutor-view-subtitle">Verwalte anstehende Unterrichte in einer Kalenderansicht, notiere passende Hausaufgaben und weise Aufgaben gezielt an deine Schüler:innen zu.</p>
+            </div>
+            <button class="tutor-back" id="tutor-back-button" type="button">Zurück</button>
           </div>
-          <div class="school-actions" id="school-actions">
-            <button class="school-submit" id="school-save-button" type="button">Hausaufgabe zuweisen</button>
+          <div class="tutor-dashboard">
+            <div class="tutor-column">
+              <section class="tutor-card">
+                <div class="tutor-card-header">
+                  <div>
+                    <h2 class="tutor-card-title">Unterrichtskalender</h2>
+                    <p class="tutor-card-copy">Alle anstehenden Termine der nächsten Tage. Die Notizen können direkt mit der geplanten Hausaufgabe verknüpft werden.</p>
+                  </div>
+                </div>
+                <div class="tutor-calendar-grid" id="tutor-calendar-grid"></div>
+              </section>
+              <section class="tutor-card">
+                <div class="tutor-card-header">
+                  <div>
+                    <h2 class="tutor-card-title">Anstehende Unterrichte</h2>
+                    <p class="tutor-card-copy">Erstelle neue Termine und hinterlege direkt, was im Unterricht oder als Hausaufgabe ansteht.</p>
+                  </div>
+                </div>
+                <div class="school-grid" id="lesson-form">
+                  <label>
+                    Schüler auswählen
+                    <select class="school-select" id="lesson-student-select">
+                      <option value="">Bitte wählen</option>
+                    </select>
+                  </label>
+                  <label>
+                    Schüler E-Mail
+                    <input class="school-field" id="lesson-student-email" type="email" placeholder="student@example.com">
+                  </label>
+                  <label>
+                    Start
+                    <input class="school-field" id="lesson-starts-at" type="datetime-local">
+                  </label>
+                  <label>
+                    Ende
+                    <input class="school-field" id="lesson-ends-at" type="datetime-local">
+                  </label>
+                  <label style="grid-column: 1 / -1;">
+                    Titel
+                    <input class="school-field" id="lesson-title" type="text" placeholder="Zum Beispiel: Dienstag, Lesetraining in C-Lage">
+                  </label>
+                  <label style="grid-column: 1 / -1;">
+                    Unterrichtsnotiz / Hausaufgabe
+                    <textarea class="school-field" id="lesson-homework-note" rows="4" placeholder="Woran soll im Unterricht gearbeitet werden und welche Hausaufgabe soll daraus folgen?"></textarea>
+                  </label>
+                </div>
+                <div class="school-actions">
+                  <button class="school-submit" id="lesson-save-button" type="button">Unterricht eintragen</button>
+                </div>
+                <div class="tutor-calendar-list" id="tutor-lesson-list"></div>
+              </section>
+            </div>
+            <div class="tutor-column">
+              <section class="tutor-card">
+                <div class="tutor-card-header">
+                  <div>
+                    <h2 class="tutor-card-title">Hausaufgabe zuweisen</h2>
+                    <p class="tutor-card-copy">Lege Modus, Zielbereich, Fälligkeit und Zielgenauigkeit fest.</p>
+                  </div>
+                </div>
+                <div class="school-grid" id="school-assignment-form">
+                  <label>
+                    Schüler auswählen
+                    <select class="school-select" id="school-student-select">
+                      <option value="">Bitte wählen</option>
+                    </select>
+                  </label>
+                  <label>
+                    Schüler E-Mail
+                    <input class="school-field" id="school-student-email" type="email" placeholder="student@example.com">
+                  </label>
+                  <label>
+                    Modus
+                    <select class="school-select" id="school-mode-select">
+                      <option value="treble">Violine</option>
+                      <option value="bass">Bass</option>
+                      <option value="double">Dual</option>
+                    </select>
+                  </label>
+                  <label>
+                    Violine Start
+                    <select class="school-select" id="school-treble-start"></select>
+                  </label>
+                  <label>
+                    Violine Ende
+                    <select class="school-select" id="school-treble-end"></select>
+                  </label>
+                  <label>
+                    Bass Start
+                    <select class="school-select" id="school-bass-start"></select>
+                  </label>
+                  <label>
+                    Bass Ende
+                    <select class="school-select" id="school-bass-end"></select>
+                  </label>
+                  <label>
+                    Ziel in Prozent
+                    <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
+                  </label>
+                  <label>
+                    Fällig bis
+                    <input class="school-field" id="school-due-date" type="date">
+                  </label>
+                  <label style="grid-column: 1 / -1;">
+                    Beschreibung
+                    <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage täglich langsam und achte auf sichere Zuordnung."></textarea>
+                  </label>
+                </div>
+                <div class="school-actions" id="school-actions">
+                  <button class="school-submit" id="school-save-button" type="button">Hausaufgabe zuweisen</button>
+                </div>
+                <p class="school-status" id="school-status">Bereit zum Zuweisen einer Hausaufgabe.</p>
+              </section>
+              <section class="tutor-card">
+                <div class="tutor-card-header">
+                  <div>
+                    <h2 class="tutor-card-title">Hausaufgaben im Überblick</h2>
+                    <p class="tutor-card-copy">Alle aktuellen und zuletzt erstellten Aufgaben mit Schüler, Modus, Ziel und Fälligkeit.</p>
+                  </div>
+                </div>
+                <div class="tutor-assignment-list" id="tutor-assignment-list"></div>
+              </section>
+            </div>
           </div>
-          <p class="school-status" id="school-status">Keine aktive Hausaufgabe.</p>
-        </div>
+        </section>
         <div class="sheet-music">
           <div class="bar">
             <div class="stave-header"></div>
@@ -1659,7 +2105,7 @@
           </div>
         </div>
         <pre class="debug-console-log" id="debug-console-log"></pre>
-        <div class="debug-console-footer">Tippe auf die MIDI-Fehlermeldung, um diese Konsole zu oeffnen.</div>
+        <div class="debug-console-footer">Tippe auf die MIDI-Fehlermeldung, um diese Konsole zu öffnen.</div>
       </div>
     </div>
     <script type="module">
@@ -1673,13 +2119,14 @@
       const toggleKeyboardButton = document.getElementById("toggle-keyboard-button");
       const toggleInfoButton = document.getElementById("toggle-info-button");
       const toggleLibraryButton = document.getElementById("toggle-library-button");
+      const toggleHomeButton = document.getElementById("toggle-home-button");
       const toggleDoubleButton = document.getElementById("toggle-double-button");
       const toggleSrsTrebleButton = document.getElementById("toggle-srs-treble-button");
       const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
-      const toggleSchoolButton = document.getElementById("toggle-school-button");
       const toggleAuthButton = document.getElementById("toggle-auth-button");
       const toolbar = document.querySelector(".toolbar");
       const authPanel = document.getElementById("auth-panel");
+      const authForm = document.getElementById("auth-form");
       const authBackButton = document.getElementById("auth-back-button");
       const authEmailInput = document.getElementById("auth-email");
       const authPasswordInput = document.getElementById("auth-password");
@@ -1687,12 +2134,20 @@
       const authSignUpButton = document.getElementById("auth-sign-up-button");
       const authSignOutButton = document.getElementById("auth-sign-out-button");
       const authStatus = document.getElementById("auth-status");
-      const schoolPanel = document.getElementById("school-panel");
-      const schoolPanelTitle = document.getElementById("school-panel-title");
-      const schoolPanelCopy = document.getElementById("school-panel-copy");
-      const schoolCloseButton = document.getElementById("school-close-button");
-      const schoolStudentSummary = document.getElementById("school-student-summary");
+      const tutorView = document.getElementById("tutor-view");
+      const tutorBackButton = document.getElementById("tutor-back-button");
+      const tutorCalendarGrid = document.getElementById("tutor-calendar-grid");
+      const tutorLessonList = document.getElementById("tutor-lesson-list");
+      const tutorAssignmentList = document.getElementById("tutor-assignment-list");
+      const lessonStudentSelect = document.getElementById("lesson-student-select");
+      const lessonStudentEmailInput = document.getElementById("lesson-student-email");
+      const lessonStartsAtInput = document.getElementById("lesson-starts-at");
+      const lessonEndsAtInput = document.getElementById("lesson-ends-at");
+      const lessonTitleInput = document.getElementById("lesson-title");
+      const lessonHomeworkNoteInput = document.getElementById("lesson-homework-note");
+      const lessonSaveButton = document.getElementById("lesson-save-button");
       const schoolAssignmentForm = document.getElementById("school-assignment-form");
+      const schoolStudentSelect = document.getElementById("school-student-select");
       const schoolStudentEmailInput = document.getElementById("school-student-email");
       const schoolModeSelect = document.getElementById("school-mode-select");
       const schoolTrebleStartSelect = document.getElementById("school-treble-start");
@@ -1704,6 +2159,11 @@
       const schoolDescriptionInput = document.getElementById("school-description");
       const schoolSaveButton = document.getElementById("school-save-button");
       const schoolStatus = document.getElementById("school-status");
+      const homeView = document.getElementById("home-view");
+      const homeModuleNotes = document.getElementById("home-module-notes");
+      const homeModuleIceCream = document.getElementById("home-module-ice-cream");
+      const homeModuleTutor = document.getElementById("home-module-tutor");
+      const homeModuleBookworm = document.getElementById("home-module-bookworm");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
       const keyboard = document.getElementById("keyboard");
@@ -1730,6 +2190,7 @@
       const doubleTrebleNotesContainer = document.getElementById("double-treble-notes");
       const whiteKeysContainer = document.getElementById("white-keys");
       const blackKeysContainer = document.getElementById("black-keys");
+      const midiIndicator = document.getElementById("midi-indicator");
       const midiIndicatorButton = document.getElementById("midi-indicator-button");
       const midiTooltip = document.getElementById("midi-tooltip");
       const debugConsole = document.getElementById("debug-console");
@@ -1768,13 +2229,13 @@
       };
       const clefConfigs = {
         treble: {
-          label: "Violinschluessel",
+          label: "Violinschlüssel",
           reference: "B4",
           range: ["C4", "C8"],
           handLabel: "rechte Hand"
         },
         bass: {
-          label: "Bassschluessel",
+          label: "Bassschlüssel",
           reference: "D3",
           range: ["A0", "B3"],
           handLabel: "linke Hand"
@@ -1824,6 +2285,8 @@
       let isKeyboardVisible = false;
       let isInfoVisible = false;
       let isLibraryVisible = false;
+      let isHomeViewVisible = true;
+      let isTutorViewVisible = false;
       let isDoubleModeEnabled = false;
       let midiAccessRef = null;
       let midiOutputsRef = [];
@@ -1838,9 +2301,12 @@
       let isRemoteStateApplying = false;
       let authBusy = false;
       let schoolBusy = false;
+      let lessonBusy = false;
+      let tutorStudentEmails = [];
+      let tutorAssignments = [];
+      let tutorLessons = [];
       let userRole = null;
       let activeHomework = null;
-      let isSchoolPanelVisible = false;
       let srsStates = {
         treble: null,
         bass: null
@@ -2188,61 +2654,218 @@
         }
       }
 
-      function updateSchoolUi() {
-        const showSchoolButton = Boolean(authUser) && (userRole === "tutor" || isHomeworkModeActive());
-        toggleSchoolButton.classList.toggle("is-hidden", !showSchoolButton);
-        toggleSchoolButton.classList.toggle("is-active", isSchoolPanelVisible);
-        schoolPanel.classList.toggle("is-hidden", !isSchoolPanelVisible);
-        schoolCloseButton.disabled = schoolBusy;
-
-        if (userRole === "tutor") {
-          schoolPanelTitle.textContent = "Tutor-Modul";
-          schoolPanelCopy.textContent = "Lege eine Hausaufgabe fuer eine andere Person fest.";
-          schoolAssignmentForm.classList.remove("is-hidden");
-          schoolSaveButton.classList.remove("is-hidden");
-          schoolSaveButton.disabled = schoolBusy;
-          schoolStudentSummary.classList.add("is-hidden");
-        } else if (isHomeworkModeActive()) {
-          const completion = homeworkCompletionPercent(activeHomework);
-          schoolPanelTitle.textContent = "Hausaufgabe";
-          schoolPanelCopy.textContent = "Diese Aufgabe wurde dir automatisch zugewiesen und konfiguriert den Trainer.";
-          schoolAssignmentForm.classList.add("is-hidden");
-          schoolSaveButton.classList.add("is-hidden");
-          schoolStudentSummary.classList.remove("is-hidden");
-          schoolStudentSummary.innerHTML = `
-            <div class="school-progress">
-              <div class="school-summary-copy">
-                <div class="school-progress-ring" style="--progress: ${completion}">
-                  <span class="school-progress-value">${completion}%</span>
-                </div>
-                <strong>Aktive Aufgabe</strong>
-                <span>${homeworkSummaryText(activeHomework)}</span>
-                ${activeHomework.description ? `<p class="school-description">${activeHomework.description}</p>` : ""}
-                <div class="school-summary-meta">
-                  <span>Ziel erreicht, sobald alle Noten im Schnitt ${activeHomework.target_accuracy}% sicher sind.</span>
-                </div>
-              </div>
-              <div class="school-deadline-card">
-                <i data-lucide="calendar-days"></i>
-                <span class="school-deadline-label">FAELLIG AM</span>
-                <span class="school-deadline-value">${homeworkDueText(activeHomework)}</span>
-              </div>
-            </div>
-          `;
-          lucide.createIcons({
-            attrs: {
-              "stroke-width": 1.9
-            }
-          });
-        } else {
-          schoolPanelTitle.textContent = "Tutor-Modul";
-          schoolPanelCopy.textContent = "Keine aktive Hausaufgabe.";
-          schoolAssignmentForm.classList.add("is-hidden");
-          schoolSaveButton.classList.add("is-hidden");
-          schoolStudentSummary.classList.add("is-hidden");
+      function formatTutorDate(dateString) {
+        if (!dateString) {
+          return "Kein Datum";
         }
 
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) {
+          return "Kein Datum";
+        }
+
+        return date.toLocaleDateString("de-DE", {
+          weekday: "short",
+          day: "2-digit",
+          month: "2-digit"
+        });
+      }
+
+      function formatTutorDateTime(dateString) {
+        if (!dateString) {
+          return "Zeit offen";
+        }
+
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) {
+          return "Zeit offen";
+        }
+
+        return date.toLocaleString("de-DE", {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+
+      function buildTutorCalendarDays() {
+        const days = [];
+        const base = new Date();
+        base.setHours(0, 0, 0, 0);
+
+        for (let offset = 0; offset < 6; offset += 1) {
+          const day = new Date(base);
+          day.setDate(base.getDate() + offset);
+          days.push(day);
+        }
+
+        return days;
+      }
+
+      function renderTutorCalendar() {
+        tutorCalendarGrid.replaceChildren();
+
+        const days = buildTutorCalendarDays();
+        const lessonBuckets = new Map();
+
+        for (const lesson of tutorLessons) {
+          const startsAt = new Date(lesson.starts_at);
+          if (Number.isNaN(startsAt.getTime())) {
+            continue;
+          }
+          const key = startsAt.toISOString().slice(0, 10);
+          const entries = lessonBuckets.get(key) || [];
+          entries.push(lesson);
+          lessonBuckets.set(key, entries);
+        }
+
+        for (const day of days) {
+          const dayCard = document.createElement("div");
+          dayCard.className = "tutor-calendar-day";
+          const key = day.toISOString().slice(0, 10);
+          const lessons = (lessonBuckets.get(key) || []).sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+
+          if (!lessons.length) {
+            dayCard.classList.add("is-empty");
+          }
+
+          const label = document.createElement("p");
+          label.className = "tutor-calendar-day-label";
+          label.textContent = day.toLocaleDateString("de-DE", {
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit"
+          });
+          dayCard.appendChild(label);
+
+          const items = document.createElement("div");
+          items.className = "tutor-calendar-day-items";
+
+          if (!lessons.length) {
+            const empty = document.createElement("div");
+            empty.className = "tutor-calendar-chip";
+            empty.innerHTML = "<span>Kein Unterricht geplant.</span>";
+            items.appendChild(empty);
+          } else {
+            for (const lesson of lessons) {
+              const chip = document.createElement("div");
+              chip.className = "tutor-calendar-chip";
+              const title = lesson.title || lesson.student_email || "Unterricht";
+              chip.innerHTML = `
+                <strong>${title}</strong>
+                <span>${formatTutorDateTime(lesson.starts_at)}${lesson.homework_note ? ` · ${lesson.homework_note}` : ""}</span>
+              `;
+              items.appendChild(chip);
+            }
+          }
+
+          dayCard.appendChild(items);
+          tutorCalendarGrid.appendChild(dayCard);
+        }
+      }
+
+      function renderTutorLessonList() {
+        tutorLessonList.replaceChildren();
+
+        if (!tutorLessons.length) {
+          const empty = document.createElement("div");
+          empty.className = "tutor-calendar-entry is-empty";
+          empty.textContent = "Noch keine Unterrichtstermine geplant.";
+          tutorLessonList.appendChild(empty);
+          return;
+        }
+
+        for (const lesson of tutorLessons) {
+          const entry = document.createElement("article");
+          entry.className = "tutor-calendar-entry";
+          entry.innerHTML = `
+            <div class="tutor-entry-topline">
+              <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
+              <span class="tutor-entry-pill">${formatTutorDate(lesson.starts_at)}</span>
+            </div>
+            <p class="tutor-entry-meta">${lesson.student_email || "Kein Schüler"} · ${formatTutorDateTime(lesson.starts_at)}${lesson.ends_at ? ` – ${formatTutorDateTime(lesson.ends_at)}` : ""}</p>
+            <p class="tutor-entry-copy">${lesson.homework_note || "Keine Notiz hinterlegt."}</p>
+          `;
+          tutorLessonList.appendChild(entry);
+        }
+      }
+
+      function renderTutorAssignmentList() {
+        tutorAssignmentList.replaceChildren();
+
+        if (!tutorAssignments.length) {
+          const empty = document.createElement("div");
+          empty.className = "tutor-assignment-entry is-empty";
+          empty.textContent = "Noch keine Hausaufgaben zugewiesen.";
+          tutorAssignmentList.appendChild(empty);
+          return;
+        }
+
+        for (const assignment of tutorAssignments) {
+          const entry = document.createElement("article");
+          entry.className = "tutor-assignment-entry";
+          const stateLabel = assignment.is_active ? "Aktiv" : "Archiv";
+          entry.innerHTML = `
+            <div class="tutor-entry-topline">
+              <h3 class="tutor-entry-title">${assignment.student_email}</h3>
+              <span class="tutor-entry-pill">${stateLabel}</span>
+            </div>
+            <p class="tutor-entry-meta">${homeworkSummaryText(assignment)} · Fällig ${homeworkDueText(assignment)}</p>
+            <p class="tutor-entry-copy">${assignment.description || "Keine Beschreibung hinterlegt."}</p>
+          `;
+          tutorAssignmentList.appendChild(entry);
+        }
+      }
+
+      function updateTutorUi() {
+        const isTutor = Boolean(authUser) && userRole === "tutor";
+        if (!isTutor) {
+          isTutorViewVisible = false;
+        }
+        homeModuleTutor.classList.toggle("is-hidden", !isTutor);
+        schoolSaveButton.disabled = schoolBusy || !isTutor;
+        lessonSaveButton.disabled = lessonBusy || !isTutor;
+        lessonStudentSelect.disabled = lessonBusy || !isTutor;
+        schoolStudentSelect.disabled = schoolBusy || !isTutor;
+        renderStudentEmailOptions();
+        renderTutorCalendar();
+        renderTutorLessonList();
+        renderTutorAssignmentList();
         updateSchoolModeFields();
+      }
+
+      function renderStudentEmailOptions() {
+        schoolStudentSelect.replaceChildren();
+        lessonStudentSelect.replaceChildren();
+
+        const createPlaceholderOption = () => {
+          const option = document.createElement("option");
+          option.value = "";
+          option.textContent = tutorStudentEmails.length
+            ? "Bitte wählen"
+            : "Keine Schüler gefunden";
+          return option;
+        };
+
+        schoolStudentSelect.appendChild(createPlaceholderOption());
+        lessonStudentSelect.appendChild(createPlaceholderOption());
+
+        for (const email of tutorStudentEmails) {
+          const option = document.createElement("option");
+          option.value = email;
+          option.textContent = email;
+          if (schoolStudentEmailInput.value.trim().toLowerCase() === email) {
+            option.selected = true;
+          }
+          schoolStudentSelect.appendChild(option);
+
+          const lessonOption = option.cloneNode(true);
+          if (lessonStudentEmailInput.value.trim().toLowerCase() === email) {
+            lessonOption.selected = true;
+          }
+          lessonStudentSelect.appendChild(lessonOption);
+        }
       }
 
       async function ensureUserProfile() {
@@ -2250,24 +2873,137 @@
           return null;
         }
 
-        const profilePayload = {
-          user_id: authUser.id,
-          email: authUser.email
-        };
-
-        const { data, error } = await supabaseClient
+        const { data: existingProfile, error: selectError } = await supabaseClient
           .from("user_profiles")
-          .upsert(profilePayload, { onConflict: "user_id" })
           .select("*")
-          .single();
+          .eq("user_id", authUser.id)
+          .maybeSingle();
 
-        if (error) {
-          setAuthStatus(`Profil laden fehlgeschlagen: ${error.message}`, "error");
+        if (selectError) {
+          console.error("[Auth] Profil laden fehlgeschlagen", selectError);
+          setAuthStatus(`Profil laden fehlgeschlagen: ${selectError.message}`, "error");
+          userRole = "student";
           return null;
         }
 
-        userRole = data?.role || "student";
-        return data;
+        if (existingProfile) {
+          userRole = existingProfile.role || "student";
+          return existingProfile;
+        }
+
+        const { data: insertedProfile, error: insertError } = await supabaseClient
+          .from("user_profiles")
+          .insert({
+            user_id: authUser.id,
+            email: authUser.email,
+            role: "student"
+          })
+          .select("*")
+          .maybeSingle();
+
+        if (insertError) {
+          console.error("[Auth] Profil anlegen fehlgeschlagen", insertError);
+
+          const { data: retriedProfile, error: retryError } = await supabaseClient
+            .from("user_profiles")
+            .select("*")
+            .eq("user_id", authUser.id)
+            .maybeSingle();
+
+          if (retryError) {
+            setAuthStatus(`Profil laden fehlgeschlagen: ${insertError.message}`, "error");
+            userRole = "student";
+            return null;
+          }
+
+          if (retriedProfile) {
+            userRole = retriedProfile.role || "student";
+            return retriedProfile;
+          }
+
+          setAuthStatus(`Profil anlegen fehlgeschlagen: ${insertError.message}`, "error");
+          userRole = "student";
+          return null;
+        }
+
+        userRole = insertedProfile?.role || "student";
+        return insertedProfile;
+      }
+
+      async function loadTutorStudents() {
+        if (!supabaseClient || !authUser || userRole !== "tutor") {
+          tutorStudentEmails = [];
+          renderStudentEmailOptions();
+          return [];
+        }
+
+        const { data, error } = await supabaseClient
+          .from("user_profiles")
+          .select("email")
+          .eq("role", "student")
+          .order("email", { ascending: true });
+
+        if (error) {
+          console.error("[School] Schülerliste laden fehlgeschlagen", error);
+          setSchoolStatus(`Schülerliste laden fehlgeschlagen: ${error.message}`, "error");
+          tutorStudentEmails = [];
+          renderStudentEmailOptions();
+          return [];
+        }
+
+        tutorStudentEmails = (data || [])
+          .map((entry) => entry.email?.trim().toLowerCase())
+          .filter(Boolean);
+        renderStudentEmailOptions();
+        return tutorStudentEmails;
+      }
+
+      async function loadTutorAssignments() {
+        if (!supabaseClient || !authUser || userRole !== "tutor") {
+          tutorAssignments = [];
+          return [];
+        }
+
+        const { data, error } = await supabaseClient
+          .from("homework_assignments")
+          .select("*")
+          .eq("tutor_user_id", authUser.id)
+          .order("is_active", { ascending: false })
+          .order("due_at", { ascending: true, nullsFirst: false })
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("[Tutor] Hausaufgaben laden fehlgeschlagen", error);
+          setSchoolStatus(`Hausaufgaben laden fehlgeschlagen: ${error.message}`, "error");
+          tutorAssignments = [];
+          return [];
+        }
+
+        tutorAssignments = data || [];
+        return tutorAssignments;
+      }
+
+      async function loadTutorLessons() {
+        if (!supabaseClient || !authUser || userRole !== "tutor") {
+          tutorLessons = [];
+          return [];
+        }
+
+        const { data, error } = await supabaseClient
+          .from("tutor_lessons")
+          .select("*")
+          .eq("tutor_user_id", authUser.id)
+          .order("starts_at", { ascending: true });
+
+        if (error) {
+          console.error("[Tutor] Unterrichte laden fehlgeschlagen", error);
+          setSchoolStatus(`Unterrichte laden fehlgeschlagen: ${error.message}`, "error");
+          tutorLessons = [];
+          return [];
+        }
+
+        tutorLessons = data || [];
+        return tutorLessons;
       }
 
       async function loadActiveHomework() {
@@ -2298,24 +3034,91 @@
       async function loadTutorContext() {
         userRole = null;
         activeHomework = null;
+        tutorStudentEmails = [];
+        tutorAssignments = [];
+        tutorLessons = [];
 
         if (!authUser) {
-          updateSchoolUi();
+          updateTutorUi();
           return;
         }
 
         await ensureUserProfile();
-        await loadActiveHomework();
+        await loadTutorStudents();
+        if (userRole === "tutor") {
+          await Promise.all([loadTutorAssignments(), loadTutorLessons()]);
+        } else {
+          await loadActiveHomework();
+        }
         applyHomeworkConfiguration();
-        if (isHomeworkModeActive()) {
-          isSchoolPanelVisible = true;
+        if (userRole === "tutor") {
+          setSchoolStatus("Bereit zum Planen von Unterricht und Hausaufgaben.", "");
+        } else if (isHomeworkModeActive()) {
           setSchoolStatus(`Aktive Hausaufgabe geladen. ${homeworkSummaryText(activeHomework)}`, "success");
-        } else if (userRole === "tutor") {
-          setSchoolStatus("Bereit zum Zuweisen einer Hausaufgabe.", "");
         } else {
           setSchoolStatus("Keine aktive Hausaufgabe.", "");
         }
-        updateSchoolUi();
+        updateTutorUi();
+      }
+
+      async function saveTutorLesson() {
+        if (!supabaseClient || !authUser || userRole !== "tutor" || lessonBusy) {
+          return;
+        }
+
+        const studentEmail = lessonStudentEmailInput.value.trim().toLowerCase();
+        const startsAt = lessonStartsAtInput.value;
+        const endsAt = lessonEndsAtInput.value;
+        const title = lessonTitleInput.value.trim();
+        const homeworkNote = lessonHomeworkNoteInput.value.trim();
+
+        if (!studentEmail) {
+          setSchoolStatus("Bitte eine Schüler-E-Mail für den Unterricht wählen.", "error");
+          return;
+        }
+
+        if (!startsAt) {
+          setSchoolStatus("Bitte eine Startzeit für den Unterricht festlegen.", "error");
+          return;
+        }
+
+        if (endsAt && new Date(endsAt) <= new Date(startsAt)) {
+          setSchoolStatus("Das Unterrichtsende muss nach dem Start liegen.", "error");
+          return;
+        }
+
+        lessonBusy = true;
+        updateTutorUi();
+        try {
+          const { error } = await supabaseClient
+            .from("tutor_lessons")
+            .insert({
+              tutor_user_id: authUser.id,
+              tutor_email: authUser.email,
+              student_email: studentEmail,
+              title: title || null,
+              homework_note: homeworkNote || null,
+              starts_at: new Date(startsAt).toISOString(),
+              ends_at: endsAt ? new Date(endsAt).toISOString() : null
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          lessonStartsAtInput.value = "";
+          lessonEndsAtInput.value = "";
+          lessonTitleInput.value = "";
+          lessonHomeworkNoteInput.value = "";
+          setSchoolStatus(`Unterricht für ${studentEmail} eingetragen.`, "success");
+          await loadTutorLessons();
+        } catch (error) {
+          console.error("[Tutor] Unterricht speichern fehlgeschlagen", error);
+          setSchoolStatus(error?.message || "Unterricht speichern fehlgeschlagen.", "error");
+        } finally {
+          lessonBusy = false;
+          updateTutorUi();
+        }
       }
 
       async function saveHomeworkAssignment() {
@@ -2334,7 +3137,7 @@
         const bassEnd = schoolBassEndSelect.value;
 
         if (!studentEmail) {
-          setSchoolStatus("Bitte eine Schueler-E-Mail eingeben.", "error");
+          setSchoolStatus("Bitte eine Schüler-E-Mail eingeben.", "error");
           return;
         }
 
@@ -2349,7 +3152,7 @@
         }
 
         schoolBusy = true;
-        updateSchoolUi();
+        updateTutorUi();
         try {
           const payload = {
             tutor_user_id: authUser.id,
@@ -2385,12 +3188,13 @@
           }
 
           setSchoolStatus(`Hausaufgabe an ${studentEmail} zugewiesen.`, "success");
+          await loadTutorAssignments();
         } catch (error) {
           console.error("[School] Hausaufgabe speichern fehlgeschlagen", error);
           setSchoolStatus(error?.message || "Hausaufgabe speichern fehlgeschlagen.", "error");
         } finally {
           schoolBusy = false;
-          updateSchoolUi();
+          updateTutorUi();
         }
       }
 
@@ -2499,9 +3303,13 @@
         resetLocalProgressState();
         userRole = null;
         activeHomework = null;
-        isSchoolPanelVisible = false;
+        isTutorViewVisible = false;
+        tutorStudentEmails = [];
+        tutorAssignments = [];
+        tutorLessons = [];
+        renderStudentEmailOptions();
         updateAuthUi();
-        updateSchoolUi();
+        updateTutorUi();
         updateModeUi();
         updateSrsUi();
         updateInfoUi();
@@ -2556,7 +3364,7 @@
           }
         } catch (error) {
           console.error("[Auth] Anfrage fehlgeschlagen", error);
-          setAuthStatus(error?.message || "Supabase-Anfrage fehlgeschlagen.", "error");
+        setAuthStatus(error?.message || "Supabase-Anfrage fehlgeschlagen.", "error");
         } finally {
           authBusy = false;
           updateAuthUi();
@@ -2611,6 +3419,13 @@
 
       function updateModeUi() {
         const isHomeworkMode = isHomeworkModeActive();
+        const canSeeTutorView = Boolean(authUser) && userRole === "tutor";
+        if (!canSeeTutorView) {
+          isTutorViewVisible = false;
+        }
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible;
+        midiIndicator.hidden = isHomeViewVisible;
+        toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
         toggleRangeButton.classList.toggle("is-hidden", isHomeworkMode);
@@ -2618,13 +3433,14 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible);
-        sheetMusic.classList.toggle("is-hidden", isAuthPanelVisible || isDoubleModeEnabled || isLibraryVisible);
-        sheetMusicDouble.classList.toggle("is-hidden", isAuthPanelVisible || !isDoubleModeEnabled || isLibraryVisible);
-        trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
-        keyboard.classList.toggle("is-hidden", isAuthPanelVisible || !isKeyboardVisible);
-        libraryPanel.classList.toggle("is-hidden", isAuthPanelVisible || !isLibraryVisible);
-        schoolPanel.classList.toggle("is-hidden", isAuthPanelVisible || !isSchoolPanelVisible);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible);
+        homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
+        tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
+        sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
+        sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
+        trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || !isInfoVisible);
+        keyboard.classList.toggle("is-hidden", hidesTrainerContent || !isKeyboardVisible);
+        libraryPanel.classList.toggle("is-hidden", hidesTrainerContent || !isLibraryVisible);
       }
 
       function noteStatFor(mode, noteName) {
@@ -3179,6 +3995,7 @@
         schoolTrebleEndSelect.disabled = trebleDisabled || schoolBusy;
         schoolBassStartSelect.disabled = bassDisabled || schoolBusy;
         schoolBassEndSelect.disabled = bassDisabled || schoolBusy;
+        schoolStudentSelect.disabled = schoolBusy || userRole !== "tutor";
         schoolStudentEmailInput.disabled = schoolBusy;
         schoolModeSelect.disabled = schoolBusy;
         schoolTargetAccuracyInput.disabled = schoolBusy;
@@ -3931,7 +4748,7 @@
         }
 
         if (!("requestMIDIAccess" in navigator)) {
-          updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfuegbar.", "error");
+          updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfügbar.", "error");
           return;
         }
 
@@ -3947,7 +4764,7 @@
             "Klavier nicht verbunden"
           );
         } catch (error) {
-          const errorMessage = error?.message || "MIDI Freigabe fehlgeschlagen.";
+          const errorMessage = error?.message || "MIDI-Freigabe fehlgeschlagen.";
           updateMidiUi(false, errorMessage, "error");
         } finally {
           isMidiConnecting = false;
@@ -4215,18 +5032,23 @@
         isLibraryVisible = !isLibraryVisible;
         updateLibraryUi();
       });
+      toggleHomeButton.addEventListener("click", () => {
+        isHomeViewVisible = !isHomeViewVisible;
+        if (isHomeViewVisible) {
+          isTutorViewVisible = false;
+          isLibraryVisible = false;
+          isInfoVisible = false;
+        }
+        updateModeUi();
+        updateInfoUi();
+      });
       toggleAuthButton.addEventListener("click", () => {
         isAuthPanelVisible = !isAuthPanelVisible;
         if (isAuthPanelVisible) {
-          isSchoolPanelVisible = false;
+          isTutorViewVisible = false;
         }
         updateAuthUi();
-        updateSchoolUi();
-        updateModeUi();
-      });
-      toggleSchoolButton.addEventListener("click", () => {
-        isSchoolPanelVisible = !isSchoolPanelVisible;
-        updateSchoolUi();
+        updateTutorUi();
         updateModeUi();
       });
       toggleDoubleButton.addEventListener("click", () => {
@@ -4380,7 +5202,7 @@
         if (isHomeworkModeActive()) {
           applyHomeworkConfiguration();
         }
-        updateSchoolUi();
+        updateTutorUi();
         updateModeUi();
         updateSrsUi();
         updateInfoUi();
@@ -4390,7 +5212,7 @@
       window.simulateTutorRole = () => {
         userRole = "tutor";
         activeHomework = null;
-        isSchoolPanelVisible = true;
+        isTutorViewVisible = true;
         setSchoolStatus("Tutor-Modus simuliert.", "success");
         applyTutorSimulation();
         return { userRole, activeHomework };
@@ -4399,7 +5221,7 @@
       window.simulateStudentRole = (homework = null) => {
         userRole = "student";
         activeHomework = homework;
-        isSchoolPanelVisible = Boolean(homework);
+        isTutorViewVisible = false;
         setSchoolStatus(
           homework
             ? `Student-Hausaufgabe simuliert. ${homeworkSummaryText(homework)}`
@@ -4434,12 +5256,12 @@
       };
 
       window.clearTutorSimulation = () => {
-        userRole = authUser ? "student" : null;
+        userRole = null;
         activeHomework = null;
-        isSchoolPanelVisible = false;
+        isTutorViewVisible = false;
         resetLocalProgressState();
-        setSchoolStatus("Tutor-Simulation zurueckgesetzt.", "");
-        updateSchoolUi();
+        setSchoolStatus("Tutor-Simulation zurückgesetzt.", "");
+        updateTutorUi();
         updateModeUi();
         updateSrsUi();
         updateInfoUi();
@@ -4447,6 +5269,10 @@
         return { userRole, activeHomework };
       };
 
+      authForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void handleAuthAction("sign-in");
+      });
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
@@ -4456,13 +5282,51 @@
         updateModeUi();
         updateInfoUi();
       });
-      schoolCloseButton.addEventListener("click", () => {
-        isSchoolPanelVisible = false;
-        updateSchoolUi();
+      tutorBackButton.addEventListener("click", () => {
+        isTutorViewVisible = false;
+        isHomeViewVisible = true;
         updateModeUi();
       });
+      schoolStudentSelect.addEventListener("change", () => {
+        schoolStudentEmailInput.value = schoolStudentSelect.value;
+      });
+      schoolStudentEmailInput.addEventListener("input", () => {
+        renderStudentEmailOptions();
+      });
+      lessonStudentSelect.addEventListener("change", () => {
+        lessonStudentEmailInput.value = lessonStudentSelect.value;
+      });
+      lessonStudentEmailInput.addEventListener("input", () => {
+        renderStudentEmailOptions();
+      });
       schoolSaveButton.addEventListener("click", () => saveHomeworkAssignment());
+      lessonSaveButton.addEventListener("click", () => saveTutorLesson());
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
+      homeModuleNotes.addEventListener("click", () => {
+        isHomeViewVisible = false;
+        isTutorViewVisible = false;
+        updateModeUi();
+        generateRound();
+      });
+      homeModuleIceCream.addEventListener("click", () => {
+        setSchoolStatus("Ice-Cream-Modul ist noch nicht belegt.", "");
+        isHomeViewVisible = true;
+        updateModeUi();
+      });
+      homeModuleBookworm.addEventListener("click", () => {
+        setSchoolStatus("Bookworm-Modul ist noch nicht belegt.", "");
+        isHomeViewVisible = true;
+        updateModeUi();
+      });
+      homeModuleTutor.addEventListener("click", async () => {
+        if (userRole !== "tutor") {
+          return;
+        }
+        isHomeViewVisible = false;
+        isTutorViewVisible = true;
+        await loadTutorContext();
+        updateModeUi();
+      });
       midiIndicatorButton.addEventListener("click", () => initMidi());
       midiTooltip.addEventListener("click", () => setDebugConsoleOpen(true));
       debugConsoleCloseButton.addEventListener("click", () => setDebugConsoleOpen(false));
@@ -4499,7 +5363,7 @@
       currentClef = "treble";
       updateInfoUi();
       updateLibraryUi();
-      updateSchoolUi();
+      updateTutorUi();
       updateModeUi();
       updateLevelUi();
       updateClefUi();
