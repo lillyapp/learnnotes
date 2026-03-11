@@ -1946,6 +1946,7 @@
           selectedRange = activeHomework.mode === "bass"
             ? [activeHomework.bass_range_start, activeHomework.bass_range_end]
             : [activeHomework.treble_range_start, activeHomework.treble_range_end];
+          manualSelectedRange = [...selectedRange];
           currentClef = activeHomework.mode;
         }
       }
@@ -2064,9 +2065,23 @@
         const studentEmail = schoolStudentEmailInput.value.trim().toLowerCase();
         const mode = schoolModeSelect.value;
         const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
+        const trebleStart = schoolTrebleStartSelect.value;
+        const trebleEnd = schoolTrebleEndSelect.value;
+        const bassStart = schoolBassStartSelect.value;
+        const bassEnd = schoolBassEndSelect.value;
 
         if (!studentEmail) {
           setSchoolStatus("Bitte eine Schueler-E-Mail eingeben.", "error");
+          return;
+        }
+
+        if (mode !== "bass" && semitoneValue(trebleStart) > semitoneValue(trebleEnd)) {
+          setSchoolStatus("Violine Start muss vor Violine Ende liegen.", "error");
+          return;
+        }
+
+        if (mode !== "treble" && semitoneValue(bassStart) > semitoneValue(bassEnd)) {
+          setSchoolStatus("Bass Start muss vor Bass Ende liegen.", "error");
           return;
         }
 
@@ -2078,10 +2093,10 @@
             tutor_email: authUser.email,
             student_email: studentEmail,
             mode,
-            treble_range_start: schoolTrebleStartSelect.value,
-            treble_range_end: schoolTrebleEndSelect.value,
-            bass_range_start: schoolBassStartSelect.value,
-            bass_range_end: schoolBassEndSelect.value,
+            treble_range_start: trebleStart,
+            treble_range_end: trebleEnd,
+            bass_range_start: bassStart,
+            bass_range_end: bassEnd,
             target_accuracy: targetAccuracy,
             is_active: true
           };
@@ -3896,7 +3911,7 @@
       }
 
       toggleRangeButton.addEventListener("click", () => {
-        if (activeSrsMode) {
+        if (activeSrsMode || isHomeworkModeActive()) {
           return;
         }
 
@@ -3947,6 +3962,10 @@
         updateModeUi();
       });
       toggleDoubleButton.addEventListener("click", () => {
+        if (isHomeworkModeActive()) {
+          return;
+        }
+
         isDoubleModeEnabled = !isDoubleModeEnabled;
 
         if (isDoubleModeEnabled) {
@@ -3961,6 +3980,10 @@
         generateRound();
       });
       function toggleSrsMode(mode) {
+        if (isHomeworkModeActive()) {
+          return;
+        }
+
         if (isDoubleModeEnabled) {
           isDoubleModeEnabled = false;
           updateModeUi();
