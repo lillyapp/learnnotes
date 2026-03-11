@@ -333,14 +333,9 @@
 
       .tutor-dashboard {
         display: grid;
-        grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
         gap: 18px;
         align-items: start;
-      }
-
-      .tutor-column {
-        display: grid;
-        gap: 18px;
       }
 
       .tutor-card {
@@ -350,6 +345,67 @@
         background: var(--surface-soft);
         display: grid;
         gap: 14px;
+      }
+
+      .tutor-calendar-shell {
+        display: grid;
+        gap: 16px;
+      }
+
+      .tutor-calendar-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .tutor-calendar-month {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .tutor-calendar-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .tutor-icon-button {
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .tutor-icon-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .tutor-calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .tutor-calendar-weekday {
+        min-height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
       }
 
       .tutor-card-header {
@@ -379,13 +435,11 @@
         color: var(--text-soft);
       }
 
-      .tutor-calendar-list,
       .tutor-assignment-list {
         display: grid;
         gap: 12px;
       }
 
-      .tutor-calendar-entry,
       .tutor-assignment-entry {
         padding: 14px 16px;
         border: 1px solid var(--border);
@@ -395,7 +449,6 @@
         gap: 8px;
       }
 
-      .tutor-calendar-entry.is-empty,
       .tutor-assignment-entry.is-empty {
         color: var(--text-soft);
       }
@@ -440,19 +493,33 @@
 
       .tutor-calendar-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 8px;
       }
 
       .tutor-calendar-day {
-        min-height: 138px;
-        padding: 14px;
+        min-height: 132px;
+        padding: 12px;
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 20px;
         background: var(--surface);
         display: grid;
         align-content: start;
         gap: 10px;
+        cursor: pointer;
+      }
+
+      .tutor-calendar-day.is-outside {
+        opacity: 0.42;
+      }
+
+      .tutor-calendar-day.is-today {
+        border-color: rgba(0, 0, 0, 0.28);
+      }
+
+      .tutor-calendar-day.is-selected {
+        border-color: #111111;
+        box-shadow: inset 0 0 0 1px #111111;
       }
 
       .tutor-calendar-day.is-empty {
@@ -461,35 +528,107 @@
 
       .tutor-calendar-day-label {
         margin: 0;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--text-soft);
       }
 
+      .tutor-calendar-day-number {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--text);
+      }
+
       .tutor-calendar-day-items {
         display: grid;
-        gap: 8px;
+        gap: 6px;
       }
 
       .tutor-calendar-chip {
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: var(--surface-soft);
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(17, 17, 17, 0.06);
         display: grid;
-        gap: 4px;
+        gap: 3px;
+        text-align: left;
+        border: 0;
+        cursor: pointer;
+        font: inherit;
       }
 
       .tutor-calendar-chip strong {
-        font-size: 13px;
+        font-size: 12px;
         color: var(--text);
       }
 
       .tutor-calendar-chip span {
-        font-size: 12px;
+        font-size: 11px;
         line-height: 1.4;
         color: var(--text-soft);
+      }
+
+      .tutor-detail-empty {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: var(--text-soft);
+        border: 1px dashed var(--border);
+        border-radius: 20px;
+        background: var(--surface);
+        padding: 24px;
+      }
+
+      .tutor-detail-block {
+        display: grid;
+        gap: 10px;
+      }
+
+      .tutor-detail-meta {
+        display: grid;
+        gap: 8px;
+      }
+
+      .tutor-detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 14px;
+        color: var(--text-soft);
+      }
+
+      .tutor-detail-row strong {
+        color: var(--text);
+      }
+
+      .tutor-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(17, 17, 17, 0.28);
+      }
+
+      .tutor-modal.is-hidden {
+        display: none;
+      }
+
+      .tutor-modal-card {
+        width: min(760px, 92vw);
+        max-height: min(86vh, 920px);
+        overflow: auto;
+        padding: 24px;
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        display: grid;
+        gap: 18px;
       }
 
       @media (max-width: 1024px) {
@@ -498,7 +637,7 @@
         }
 
         .tutor-calendar-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -1918,117 +2057,49 @@
             <button class="tutor-back" id="tutor-back-button" type="button">Zurück</button>
           </div>
           <div class="tutor-dashboard">
-            <div class="tutor-column">
-              <section class="tutor-card">
-                <div class="tutor-card-header">
-                  <div>
-                    <h2 class="tutor-card-title">Unterrichtskalender</h2>
-                    <p class="tutor-card-copy">Alle anstehenden Termine der nächsten Tage. Die Notizen können direkt mit der geplanten Hausaufgabe verknüpft werden.</p>
+            <section class="tutor-card">
+              <div class="tutor-card-header">
+                <div>
+                  <h2 class="tutor-card-title">Unterrichtskalender</h2>
+                  <p class="tutor-card-copy">Klicke auf einen Termin, um Unterricht und Hausaufgabe im Detail zu sehen. Neue Einträge legst du über das Plus an.</p>
+                </div>
+              </div>
+              <div class="tutor-calendar-shell">
+                <div class="tutor-calendar-toolbar">
+                  <h3 class="tutor-calendar-month" id="tutor-calendar-month-label">März 2026</h3>
+                  <div class="tutor-calendar-toolbar-actions">
+                    <button class="tutor-icon-button" id="tutor-calendar-prev-button" type="button" aria-label="Vorheriger Monat">
+                      <i data-lucide="chevron-left"></i>
+                    </button>
+                    <button class="tutor-icon-button" id="tutor-calendar-next-button" type="button" aria-label="Nächster Monat">
+                      <i data-lucide="chevron-right"></i>
+                    </button>
+                    <button class="tutor-icon-button" id="tutor-add-button" type="button" aria-label="Neuen Termin anlegen">
+                      <i data-lucide="plus"></i>
+                    </button>
                   </div>
+                </div>
+                <div class="tutor-calendar-weekdays">
+                  <div class="tutor-calendar-weekday">Mo</div>
+                  <div class="tutor-calendar-weekday">Di</div>
+                  <div class="tutor-calendar-weekday">Mi</div>
+                  <div class="tutor-calendar-weekday">Do</div>
+                  <div class="tutor-calendar-weekday">Fr</div>
+                  <div class="tutor-calendar-weekday">Sa</div>
+                  <div class="tutor-calendar-weekday">So</div>
                 </div>
                 <div class="tutor-calendar-grid" id="tutor-calendar-grid"></div>
-              </section>
+              </div>
+            </section>
+            <div style="display:grid; gap:18px;">
               <section class="tutor-card">
                 <div class="tutor-card-header">
                   <div>
-                    <h2 class="tutor-card-title">Anstehende Unterrichte</h2>
-                    <p class="tutor-card-copy">Erstelle neue Termine und hinterlege direkt, was im Unterricht oder als Hausaufgabe ansteht.</p>
+                    <h2 class="tutor-card-title">Termin-Details</h2>
+                    <p class="tutor-card-copy">Hier siehst du den ausgewählten Unterricht mit Hausaufgabe und Zielen.</p>
                   </div>
                 </div>
-                <div class="school-grid" id="lesson-form">
-                  <label>
-                    Schüler auswählen
-                    <select class="school-select" id="lesson-student-select">
-                      <option value="">Bitte wählen</option>
-                    </select>
-                  </label>
-                  <label>
-                    Schüler E-Mail
-                    <input class="school-field" id="lesson-student-email" type="email" placeholder="student@example.com">
-                  </label>
-                  <label>
-                    Start
-                    <input class="school-field" id="lesson-starts-at" type="datetime-local">
-                  </label>
-                  <label>
-                    Ende
-                    <input class="school-field" id="lesson-ends-at" type="datetime-local">
-                  </label>
-                  <label style="grid-column: 1 / -1;">
-                    Titel
-                    <input class="school-field" id="lesson-title" type="text" placeholder="Zum Beispiel: Dienstag, Lesetraining in C-Lage">
-                  </label>
-                  <label style="grid-column: 1 / -1;">
-                    Unterrichtsnotiz / Hausaufgabe
-                    <textarea class="school-field" id="lesson-homework-note" rows="4" placeholder="Woran soll im Unterricht gearbeitet werden und welche Hausaufgabe soll daraus folgen?"></textarea>
-                  </label>
-                </div>
-                <div class="school-actions">
-                  <button class="school-submit" id="lesson-save-button" type="button">Unterricht eintragen</button>
-                </div>
-                <div class="tutor-calendar-list" id="tutor-lesson-list"></div>
-              </section>
-            </div>
-            <div class="tutor-column">
-              <section class="tutor-card">
-                <div class="tutor-card-header">
-                  <div>
-                    <h2 class="tutor-card-title">Hausaufgabe zuweisen</h2>
-                    <p class="tutor-card-copy">Lege Modus, Zielbereich, Fälligkeit und Zielgenauigkeit fest.</p>
-                  </div>
-                </div>
-                <div class="school-grid" id="school-assignment-form">
-                  <label>
-                    Schüler auswählen
-                    <select class="school-select" id="school-student-select">
-                      <option value="">Bitte wählen</option>
-                    </select>
-                  </label>
-                  <label>
-                    Schüler E-Mail
-                    <input class="school-field" id="school-student-email" type="email" placeholder="student@example.com">
-                  </label>
-                  <label>
-                    Modus
-                    <select class="school-select" id="school-mode-select">
-                      <option value="treble">Violine</option>
-                      <option value="bass">Bass</option>
-                      <option value="double">Dual</option>
-                    </select>
-                  </label>
-                  <label>
-                    Violine Start
-                    <select class="school-select" id="school-treble-start"></select>
-                  </label>
-                  <label>
-                    Violine Ende
-                    <select class="school-select" id="school-treble-end"></select>
-                  </label>
-                  <label>
-                    Bass Start
-                    <select class="school-select" id="school-bass-start"></select>
-                  </label>
-                  <label>
-                    Bass Ende
-                    <select class="school-select" id="school-bass-end"></select>
-                  </label>
-                  <label>
-                    Ziel in Prozent
-                    <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
-                  </label>
-                  <label>
-                    Fällig bis
-                    <input class="school-field" id="school-due-date" type="date">
-                  </label>
-                  <label style="grid-column: 1 / -1;">
-                    Beschreibung
-                    <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage täglich langsam und achte auf sichere Zuordnung."></textarea>
-                  </label>
-                </div>
-                <div class="school-actions" id="school-actions">
-                  <button class="school-submit" id="school-save-button" type="button">Hausaufgabe zuweisen</button>
-                </div>
-                <p class="school-status" id="school-status">Bereit zum Zuweisen einer Hausaufgabe.</p>
+                <div id="tutor-detail-panel"></div>
               </section>
               <section class="tutor-card">
                 <div class="tutor-card-header">
@@ -2038,10 +2109,89 @@
                   </div>
                 </div>
                 <div class="tutor-assignment-list" id="tutor-assignment-list"></div>
+                <p class="school-status" id="school-status">Bereit zum Planen von Unterricht und Hausaufgaben.</p>
               </section>
             </div>
           </div>
         </section>
+        <div class="tutor-modal is-hidden" id="tutor-modal" aria-hidden="true">
+          <div class="tutor-modal-card">
+            <div class="tutor-card-header">
+              <div>
+                <h2 class="tutor-card-title">Neuen Termin anlegen</h2>
+                <p class="tutor-card-copy">Lege Unterricht und Hausaufgabe in einem Schritt an.</p>
+              </div>
+              <button class="tutor-back" id="tutor-modal-close-button" type="button">Schließen</button>
+            </div>
+            <div class="school-grid" id="lesson-form">
+              <label>
+                Schüler auswählen
+                <select class="school-select" id="lesson-student-select">
+                  <option value="">Bitte wählen</option>
+                </select>
+              </label>
+              <label>
+                Schüler E-Mail
+                <input class="school-field" id="lesson-student-email" type="email" placeholder="student@example.com">
+              </label>
+              <label>
+                Start
+                <input class="school-field" id="lesson-starts-at" type="datetime-local">
+              </label>
+              <label>
+                Ende
+                <input class="school-field" id="lesson-ends-at" type="datetime-local">
+              </label>
+              <label style="grid-column: 1 / -1;">
+                Titel
+                <input class="school-field" id="lesson-title" type="text" placeholder="Zum Beispiel: Dienstag, Lesetraining in C-Lage">
+              </label>
+              <label style="grid-column: 1 / -1;">
+                Unterrichtsnotiz
+                <textarea class="school-field" id="lesson-homework-note" rows="4" placeholder="Was ist im Unterricht geplant?"></textarea>
+              </label>
+              <label>
+                Modus
+                <select class="school-select" id="school-mode-select">
+                  <option value="treble">Violine</option>
+                  <option value="bass">Bass</option>
+                  <option value="double">Dual</option>
+                </select>
+              </label>
+              <label>
+                Ziel in Prozent
+                <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
+              </label>
+              <label>
+                Violine Start
+                <select class="school-select" id="school-treble-start"></select>
+              </label>
+              <label>
+                Violine Ende
+                <select class="school-select" id="school-treble-end"></select>
+              </label>
+              <label>
+                Bass Start
+                <select class="school-select" id="school-bass-start"></select>
+              </label>
+              <label>
+                Bass Ende
+                <select class="school-select" id="school-bass-end"></select>
+              </label>
+              <label>
+                Fällig bis
+                <input class="school-field" id="school-due-date" type="date">
+              </label>
+              <label style="grid-column: 1 / -1;">
+                Hausaufgabe
+                <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage täglich langsam und achte auf sichere Zuordnung."></textarea>
+              </label>
+            </div>
+            <div class="school-actions" id="school-actions">
+              <button class="school-submit" id="school-save-button" type="button">Termin & Hausaufgabe speichern</button>
+            </div>
+          </div>
+        </div>
         <div class="sheet-music">
           <div class="bar">
             <div class="stave-header"></div>
@@ -2136,19 +2286,22 @@
       const authStatus = document.getElementById("auth-status");
       const tutorView = document.getElementById("tutor-view");
       const tutorBackButton = document.getElementById("tutor-back-button");
+      const tutorCalendarMonthLabel = document.getElementById("tutor-calendar-month-label");
+      const tutorCalendarPrevButton = document.getElementById("tutor-calendar-prev-button");
+      const tutorCalendarNextButton = document.getElementById("tutor-calendar-next-button");
+      const tutorAddButton = document.getElementById("tutor-add-button");
       const tutorCalendarGrid = document.getElementById("tutor-calendar-grid");
-      const tutorLessonList = document.getElementById("tutor-lesson-list");
+      const tutorDetailPanel = document.getElementById("tutor-detail-panel");
       const tutorAssignmentList = document.getElementById("tutor-assignment-list");
+      const tutorModal = document.getElementById("tutor-modal");
+      const tutorModalCloseButton = document.getElementById("tutor-modal-close-button");
       const lessonStudentSelect = document.getElementById("lesson-student-select");
       const lessonStudentEmailInput = document.getElementById("lesson-student-email");
       const lessonStartsAtInput = document.getElementById("lesson-starts-at");
       const lessonEndsAtInput = document.getElementById("lesson-ends-at");
       const lessonTitleInput = document.getElementById("lesson-title");
       const lessonHomeworkNoteInput = document.getElementById("lesson-homework-note");
-      const lessonSaveButton = document.getElementById("lesson-save-button");
       const schoolAssignmentForm = document.getElementById("school-assignment-form");
-      const schoolStudentSelect = document.getElementById("school-student-select");
-      const schoolStudentEmailInput = document.getElementById("school-student-email");
       const schoolModeSelect = document.getElementById("school-mode-select");
       const schoolTrebleStartSelect = document.getElementById("school-treble-start");
       const schoolTrebleEndSelect = document.getElementById("school-treble-end");
@@ -2305,6 +2458,12 @@
       let tutorStudentEmails = [];
       let tutorAssignments = [];
       let tutorLessons = [];
+      let selectedTutorLessonId = null;
+      let isTutorModalOpen = false;
+      let tutorCalendarMonth = (() => {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), 1);
+      })();
       let userRole = null;
       let activeHomework = null;
       let srsStates = {
@@ -2671,6 +2830,13 @@
         });
       }
 
+      function formatTutorMonth(date) {
+        return date.toLocaleDateString("de-DE", {
+          month: "long",
+          year: "numeric"
+        });
+      }
+
       function formatTutorDateTime(dateString) {
         if (!dateString) {
           return "Zeit offen";
@@ -2689,24 +2855,32 @@
         });
       }
 
-      function buildTutorCalendarDays() {
-        const days = [];
-        const base = new Date();
-        base.setHours(0, 0, 0, 0);
+      function normalizeCalendarDate(date) {
+        const copy = new Date(date);
+        copy.setHours(0, 0, 0, 0);
+        return copy;
+      }
 
-        for (let offset = 0; offset < 6; offset += 1) {
-          const day = new Date(base);
-          day.setDate(base.getDate() + offset);
-          days.push(day);
+      function selectedTutorLesson() {
+        return tutorLessons.find((lesson) => lesson.id === selectedTutorLessonId) || null;
+      }
+
+      function assignmentForLesson(lesson) {
+        if (!lesson?.homework_assignment_id) {
+          return null;
         }
 
-        return days;
+        return tutorAssignments.find((assignment) => assignment.id === lesson.homework_assignment_id) || null;
       }
 
       function renderTutorCalendar() {
         tutorCalendarGrid.replaceChildren();
-
-        const days = buildTutorCalendarDays();
+        tutorCalendarMonthLabel.textContent = formatTutorMonth(tutorCalendarMonth);
+        const monthStart = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth(), 1);
+        const firstWeekday = (monthStart.getDay() + 6) % 7;
+        const gridStart = new Date(monthStart);
+        gridStart.setDate(monthStart.getDate() - firstWeekday);
+        const today = normalizeCalendarDate(new Date());
         const lessonBuckets = new Map();
 
         for (const lesson of tutorLessons) {
@@ -2714,28 +2888,46 @@
           if (Number.isNaN(startsAt.getTime())) {
             continue;
           }
-          const key = startsAt.toISOString().slice(0, 10);
+          const key = normalizeCalendarDate(startsAt).toISOString().slice(0, 10);
           const entries = lessonBuckets.get(key) || [];
           entries.push(lesson);
           lessonBuckets.set(key, entries);
         }
 
-        for (const day of days) {
+        for (let offset = 0; offset < 42; offset += 1) {
+          const day = new Date(gridStart);
+          day.setDate(gridStart.getDate() + offset);
           const dayCard = document.createElement("div");
           dayCard.className = "tutor-calendar-day";
           const key = day.toISOString().slice(0, 10);
           const lessons = (lessonBuckets.get(key) || []).sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+          const isOutside = day.getMonth() !== tutorCalendarMonth.getMonth();
+          const isToday = normalizeCalendarDate(day).getTime() === today.getTime();
+          const containsSelected = lessons.some((lesson) => lesson.id === selectedTutorLessonId);
+
+          if (isOutside) {
+            dayCard.classList.add("is-outside");
+          }
+          if (isToday) {
+            dayCard.classList.add("is-today");
+          }
+          if (containsSelected) {
+            dayCard.classList.add("is-selected");
+          }
 
           if (!lessons.length) {
             dayCard.classList.add("is-empty");
           }
 
+          const number = document.createElement("p");
+          number.className = "tutor-calendar-day-number";
+          number.textContent = String(day.getDate());
+          dayCard.appendChild(number);
+
           const label = document.createElement("p");
           label.className = "tutor-calendar-day-label";
           label.textContent = day.toLocaleDateString("de-DE", {
-            weekday: "long",
-            day: "2-digit",
-            month: "2-digit"
+            weekday: "short"
           });
           dayCard.appendChild(label);
 
@@ -2743,52 +2935,96 @@
           items.className = "tutor-calendar-day-items";
 
           if (!lessons.length) {
-            const empty = document.createElement("div");
+            const empty = document.createElement("button");
+            empty.type = "button";
             empty.className = "tutor-calendar-chip";
-            empty.innerHTML = "<span>Kein Unterricht geplant.</span>";
+            empty.innerHTML = "<span>Kein Termin</span>";
+            empty.addEventListener("click", () => {
+              selectedTutorLessonId = null;
+              renderTutorCalendar();
+              renderTutorDetailPanel();
+            });
             items.appendChild(empty);
           } else {
-            for (const lesson of lessons) {
-              const chip = document.createElement("div");
+            for (const lesson of lessons.slice(0, 3)) {
+              const chip = document.createElement("button");
+              chip.type = "button";
               chip.className = "tutor-calendar-chip";
               const title = lesson.title || lesson.student_email || "Unterricht";
               chip.innerHTML = `
                 <strong>${title}</strong>
-                <span>${formatTutorDateTime(lesson.starts_at)}${lesson.homework_note ? ` · ${lesson.homework_note}` : ""}</span>
+                <span>${new Date(lesson.starts_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · ${lesson.student_email || "Kein Schüler"}</span>
               `;
+              chip.addEventListener("click", (event) => {
+                event.stopPropagation();
+                selectedTutorLessonId = lesson.id;
+                renderTutorCalendar();
+                renderTutorDetailPanel();
+              });
               items.appendChild(chip);
             }
+
+            if (lessons.length > 3) {
+              const more = document.createElement("div");
+              more.className = "tutor-calendar-chip";
+              more.innerHTML = `<span>+${lessons.length - 3} weitere</span>`;
+              items.appendChild(more);
+            }
           }
+
+          dayCard.addEventListener("click", () => {
+            if (lessons.length) {
+              selectedTutorLessonId = lessons[0].id;
+            } else {
+              selectedTutorLessonId = null;
+            }
+            renderTutorCalendar();
+            renderTutorDetailPanel();
+          });
 
           dayCard.appendChild(items);
           tutorCalendarGrid.appendChild(dayCard);
         }
       }
 
-      function renderTutorLessonList() {
-        tutorLessonList.replaceChildren();
+      function renderTutorDetailPanel() {
+        tutorDetailPanel.replaceChildren();
+        const lesson = selectedTutorLesson();
 
-        if (!tutorLessons.length) {
+        if (!lesson) {
           const empty = document.createElement("div");
-          empty.className = "tutor-calendar-entry is-empty";
-          empty.textContent = "Noch keine Unterrichtstermine geplant.";
-          tutorLessonList.appendChild(empty);
+          empty.className = "tutor-detail-empty";
+          empty.textContent = "Wähle einen Termin im Kalender aus, um Unterricht und Hausaufgabe zu sehen.";
+          tutorDetailPanel.appendChild(empty);
           return;
         }
 
-        for (const lesson of tutorLessons) {
-          const entry = document.createElement("article");
-          entry.className = "tutor-calendar-entry";
-          entry.innerHTML = `
-            <div class="tutor-entry-topline">
-              <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
-              <span class="tutor-entry-pill">${formatTutorDate(lesson.starts_at)}</span>
-            </div>
-            <p class="tutor-entry-meta">${lesson.student_email || "Kein Schüler"} · ${formatTutorDateTime(lesson.starts_at)}${lesson.ends_at ? ` – ${formatTutorDateTime(lesson.ends_at)}` : ""}</p>
-            <p class="tutor-entry-copy">${lesson.homework_note || "Keine Notiz hinterlegt."}</p>
-          `;
-          tutorLessonList.appendChild(entry);
-        }
+        const assignment = assignmentForLesson(lesson);
+        const card = document.createElement("div");
+        card.className = "tutor-detail-block";
+        card.innerHTML = `
+          <div class="tutor-entry-topline">
+            <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
+            <span class="tutor-entry-pill">${formatTutorDate(lesson.starts_at)}</span>
+          </div>
+          <div class="tutor-detail-meta">
+            <div class="tutor-detail-row"><span>Schüler</span><strong>${lesson.student_email || "Kein Schüler"}</strong></div>
+            <div class="tutor-detail-row"><span>Start</span><strong>${formatTutorDateTime(lesson.starts_at)}</strong></div>
+            <div class="tutor-detail-row"><span>Ende</span><strong>${lesson.ends_at ? formatTutorDateTime(lesson.ends_at) : "Offen"}</strong></div>
+            <div class="tutor-detail-row"><span>Modus</span><strong>${assignment ? homeworkSummaryText(assignment) : "Keine Hausaufgabe verknüpft"}</strong></div>
+            <div class="tutor-detail-row"><span>Fällig am</span><strong>${assignment ? homeworkDueText(assignment) : "Kein Datum"}</strong></div>
+            <div class="tutor-detail-row"><span>Ziel</span><strong>${assignment ? `${assignment.target_accuracy}% sicher` : "Kein Ziel"}</strong></div>
+          </div>
+          <div class="tutor-card">
+            <h4 class="tutor-card-title" style="font-size:18px;">Unterrichtsnotiz</h4>
+            <p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>
+          </div>
+          <div class="tutor-card">
+            <h4 class="tutor-card-title" style="font-size:18px;">Hausaufgabe</h4>
+            <p class="tutor-entry-copy">${assignment?.description || "Keine Hausaufgabe verknüpft."}</p>
+          </div>
+        `;
+        tutorDetailPanel.appendChild(card);
       }
 
       function renderTutorAssignmentList() {
@@ -2822,21 +3058,21 @@
         const isTutor = Boolean(authUser) && userRole === "tutor";
         if (!isTutor) {
           isTutorViewVisible = false;
+          isTutorModalOpen = false;
         }
         homeModuleTutor.classList.toggle("is-hidden", !isTutor);
         schoolSaveButton.disabled = schoolBusy || !isTutor;
-        lessonSaveButton.disabled = lessonBusy || !isTutor;
         lessonStudentSelect.disabled = lessonBusy || !isTutor;
-        schoolStudentSelect.disabled = schoolBusy || !isTutor;
+        tutorModal.classList.toggle("is-hidden", !isTutorModalOpen || !isTutorViewVisible);
+        tutorModal.setAttribute("aria-hidden", isTutorModalOpen && isTutorViewVisible ? "false" : "true");
         renderStudentEmailOptions();
         renderTutorCalendar();
-        renderTutorLessonList();
+        renderTutorDetailPanel();
         renderTutorAssignmentList();
         updateSchoolModeFields();
       }
 
       function renderStudentEmailOptions() {
-        schoolStudentSelect.replaceChildren();
         lessonStudentSelect.replaceChildren();
 
         const createPlaceholderOption = () => {
@@ -2848,19 +3084,12 @@
           return option;
         };
 
-        schoolStudentSelect.appendChild(createPlaceholderOption());
         lessonStudentSelect.appendChild(createPlaceholderOption());
 
         for (const email of tutorStudentEmails) {
-          const option = document.createElement("option");
-          option.value = email;
-          option.textContent = email;
-          if (schoolStudentEmailInput.value.trim().toLowerCase() === email) {
-            option.selected = true;
-          }
-          schoolStudentSelect.appendChild(option);
-
-          const lessonOption = option.cloneNode(true);
+          const lessonOption = document.createElement("option");
+          lessonOption.value = email;
+          lessonOption.textContent = email;
           if (lessonStudentEmailInput.value.trim().toLowerCase() === email) {
             lessonOption.selected = true;
           }
@@ -2895,7 +3124,7 @@
           .from("user_profiles")
           .insert({
             user_id: authUser.id,
-            email: authUser.email,
+            email: authUser.email.toLowerCase(),
             role: "student"
           })
           .select("*")
@@ -3003,6 +3232,12 @@
         }
 
         tutorLessons = data || [];
+        if (selectedTutorLessonId && !tutorLessons.some((lesson) => lesson.id === selectedTutorLessonId)) {
+          selectedTutorLessonId = null;
+        }
+        if (!selectedTutorLessonId && tutorLessons.length) {
+          selectedTutorLessonId = tutorLessons[0].id;
+        }
         return tutorLessons;
       }
 
@@ -3070,7 +3305,15 @@
         const startsAt = lessonStartsAtInput.value;
         const endsAt = lessonEndsAtInput.value;
         const title = lessonTitleInput.value.trim();
-        const homeworkNote = lessonHomeworkNoteInput.value.trim();
+        const lessonNote = lessonHomeworkNoteInput.value.trim();
+        const mode = schoolModeSelect.value;
+        const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
+        const dueAt = schoolDueDateInput.value || null;
+        const description = schoolDescriptionInput.value.trim();
+        const trebleStart = schoolTrebleStartSelect.value;
+        const trebleEnd = schoolTrebleEndSelect.value;
+        const bassStart = schoolBassStartSelect.value;
+        const bassEnd = schoolBassEndSelect.value;
 
         if (!studentEmail) {
           setSchoolStatus("Bitte eine Schüler-E-Mail für den Unterricht wählen.", "error");
@@ -3087,60 +3330,6 @@
           return;
         }
 
-        lessonBusy = true;
-        updateTutorUi();
-        try {
-          const { error } = await supabaseClient
-            .from("tutor_lessons")
-            .insert({
-              tutor_user_id: authUser.id,
-              tutor_email: authUser.email,
-              student_email: studentEmail,
-              title: title || null,
-              homework_note: homeworkNote || null,
-              starts_at: new Date(startsAt).toISOString(),
-              ends_at: endsAt ? new Date(endsAt).toISOString() : null
-            });
-
-          if (error) {
-            throw error;
-          }
-
-          lessonStartsAtInput.value = "";
-          lessonEndsAtInput.value = "";
-          lessonTitleInput.value = "";
-          lessonHomeworkNoteInput.value = "";
-          setSchoolStatus(`Unterricht für ${studentEmail} eingetragen.`, "success");
-          await loadTutorLessons();
-        } catch (error) {
-          console.error("[Tutor] Unterricht speichern fehlgeschlagen", error);
-          setSchoolStatus(error?.message || "Unterricht speichern fehlgeschlagen.", "error");
-        } finally {
-          lessonBusy = false;
-          updateTutorUi();
-        }
-      }
-
-      async function saveHomeworkAssignment() {
-        if (!supabaseClient || !authUser || userRole !== "tutor" || schoolBusy) {
-          return;
-        }
-
-        const studentEmail = schoolStudentEmailInput.value.trim().toLowerCase();
-        const mode = schoolModeSelect.value;
-        const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
-        const dueAt = schoolDueDateInput.value || null;
-        const description = schoolDescriptionInput.value.trim();
-        const trebleStart = schoolTrebleStartSelect.value;
-        const trebleEnd = schoolTrebleEndSelect.value;
-        const bassStart = schoolBassStartSelect.value;
-        const bassEnd = schoolBassEndSelect.value;
-
-        if (!studentEmail) {
-          setSchoolStatus("Bitte eine Schüler-E-Mail eingeben.", "error");
-          return;
-        }
-
         if (mode !== "bass" && semitoneValue(trebleStart) > semitoneValue(trebleEnd)) {
           setSchoolStatus("Violine Start muss vor Violine Ende liegen.", "error");
           return;
@@ -3151,10 +3340,11 @@
           return;
         }
 
+        lessonBusy = true;
         schoolBusy = true;
         updateTutorUi();
         try {
-          const payload = {
+          const homeworkPayload = {
             tutor_user_id: authUser.id,
             tutor_email: authUser.email,
             student_email: studentEmail,
@@ -3179,20 +3369,50 @@
             throw deactivateError;
           }
 
-          const { error } = await supabaseClient
+          const { data: insertedHomework, error: homeworkError } = await supabaseClient
             .from("homework_assignments")
-            .insert(payload);
+            .insert(homeworkPayload)
+            .select("*")
+            .single();
 
-          if (error) {
-            throw error;
+          if (homeworkError) {
+            throw homeworkError;
           }
 
-          setSchoolStatus(`Hausaufgabe an ${studentEmail} zugewiesen.`, "success");
-          await loadTutorAssignments();
+          const { data: insertedLesson, error: lessonError } = await supabaseClient
+            .from("tutor_lessons")
+            .insert({
+              tutor_user_id: authUser.id,
+              tutor_email: authUser.email,
+              student_email: studentEmail,
+              title: title || null,
+              homework_note: lessonNote || null,
+              starts_at: new Date(startsAt).toISOString(),
+              ends_at: endsAt ? new Date(endsAt).toISOString() : null,
+              homework_assignment_id: insertedHomework.id
+            })
+            .select("*")
+            .single();
+
+          if (lessonError) {
+            throw lessonError;
+          }
+
+          lessonStartsAtInput.value = "";
+          lessonEndsAtInput.value = "";
+          lessonTitleInput.value = "";
+          lessonHomeworkNoteInput.value = "";
+          schoolDueDateInput.value = "";
+          schoolDescriptionInput.value = "";
+          selectedTutorLessonId = insertedLesson.id;
+          isTutorModalOpen = false;
+          setSchoolStatus(`Termin und Hausaufgabe für ${studentEmail} gespeichert.`, "success");
+          await Promise.all([loadTutorLessons(), loadTutorAssignments()]);
         } catch (error) {
-          console.error("[School] Hausaufgabe speichern fehlgeschlagen", error);
-          setSchoolStatus(error?.message || "Hausaufgabe speichern fehlgeschlagen.", "error");
+          console.error("[Tutor] Unterricht speichern fehlgeschlagen", error);
+          setSchoolStatus(error?.message || "Termin speichern fehlgeschlagen.", "error");
         } finally {
+          lessonBusy = false;
           schoolBusy = false;
           updateTutorUi();
         }
@@ -3232,7 +3452,7 @@
 
         const payload = {
           user_id: authUser.id,
-          email: authUser.email,
+          email: authUser.email.toLowerCase(),
           ...collectPersistedState()
         };
 
@@ -3424,7 +3644,7 @@
           isTutorViewVisible = false;
         }
         const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible;
-        midiIndicator.hidden = isHomeViewVisible;
+        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
@@ -3995,8 +4215,6 @@
         schoolTrebleEndSelect.disabled = trebleDisabled || schoolBusy;
         schoolBassStartSelect.disabled = bassDisabled || schoolBusy;
         schoolBassEndSelect.disabled = bassDisabled || schoolBusy;
-        schoolStudentSelect.disabled = schoolBusy || userRole !== "tutor";
-        schoolStudentEmailInput.disabled = schoolBusy;
         schoolModeSelect.disabled = schoolBusy;
         schoolTargetAccuracyInput.disabled = schoolBusy;
         schoolDueDateInput.disabled = schoolBusy;
@@ -5284,14 +5502,9 @@
       });
       tutorBackButton.addEventListener("click", () => {
         isTutorViewVisible = false;
+        isTutorModalOpen = false;
         isHomeViewVisible = true;
         updateModeUi();
-      });
-      schoolStudentSelect.addEventListener("change", () => {
-        schoolStudentEmailInput.value = schoolStudentSelect.value;
-      });
-      schoolStudentEmailInput.addEventListener("input", () => {
-        renderStudentEmailOptions();
       });
       lessonStudentSelect.addEventListener("change", () => {
         lessonStudentEmailInput.value = lessonStudentSelect.value;
@@ -5299,8 +5512,29 @@
       lessonStudentEmailInput.addEventListener("input", () => {
         renderStudentEmailOptions();
       });
-      schoolSaveButton.addEventListener("click", () => saveHomeworkAssignment());
-      lessonSaveButton.addEventListener("click", () => saveTutorLesson());
+      tutorCalendarPrevButton.addEventListener("click", () => {
+        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth() - 1, 1);
+        renderTutorCalendar();
+      });
+      tutorCalendarNextButton.addEventListener("click", () => {
+        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth() + 1, 1);
+        renderTutorCalendar();
+      });
+      tutorAddButton.addEventListener("click", () => {
+        isTutorModalOpen = true;
+        updateTutorUi();
+      });
+      tutorModalCloseButton.addEventListener("click", () => {
+        isTutorModalOpen = false;
+        updateTutorUi();
+      });
+      tutorModal.addEventListener("click", (event) => {
+        if (event.target === tutorModal) {
+          isTutorModalOpen = false;
+          updateTutorUi();
+        }
+      });
+      schoolSaveButton.addEventListener("click", () => saveTutorLesson());
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
       homeModuleNotes.addEventListener("click", () => {
         isHomeViewVisible = false;
