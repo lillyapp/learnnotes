@@ -2225,6 +2225,37 @@
         generateRound();
       }
 
+      function applySignedOutState() {
+        window.clearTimeout(remoteSaveTimer);
+        authUser = null;
+        authEmailInput.value = "";
+        authPasswordInput.value = "";
+        resetLocalProgressState();
+        userRole = null;
+        activeHomework = null;
+        isSchoolPanelVisible = false;
+        updateAuthUi();
+        updateSchoolUi();
+        updateModeUi();
+        updateSrsUi();
+        updateInfoUi();
+        generateRound();
+      }
+
+      async function syncAuthState(nextUser) {
+        if (!nextUser) {
+          applySignedOutState();
+          return;
+        }
+
+        authUser = nextUser;
+        authPasswordInput.value = "";
+        isAuthPanelVisible = false;
+        updateAuthUi();
+        await loadSignedInState();
+        updateAuthUi();
+      }
+
       async function handleAuthAction(action) {
         if (!supabaseClient || authBusy) {
           return;
@@ -2252,13 +2283,8 @@
             return;
           }
 
-          authUser = data.user || data.session?.user || null;
-          if (authUser) {
-            isAuthPanelVisible = false;
-          }
-
-          if (authUser) {
-            await loadSignedInState();
+          if (data.session?.user || data.user) {
+            setAuthStatus("Anmeldung wird abgeschlossen...", "success");
           } else if (action === "sign-up") {
             setAuthStatus("Registrierung angelegt. Falls Mail-Bestätigung aktiv ist, bestätige zuerst deine E-Mail.", "success");
           }
@@ -2279,16 +2305,14 @@
         authBusy = true;
         updateAuthUi();
         try {
-          await Promise.race([
-            saveRemoteProgress("sign-out"),
-            new Promise((resolve) => window.setTimeout(resolve, 1200))
-          ]);
           const { error } = await supabaseClient.auth.signOut();
 
           if (error) {
             setAuthStatus(error.message, "error");
             return;
           }
+
+          setAuthStatus("Abmeldung wird abgeschlossen...", "success");
         } catch (error) {
           console.error("[Auth] Abmelden fehlgeschlagen", error);
           setAuthStatus(error?.message || "Abmelden fehlgeschlagen.", "error");
@@ -2305,25 +2329,8 @@
         }
 
         supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        authSubscription = supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-          authUser = session?.user || null;
-
-          if (!authUser) {
-            window.clearTimeout(remoteSaveTimer);
-            authEmailInput.value = "";
-            authPasswordInput.value = "";
-            resetLocalProgressState();
-            userRole = null;
-            activeHomework = null;
-            isSchoolPanelVisible = false;
-          }
-
-          updateAuthUi();
-          updateSchoolUi();
-
-          if (authUser) {
-            await loadSignedInState();
-          }
+        authSubscription = supabaseClient.auth.onAuthStateChange((_event, session) => {
+          void syncAuthState(session?.user || null);
         });
 
         const { data, error } = await supabaseClient.auth.getSession();
@@ -2333,13 +2340,7 @@
           return;
         }
 
-        authUser = data.session?.user || null;
-        updateAuthUi();
-        updateSchoolUi();
-
-        if (authUser) {
-          await loadSignedInState();
-        }
+        await syncAuthState(data.session?.user || null);
       }
 
       function updateModeUi() {
