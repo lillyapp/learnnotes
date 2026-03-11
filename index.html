@@ -2841,6 +2841,10 @@
           if (keyMidi === endMidi) {
             key.classList.add("is-range-end");
           }
+
+          if (isRangeSelectorVisible) {
+            key.dataset.label = displayNoteName(key.dataset.note);
+          }
         }
 
         syncRangeBracketPositions();
@@ -3422,9 +3426,10 @@
           isKeyboardVisible = true;
           toggleKeyboardButton.classList.add("is-active");
           keyboard.classList.remove("is-hidden");
-          window.requestAnimationFrame(syncRangeBracketPositions);
+          window.requestAnimationFrame(renderKeyboardState);
+          return;
         }
-        syncRangeBracketPositions();
+        renderKeyboardState();
       });
       toggleKeyboardButton.addEventListener("click", () => {
         isKeyboardVisible = !isKeyboardVisible;
