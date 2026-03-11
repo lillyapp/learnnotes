@@ -474,15 +474,192 @@
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
+        margin-left: -10px;
+      }
+
+      .management-analytics-section {
+        padding: 12px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
       }
 
       .management-analytics-card {
-        padding: 14px;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background: var(--surface);
+        padding: 4px 10px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         display: grid;
         gap: 12px;
+      }
+
+      .management-homework-copy {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .management-homework-status {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .management-homework-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 12px;
+      }
+
+      .management-homework-item {
+        min-height: 148px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+
+      .management-homework-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .management-homework-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .management-homework-edit {
+        width: auto;
+        height: auto;
+        padding: 0;
+        border: 0 !important;
+        background: transparent;
+        color: var(--text);
+        box-shadow: none;
+        border-radius: 0;
+        appearance: none;
+      }
+
+      .management-homework-edit:hover,
+      .management-homework-edit:focus-visible,
+      .management-homework-edit:active {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none;
+      }
+
+      .homework-range-picker {
+        display: grid;
+        gap: 12px;
+        grid-column: 1 / -1;
+      }
+
+      .homework-range-picker.is-hidden,
+      .homework-range-targets.is-hidden,
+      .homework-range-target-group.is-hidden {
+        display: none;
+      }
+
+      .homework-range-targets {
+        display: grid;
+        gap: 10px;
+      }
+
+      .homework-range-target-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .homework-range-target {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .homework-range-target.is-active {
+        border-color: var(--text);
+        background: var(--text);
+        color: var(--bg);
+      }
+
+      .homework-range-keyboard {
+        position: relative;
+        width: 100%;
+        height: 176px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--keyboard-bg);
+        overflow: hidden;
+      }
+
+      .homework-range-help {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .school-range-selects {
+        display: none;
+      }
+
+      .management-homework-name {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .management-homework-meta-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .management-homework-meta-line {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .management-homework-state {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      .management-homework-state i {
+        width: 20px;
+        height: 20px;
+      }
+
+      .management-homework-state.is-open {
+        color: #7a7a7a;
+      }
+
+      .management-homework-state.is-finished {
+        color: #1d7a3c;
+      }
+
+      .management-homework-state.is-delayed {
+        color: #c93535;
       }
 
       .management-analytics-title {
@@ -3148,23 +3325,44 @@
                     <option value="yes">Ja</option>
                   </select>
                 </label>
-                <div></div>
-                <label>
-                  Violine Start
-                  <select class="school-select" id="school-treble-start"></select>
-                </label>
-                <label>
-                  Violine Ende
-                  <select class="school-select" id="school-treble-end"></select>
-                </label>
-                <label>
-                  Bass Start
-                  <select class="school-select" id="school-bass-start"></select>
-                </label>
-                <label>
-                  Bass Ende
-                  <select class="school-select" id="school-bass-end"></select>
-                </label>
+                <div class="homework-range-picker" id="homework-range-picker">
+                  <div class="homework-range-targets" id="homework-range-targets">
+                    <div class="homework-range-target-group" id="homework-range-single-targets">
+                      <button class="homework-range-target" id="homework-range-single-start" type="button">Start</button>
+                      <button class="homework-range-target" id="homework-range-single-end" type="button">Ende</button>
+                    </div>
+                    <div class="homework-range-target-group is-hidden" id="homework-range-double-targets">
+                      <button class="homework-range-target" id="homework-range-bass-start" type="button">Bass Start</button>
+                      <button class="homework-range-target" id="homework-range-bass-end" type="button">Bass Ende</button>
+                      <button class="homework-range-target" id="homework-range-treble-start" type="button">Violine Start</button>
+                      <button class="homework-range-target" id="homework-range-treble-end" type="button">Violine Ende</button>
+                    </div>
+                  </div>
+                  <div class="keyboard homework-range-keyboard" id="homework-range-keyboard" aria-label="Hausaufgaben-Bereich wählen">
+                    <div class="keyboard-keys">
+                      <div class="white-keys" id="homework-range-white-keys"></div>
+                      <div class="black-keys" id="homework-range-black-keys"></div>
+                    </div>
+                    <div class="keyboard-range-overlay" aria-hidden="true">
+                      <div class="range-window" id="homework-range-single-window"></div>
+                      <div class="range-bracket range-bracket-start" id="homework-range-single-start-bracket"></div>
+                      <div class="range-bracket range-bracket-end" id="homework-range-single-end-bracket"></div>
+                      <div class="range-window" data-range-role="bass" id="homework-range-bass-window"></div>
+                      <div class="range-bracket range-bracket-start" data-range-role="bass" id="homework-range-bass-start-bracket"></div>
+                      <div class="range-bracket range-bracket-end" data-range-role="bass" id="homework-range-bass-end-bracket"></div>
+                      <div class="range-window" data-range-role="treble" id="homework-range-treble-window"></div>
+                      <div class="range-bracket range-bracket-start" data-range-role="treble" id="homework-range-treble-start-bracket"></div>
+                      <div class="range-bracket range-bracket-end" data-range-role="treble" id="homework-range-treble-end-bracket"></div>
+                    </div>
+                  </div>
+                  <p class="homework-range-help">Wähle oben den Start- oder Endpunkt und klicke dann auf die passende Taste im Klavier.</p>
+                  <div class="school-range-selects" aria-hidden="true">
+                    <select class="school-select" id="school-treble-start"></select>
+                    <select class="school-select" id="school-treble-end"></select>
+                    <select class="school-select" id="school-bass-start"></select>
+                    <select class="school-select" id="school-bass-end"></select>
+                  </div>
+                </div>
               </div>
               </div>
             </div>
@@ -3423,6 +3621,28 @@
       const schoolAllowFreePracticeSelect = document.getElementById("school-allow-free-practice");
       const schoolDueDateInput = document.getElementById("school-due-date");
       const schoolDescriptionInput = document.getElementById("school-description");
+      const homeworkRangePicker = document.getElementById("homework-range-picker");
+      const homeworkRangeKeyboard = document.getElementById("homework-range-keyboard");
+      const homeworkRangeWhiteKeys = document.getElementById("homework-range-white-keys");
+      const homeworkRangeBlackKeys = document.getElementById("homework-range-black-keys");
+      const homeworkRangeTargets = document.getElementById("homework-range-targets");
+      const homeworkRangeSingleTargets = document.getElementById("homework-range-single-targets");
+      const homeworkRangeDoubleTargets = document.getElementById("homework-range-double-targets");
+      const homeworkRangeSingleStartButton = document.getElementById("homework-range-single-start");
+      const homeworkRangeSingleEndButton = document.getElementById("homework-range-single-end");
+      const homeworkRangeBassStartButton = document.getElementById("homework-range-bass-start");
+      const homeworkRangeBassEndButton = document.getElementById("homework-range-bass-end");
+      const homeworkRangeTrebleStartButton = document.getElementById("homework-range-treble-start");
+      const homeworkRangeTrebleEndButton = document.getElementById("homework-range-treble-end");
+      const homeworkRangeSingleWindow = document.getElementById("homework-range-single-window");
+      const homeworkRangeSingleStartBracket = document.getElementById("homework-range-single-start-bracket");
+      const homeworkRangeSingleEndBracket = document.getElementById("homework-range-single-end-bracket");
+      const homeworkRangeBassWindow = document.getElementById("homework-range-bass-window");
+      const homeworkRangeBassStartBracket = document.getElementById("homework-range-bass-start-bracket");
+      const homeworkRangeBassEndBracket = document.getElementById("homework-range-bass-end-bracket");
+      const homeworkRangeTrebleWindow = document.getElementById("homework-range-treble-window");
+      const homeworkRangeTrebleStartBracket = document.getElementById("homework-range-treble-start-bracket");
+      const homeworkRangeTrebleEndBracket = document.getElementById("homework-range-treble-end-bracket");
       const schoolSaveButton = document.getElementById("school-save-button");
       const schoolStatus = document.getElementById("school-status");
       const homeView = document.getElementById("home-view");
@@ -3643,6 +3863,8 @@
         slowest_ms: null
       };
       let currentPromptStartedAt = 0;
+      let homeworkRangePickerTarget = "treble:start";
+      let activeHomeworkRangeDrag = null;
       let doubleRound = {
         bass: [],
         treble: []
@@ -4133,9 +4355,10 @@
 
         const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         const isHomeworkMode = isHomeworkModeActive();
+        const isPlayingMode = !hidesTrainerContent && isKeyboardVisible;
         const statusText = schoolStatus?.textContent?.trim() || "";
         const statusState = schoolStatus?.dataset?.state || "";
-        const showPanel = !hidesTrainerContent && (isHomeworkMode || Boolean(statusText));
+        const showPanel = !hidesTrainerContent && !isPlayingMode && isHomeworkMode;
 
         practiceHomeworkPanel.classList.toggle("is-hidden", !showPanel);
         if (!showPanel) {
@@ -4193,7 +4416,11 @@
         return notesInRange(homework.mode, range).map((name) => ({ mode: homework.mode, name }));
       }
 
-      function homeworkCompletionPercent(homework) {
+      function noteStatForProgress(progress, mode, noteName) {
+        return progress?.note_stats?.[mode]?.[noteName] || null;
+      }
+
+      function homeworkCompletionPercent(homework, progress = null) {
         const trackedNotes = homeworkTrackedNotes(homework);
         if (!trackedNotes.length) {
           return 0;
@@ -4201,7 +4428,9 @@
 
         const targetRatio = Math.max(0.5, Math.min(1, (homework?.target_accuracy || 90) / 100));
         const progressTotal = trackedNotes.reduce((sum, entry) => {
-          const stat = noteStatFor(entry.mode, entry.name);
+          const stat = progress
+            ? noteStatForProgress(progress, entry.mode, entry.name)
+            : noteStatFor(entry.mode, entry.name);
           if (!stat || stat.attempts === 0) {
             return sum;
           }
@@ -4251,6 +4480,7 @@
               : assignment
           );
           activeHomework = null;
+          syncHomeworkAttentionUi();
           selectedRange = [...manualSelectedRange];
           isDoubleModeEnabled = false;
           activeSrsMode = null;
@@ -5116,6 +5346,7 @@
         lessonHomeworkConfigFields?.setAttribute("aria-hidden", showHomeworkFields ? "false" : "true");
         lessonTitleBlock?.setAttribute("data-state", isLessonAdvancedOpen ? "active" : "");
         syncLessonPassPanel();
+        renderHomeworkRangePicker();
       }
 
       function syncTutorLessonDerivedFields({ forceEnd = false } = {}) {
@@ -5353,6 +5584,7 @@
       async function loadActiveHomework() {
         if (!supabaseClient || !authUser || userRole !== "student") {
           activeHomework = null;
+          syncHomeworkAttentionUi();
           return null;
         }
 
@@ -5368,10 +5600,12 @@
         if (error) {
           setSchoolStatus(`Hausaufgabe laden fehlgeschlagen: ${error.message}`, "error");
           activeHomework = null;
+          syncHomeworkAttentionUi();
           return null;
         }
 
         activeHomework = data || null;
+        syncHomeworkAttentionUi();
         return activeHomework;
       }
 
@@ -5379,6 +5613,7 @@
         if (!supabaseClient || !authUser || userRole !== "student") {
           studentAssignments = [];
           activeHomework = null;
+          syncHomeworkAttentionUi();
           return [];
         }
 
@@ -5393,11 +5628,13 @@
           setSchoolStatus(`Hausaufgaben laden fehlgeschlagen: ${error.message}`, "error");
           studentAssignments = [];
           activeHomework = null;
+          syncHomeworkAttentionUi();
           return [];
         }
 
         studentAssignments = data || [];
         activeHomework = studentAssignments.find((assignment) => assignment.is_active) || null;
+        syncHomeworkAttentionUi();
         return studentAssignments;
       }
 
@@ -5801,6 +6038,7 @@
         resetLocalProgressState();
         userRole = null;
         activeHomework = null;
+        syncHomeworkAttentionUi();
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         tutorStudentEmails = [];
@@ -6023,7 +6261,6 @@
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || (!isInfoVisible && !isHomeworkMode));
-        practiceHomeworkPanel.classList.toggle("is-hidden", hidesTrainerContent || (!isHomeworkMode && !(schoolStatus?.textContent?.trim())));
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || !isKeyboardVisible);
         syncPracticeHomeworkPanel();
       }
@@ -6162,6 +6399,38 @@
         return data;
       }
 
+      async function updateManagementUserProfile({ userId, userName, role, isBlocked }) {
+        if (!supabaseClient || !authUser || userRole !== "tutor") {
+          throw new Error("Nicht berechtigt.");
+        }
+
+        const nextUserName = String(userName || "").trim();
+        const nextRole = String(role || "student").trim().toLowerCase();
+        if (!userId || !nextUserName) {
+          throw new Error("User und Username sind erforderlich.");
+        }
+        if (!["student", "tutor"].includes(nextRole)) {
+          throw new Error("Ungültige Rolle.");
+        }
+
+        const { data, error } = await supabaseClient
+          .from("user_profiles")
+          .update({
+            userName: nextUserName,
+            role: nextRole,
+            is_blocked: Boolean(isBlocked)
+          })
+          .eq("user_id", userId)
+          .select("user_id, email, userName, role, is_blocked, payment_method, customer_type, standard_lesson_duration_minutes, lesson_pass_total_lessons, lesson_pass_remaining_lessons, created_at, updated_at")
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        return data;
+      }
+
       function progressStatsSummary(progress) {
         const noteStats = progress?.note_stats || {};
         const summarize = (mode) => {
@@ -6200,8 +6469,15 @@
         return Math.max(0, Math.min(100, Math.round((touched / totalKnownNotes) * 100)));
       }
 
+      function progressAttemptTotal(progress) {
+        const noteStats = progress?.note_stats || {};
+        const trebleAttempts = Object.values(noteStats.treble || {}).reduce((sum, entry) => sum + Number(entry?.attempts || 0), 0);
+        const bassAttempts = Object.values(noteStats.bass || {}).reduce((sum, entry) => sum + Number(entry?.attempts || 0), 0);
+        return trebleAttempts + bassAttempts;
+      }
+
       function buildActivitySeries(progress, days = 14) {
-        const log = progress?.activity_log || {};
+        const log = progress?.activity_log && typeof progress.activity_log === "object" ? progress.activity_log : {};
         const today = new Date();
         const series = [];
         for (let index = days - 1; index >= 0; index -= 1) {
@@ -6214,6 +6490,20 @@
             value: Number(log[key] || 0)
           });
         }
+
+        const hasRecordedActivity = series.some((entry) => entry.value > 0);
+        if (!hasRecordedActivity) {
+          const updatedAt = progress?.updated_at ? new Date(progress.updated_at) : null;
+          const fallbackAttempts = progressAttemptTotal(progress);
+          if (updatedAt instanceof Date && !Number.isNaN(updatedAt.getTime()) && fallbackAttempts > 0) {
+            const fallbackKey = updatedAt.toISOString().slice(0, 10);
+            const fallbackEntry = series.find((entry) => entry.key === fallbackKey);
+            if (fallbackEntry) {
+              fallbackEntry.value = Math.max(1, Math.round(fallbackAttempts / 12));
+            }
+          }
+        }
+
         return series;
       }
 
@@ -6309,6 +6599,109 @@
         `;
       }
 
+      function managementHomeworkHtml(user) {
+        const homework = user.activeHomework || null;
+        if (user.role !== "student") {
+          return "";
+        }
+
+        if (!homework) {
+          return `
+            <div class="management-analytics-card">
+              <p class="management-analytics-title">Aktuelle Hausaufgabe</p>
+              <ul class="management-homework-list">
+                <li class="management-homework-item">
+                  <p class="management-homework-copy">Keine aktive Hausaufgabe.</p>
+                  <p class="management-homework-status">Aktuell ist keine Aufgabe aktiv.</p>
+                </li>
+              </ul>
+            </div>
+          `;
+        }
+
+        const completion = homeworkCompletionPercent(homework, user.progress);
+        const target = Math.max(50, Math.min(100, Number(homework.target_accuracy) || 90));
+        const dueDate = homework?.due_at ? new Date(homework.due_at) : null;
+        const now = new Date();
+        let statusKey = "open";
+        let statusLabel = "Offen";
+        let statusIcon = "circle-dot";
+
+        if (completion >= target) {
+          statusKey = "finished";
+          statusLabel = "Finished";
+          statusIcon = "circle-check";
+        } else if (dueDate instanceof Date && !Number.isNaN(dueDate.getTime())) {
+          dueDate.setHours(23, 59, 59, 999);
+          const msUntilDue = dueDate.getTime() - now.getTime();
+          const daysUntilDue = msUntilDue / 86400000;
+          if (daysUntilDue <= 3 && completion === 0) {
+            statusKey = "delayed";
+            statusLabel = "Delayed";
+            statusIcon = "triangle-alert";
+          }
+        }
+
+        return `
+          <div class="management-analytics-card">
+            <p class="management-analytics-title">Aktuelle Hausaufgabe</p>
+            <ul class="management-homework-list">
+              <li class="management-homework-item">
+                <div class="management-homework-row">
+                  <p class="management-homework-name">${escapeHtml(homework.description || "Hausaufgabe")}</p>
+                  <div class="management-homework-actions">
+                    <span class="management-homework-state is-${statusKey}" title="${statusLabel}" aria-label="${statusLabel}">
+                      <i data-lucide="${statusIcon}"></i>
+                    </span>
+                    <button class="tutor-icon-button management-homework-edit" id="management-homework-edit-button" type="button" aria-label="Hausaufgabe bearbeiten" title="Hausaufgabe bearbeiten">
+                      <i data-lucide="pencil"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="management-homework-meta-list">
+                  <p class="management-homework-meta-line">${escapeHtml(homeworkSummaryText(homework))}</p>
+                  <p class="management-homework-meta-line">Status ${completion}%</p>
+                  <p class="management-homework-meta-line">${homework.due_at ? `Fällig ${escapeHtml(homeworkDueText(homework))}` : "Keine Frist gesetzt"}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        `;
+      }
+
+      async function openManagementHomeworkEditor(homeworkId) {
+        if (!supabaseClient || !authUser || userRole !== "tutor" || !homeworkId) {
+          return;
+        }
+
+        try {
+          const { data: lesson, error } = await supabaseClient
+            .from("tutor_lessons")
+            .select("*")
+            .eq("tutor_user_id", authUser.id)
+            .eq("homework_assignment_id", homeworkId)
+            .maybeSingle();
+
+          if (error) {
+            throw error;
+          }
+
+          if (!lesson) {
+            setManagementStatus("Kein verknüpfter Termin für diese Hausaufgabe gefunden.", "error");
+            return;
+          }
+
+          await Promise.all([loadTutorAssignments(), loadTutorLessons()]);
+          selectedTutorLessonId = lesson.id;
+          isManagementViewVisible = false;
+          isTutorViewVisible = true;
+          startEditTutorLesson();
+        } catch (error) {
+          console.error("[Management] Hausaufgabe bearbeiten fehlgeschlagen", error);
+          setManagementStatus(error?.message || "Hausaufgabe konnte nicht geöffnet werden.", "error");
+        }
+      }
+
       function managementRoleLabel(role) {
         return role === "tutor" ? "Tutor" : "Student";
       }
@@ -6392,10 +6785,13 @@
               </div>
             </div>
           </div>
-          <div class="management-analytics">
-            ${activityChartHtml(user.progress)}
-            ${radarChartHtml(user.progress)}
+          <div class="management-analytics-section">
+            <div class="management-analytics">
+              ${activityChartHtml(user.progress)}
+              ${radarChartHtml(user.progress)}
+            </div>
           </div>
+          ${managementHomeworkHtml(user)}
           <div class="management-form-grid">
             <label>
               Username
@@ -6428,7 +6824,7 @@
           try {
             managementBusy = true;
             setManagementStatus("User wird gespeichert...", "");
-            await callManagementApi("update-user", {
+            await updateManagementUserProfile({
               userId: user.user_id,
               userName: nextUserName,
               role: nextRole,
@@ -6446,7 +6842,7 @@
           try {
             managementBusy = true;
             setManagementStatus(user.is_blocked ? "User wird entsperrt..." : "User wird gesperrt...", "");
-            await callManagementApi("update-user", {
+            await updateManagementUserProfile({
               userId: user.user_id,
               userName: user.userName,
               role: user.role,
@@ -6480,6 +6876,9 @@
             managementBusy = false;
           }
         });
+        wrapper.querySelector("#management-homework-edit-button")?.addEventListener("click", () => {
+          void openManagementHomeworkEditor(user.activeHomework?.id || "");
+        });
         lucide.createIcons();
       }
 
@@ -6492,7 +6891,7 @@
           return;
         }
 
-        const [{ data: profiles, error: profilesError }, { data: progressRows, error: progressError }] = await Promise.all([
+        const [{ data: profiles, error: profilesError }, { data: progressRows, error: progressError }, { data: homeworkRows, error: homeworkError }] = await Promise.all([
           supabaseClient
             .from("user_profiles")
             .select("user_id, email, userName, role, is_blocked, payment_method, customer_type, standard_lesson_duration_minutes, lesson_pass_total_lessons, lesson_pass_remaining_lessons, created_at, updated_at")
@@ -6500,6 +6899,12 @@
           supabaseClient
             .from("trainer_progress")
             .select("user_id, note_stats, activity_log, timing_stats, active_srs_mode, updated_at")
+          ,
+          supabaseClient
+            .from("homework_assignments")
+            .select("id, student_email, mode, treble_range_start, treble_range_end, bass_range_start, bass_range_end, description, target_accuracy, due_at, is_active, created_at")
+            .eq("is_active", true)
+            .order("created_at", { ascending: false })
         ]);
 
         if (profilesError) {
@@ -6508,11 +6913,23 @@
         if (progressError) {
           throw progressError;
         }
+        if (homeworkError) {
+          throw homeworkError;
+        }
 
         const progressByUserId = new Map((progressRows || []).map((entry) => [entry.user_id, entry]));
+        const homeworkByStudentRef = new Map();
+        for (const homework of homeworkRows || []) {
+          const key = normalizeStudentRef(homework.student_email);
+          if (!key || homeworkByStudentRef.has(key)) {
+            continue;
+          }
+          homeworkByStudentRef.set(key, homework);
+        }
         managementUsers = (profiles || []).map((profile) => ({
           ...profile,
-          progress: progressByUserId.get(profile.user_id) || null
+          progress: progressByUserId.get(profile.user_id) || null,
+          activeHomework: homeworkByStudentRef.get(normalizeStudentRef(profile.userName || profile.email || "")) || null
         }));
         managementUsers.sort((left, right) => {
           if ((left.role === "tutor") !== (right.role === "tutor")) {
@@ -6998,6 +7415,324 @@
         }
       }
 
+      function buildKeyboardInto(whiteContainer, blackContainer) {
+        if (!whiteContainer || !blackContainer) {
+          return;
+        }
+
+        let whiteIndex = 0;
+        const whiteFragment = document.createDocumentFragment();
+        const blackFragment = document.createDocumentFragment();
+
+        for (let midi = keyboardRange.start; midi <= keyboardRange.end; midi += 1) {
+          const keyName = midiNumberToName(midi);
+
+          if (isBlackKey(midi)) {
+            const key = document.createElement("div");
+            key.className = "black-key";
+            key.dataset.midi = String(midi);
+            key.dataset.note = keyName;
+            key.setAttribute("aria-hidden", "true");
+            key.style.left = `calc((100% / 52) * ${whiteIndex})`;
+            blackFragment.appendChild(key);
+            continue;
+          }
+
+          whiteIndex += 1;
+          const key = document.createElement("div");
+          key.className = "white-key";
+          key.dataset.midi = String(midi);
+          key.dataset.note = keyName;
+          key.setAttribute("aria-hidden", "true");
+          whiteFragment.appendChild(key);
+        }
+
+        whiteContainer.replaceChildren(whiteFragment);
+        blackContainer.replaceChildren(blackFragment);
+      }
+
+      function findKeyByNoteIn(root, noteName) {
+        return root?.querySelector?.(`[data-note="${noteName}"]`) || null;
+      }
+
+      function keyCenterInKeyboardElement(keyboardElement, noteName) {
+        const key = findKeyByNoteIn(keyboardElement, noteName);
+        if (!key || !keyboardElement) {
+          return null;
+        }
+
+        const keyboardRect = keyboardElement.getBoundingClientRect();
+        const keyRect = key.getBoundingClientRect();
+        return keyRect.left - keyboardRect.left + (keyRect.width / 2);
+      }
+
+      function positionRangeWindowInKeyboard(keyboardElement, windowElement, range) {
+        if (!keyboardElement || !windowElement || !range?.[0] || !range?.[1]) {
+          return;
+        }
+
+        const startCenter = keyCenterInKeyboardElement(keyboardElement, range[0]);
+        const endCenter = keyCenterInKeyboardElement(keyboardElement, range[1]);
+        if (startCenter === null || endCenter === null) {
+          return;
+        }
+
+        windowElement.style.left = `${startCenter}px`;
+        windowElement.style.width = `${Math.max(0, endCenter - startCenter)}px`;
+      }
+
+      function positionRangeBracketsInKeyboard(keyboardElement, startElement, endElement, range, labelPrefix = "") {
+        if (!keyboardElement || !startElement || !endElement || !range?.[0] || !range?.[1]) {
+          return;
+        }
+
+        const startCenter = keyCenterInKeyboardElement(keyboardElement, range[0]);
+        const endCenter = keyCenterInKeyboardElement(keyboardElement, range[1]);
+        if (startCenter !== null) {
+          startElement.style.left = `${startCenter}px`;
+          startElement.dataset.note = labelPrefix ? `${labelPrefix} ${range[0]}` : range[0];
+        }
+        if (endCenter !== null) {
+          endElement.style.left = `${endCenter}px`;
+          endElement.dataset.note = labelPrefix ? `${labelPrefix} ${range[1]}` : range[1];
+        }
+      }
+
+      function setHomeworkRangeTarget(target) {
+        homeworkRangePickerTarget = target;
+        const buttons = [
+          [homeworkRangeSingleStartButton, "treble:start"],
+          [homeworkRangeSingleEndButton, "treble:end"],
+          [homeworkRangeBassStartButton, "bass:start"],
+          [homeworkRangeBassEndButton, "bass:end"],
+          [homeworkRangeTrebleStartButton, "treble:start"],
+          [homeworkRangeTrebleEndButton, "treble:end"]
+        ];
+        for (const [button, value] of buttons) {
+          button?.classList.toggle("is-active", value === target);
+        }
+      }
+
+      function activeHomeworkPickerMode() {
+        return schoolModeSelect.value === "bass" ? "bass" : "treble";
+      }
+
+      function homeworkRangeForMode(mode) {
+        return mode === "bass"
+          ? [schoolBassStartSelect.value, schoolBassEndSelect.value]
+          : [schoolTrebleStartSelect.value, schoolTrebleEndSelect.value];
+      }
+
+      function nearestHomeworkNoteIndexFromPointer(clientX, mode) {
+        const options = rangeOptionsForMode(mode);
+        let nearestIndex = -1;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        for (let index = 0; index < options.length; index += 1) {
+          const center = keyCenterInKeyboardElement(homeworkRangeKeyboard, options[index].name);
+          if (center === null) {
+            continue;
+          }
+          const distance = Math.abs(clientX - (homeworkRangeKeyboard.getBoundingClientRect().left + center));
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestIndex = index;
+          }
+        }
+
+        return nearestIndex;
+      }
+
+      function shiftHomeworkRange(mode, stepDelta) {
+        const options = rangeOptionsForMode(mode).map((note) => note.name);
+        const [rangeStart, rangeEnd] = homeworkRangeForMode(mode);
+        const startIndex = options.indexOf(rangeStart);
+        const endIndex = options.indexOf(rangeEnd);
+        const width = endIndex - startIndex;
+        const nextStart = Math.max(0, Math.min(options.length - 1 - width, startIndex + stepDelta));
+        const nextRange = [options[nextStart], options[nextStart + width]];
+
+        const startSelect = mode === "bass" ? schoolBassStartSelect : schoolTrebleStartSelect;
+        const endSelect = mode === "bass" ? schoolBassEndSelect : schoolTrebleEndSelect;
+        startSelect.value = nextRange[0];
+        endSelect.value = nextRange[1];
+        renderHomeworkRangePicker();
+      }
+
+      function beginHomeworkRangeDrag(mode, edge, event) {
+        if (!homeworkRangeKeyboard) {
+          return;
+        }
+
+        const normalizedMode = mode === "single" ? activeHomeworkPickerMode() : mode;
+        activeHomeworkRangeDrag = {
+          mode: normalizedMode,
+          edge,
+          pointerId: event.pointerId,
+          pointerIndex: nearestHomeworkNoteIndexFromPointer(event.clientX, normalizedMode)
+        };
+        event.currentTarget.classList.add("is-dragging");
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      }
+
+      function moveHomeworkRangeDrag(event) {
+        if (!activeHomeworkRangeDrag || activeHomeworkRangeDrag.pointerId !== event.pointerId) {
+          return;
+        }
+
+        const { mode, edge } = activeHomeworkRangeDrag;
+        const nextIndex = nearestHomeworkNoteIndexFromPointer(event.clientX, mode);
+        if (nextIndex === -1) {
+          return;
+        }
+
+        if (edge === "move") {
+          const delta = nextIndex - activeHomeworkRangeDrag.pointerIndex;
+          if (delta === 0) {
+            return;
+          }
+          activeHomeworkRangeDrag.pointerIndex = nextIndex;
+          shiftHomeworkRange(mode, delta);
+          return;
+        }
+
+        const options = rangeOptionsForMode(mode);
+        const nextNote = options[nextIndex]?.name;
+        if (!nextNote) {
+          return;
+        }
+        syncHomeworkRangePickerSelection(mode, edge, nextNote);
+      }
+
+      function endHomeworkRangeDrag(event) {
+        if (!activeHomeworkRangeDrag) {
+          return;
+        }
+
+        const pointerId = activeHomeworkRangeDrag.pointerId;
+        activeHomeworkRangeDrag = null;
+        event.currentTarget.classList.remove("is-dragging");
+        if (event.currentTarget.hasPointerCapture?.(pointerId)) {
+          event.currentTarget.releasePointerCapture(pointerId);
+        }
+      }
+
+      function syncHomeworkRangePickerSelection(mode, edge, noteName) {
+        const options = rangeOptionsForMode(mode).map((note) => note.name);
+        if (!options.includes(noteName)) {
+          return;
+        }
+
+        const startSelect = mode === "bass" ? schoolBassStartSelect : schoolTrebleStartSelect;
+        const endSelect = mode === "bass" ? schoolBassEndSelect : schoolTrebleEndSelect;
+        const currentStart = startSelect.value || options[0];
+        const currentEnd = endSelect.value || options[options.length - 1];
+        const nextIndex = options.indexOf(noteName);
+        let nextRange = [currentStart, currentEnd];
+
+        if (edge === "start") {
+          const endIndex = options.indexOf(currentEnd);
+          nextRange = nextIndex > endIndex ? [noteName, noteName] : [noteName, currentEnd];
+        } else {
+          const startIndex = options.indexOf(currentStart);
+          nextRange = nextIndex < startIndex ? [noteName, noteName] : [currentStart, noteName];
+        }
+
+        startSelect.value = nextRange[0];
+        endSelect.value = nextRange[1];
+        renderHomeworkRangePicker();
+      }
+
+      function renderHomeworkRangePicker() {
+        if (!homeworkRangeKeyboard || !homeworkRangePicker) {
+          return;
+        }
+
+        const showHomeworkFields = lessonCreateHomeworkSelect.value === "yes";
+        const mode = schoolModeSelect.value;
+        const isDouble = mode === "double";
+        homeworkRangePicker.classList.toggle("is-hidden", !showHomeworkFields);
+        homeworkRangeTargets?.classList.toggle("is-hidden", !showHomeworkFields);
+        homeworkRangeSingleTargets?.classList.toggle("is-hidden", !showHomeworkFields || isDouble);
+        homeworkRangeDoubleTargets?.classList.toggle("is-hidden", !showHomeworkFields || !isDouble);
+
+        for (const key of homeworkRangeKeyboard.querySelectorAll(".white-key, .black-key")) {
+          key.classList.remove("is-in-range", "is-range-start", "is-range-end");
+          delete key.dataset.label;
+        }
+
+        const decorateRange = (range, variant = "single") => {
+          if (!range?.[0] || !range?.[1]) {
+            return;
+          }
+          const startMidi = semitoneValue(range[0]);
+          const endMidi = semitoneValue(range[1]);
+          for (const key of homeworkRangeKeyboard.querySelectorAll(".white-key, .black-key")) {
+            const midi = Number(key.dataset.midi);
+            if (midi >= startMidi && midi <= endMidi) {
+              key.classList.add("is-in-range");
+            }
+            if (midi === startMidi) {
+              key.classList.add("is-range-start");
+            }
+            if (midi === endMidi) {
+              key.classList.add("is-range-end");
+            }
+          }
+
+          if (variant === "bass") {
+            positionRangeWindowInKeyboard(homeworkRangeKeyboard, homeworkRangeBassWindow, range);
+            positionRangeBracketsInKeyboard(homeworkRangeKeyboard, homeworkRangeBassStartBracket, homeworkRangeBassEndBracket, range, "Bass");
+          } else if (variant === "treble") {
+            positionRangeWindowInKeyboard(homeworkRangeKeyboard, homeworkRangeTrebleWindow, range);
+            positionRangeBracketsInKeyboard(homeworkRangeKeyboard, homeworkRangeTrebleStartBracket, homeworkRangeTrebleEndBracket, range, "Violine");
+          } else {
+            positionRangeWindowInKeyboard(homeworkRangeKeyboard, homeworkRangeSingleWindow, range);
+            positionRangeBracketsInKeyboard(homeworkRangeKeyboard, homeworkRangeSingleStartBracket, homeworkRangeSingleEndBracket, range);
+          }
+        };
+
+        if (showHomeworkFields && !isDouble) {
+          const targetMode = mode === "bass" ? "bass" : "treble";
+          const range = targetMode === "bass"
+            ? [schoolBassStartSelect.value, schoolBassEndSelect.value]
+            : [schoolTrebleStartSelect.value, schoolTrebleEndSelect.value];
+          decorateRange(range, "single");
+          homeworkRangeSingleWindow.style.display = "";
+          homeworkRangeSingleStartBracket.style.display = "";
+          homeworkRangeSingleEndBracket.style.display = "";
+        } else {
+          homeworkRangeSingleWindow.style.display = "none";
+          homeworkRangeSingleStartBracket.style.display = "none";
+          homeworkRangeSingleEndBracket.style.display = "none";
+        }
+
+        if (showHomeworkFields && isDouble) {
+          decorateRange([schoolBassStartSelect.value, schoolBassEndSelect.value], "bass");
+          decorateRange([schoolTrebleStartSelect.value, schoolTrebleEndSelect.value], "treble");
+          homeworkRangeBassWindow.style.display = "";
+          homeworkRangeBassStartBracket.style.display = "";
+          homeworkRangeBassEndBracket.style.display = "";
+          homeworkRangeTrebleWindow.style.display = "";
+          homeworkRangeTrebleStartBracket.style.display = "";
+          homeworkRangeTrebleEndBracket.style.display = "";
+        } else {
+          homeworkRangeBassWindow.style.display = "none";
+          homeworkRangeBassStartBracket.style.display = "none";
+          homeworkRangeBassEndBracket.style.display = "none";
+          homeworkRangeTrebleWindow.style.display = "none";
+          homeworkRangeTrebleStartBracket.style.display = "none";
+          homeworkRangeTrebleEndBracket.style.display = "none";
+        }
+
+        const defaultTarget = isDouble
+          ? (homeworkRangePickerTarget.startsWith("bass:") || homeworkRangePickerTarget.startsWith("treble:") ? homeworkRangePickerTarget : "treble:start")
+          : (mode === "bass"
+            ? (homeworkRangePickerTarget === "bass:start" || homeworkRangePickerTarget === "bass:end" ? homeworkRangePickerTarget : "bass:start")
+            : "treble:start");
+        setHomeworkRangeTarget(defaultTarget);
+      }
+
       function updateSchoolModeFields() {
         const mode = schoolModeSelect.value;
         const trebleDisabled = mode === "bass";
@@ -7017,6 +7752,8 @@
         lessonMapUrlInput.disabled = schoolBusy;
         lessonCreateHomeworkSelect.disabled = schoolBusy;
         lessonAdvancedToggleButton.disabled = schoolBusy;
+        homeworkRangePicker?.classList.toggle("is-hidden", !showHomeworkFields);
+        renderHomeworkRangePicker();
       }
 
       function clampSrsWindowStart(startIndex, windowSize, total) {
@@ -8741,6 +9478,40 @@
         syncTutorLessonFormUi();
         updateSchoolModeFields();
       });
+      homeworkRangeSingleStartButton?.addEventListener("click", () => setHomeworkRangeTarget(schoolModeSelect.value === "bass" ? "bass:start" : "treble:start"));
+      homeworkRangeSingleEndButton?.addEventListener("click", () => setHomeworkRangeTarget(schoolModeSelect.value === "bass" ? "bass:end" : "treble:end"));
+      homeworkRangeBassStartButton?.addEventListener("click", () => setHomeworkRangeTarget("bass:start"));
+      homeworkRangeBassEndButton?.addEventListener("click", () => setHomeworkRangeTarget("bass:end"));
+      homeworkRangeTrebleStartButton?.addEventListener("click", () => setHomeworkRangeTarget("treble:start"));
+      homeworkRangeTrebleEndButton?.addEventListener("click", () => setHomeworkRangeTarget("treble:end"));
+      homeworkRangeKeyboard?.addEventListener("click", (event) => {
+        const key = event.target?.closest?.(".white-key, .black-key");
+        if (!key) {
+          return;
+        }
+        const noteName = key.dataset.note;
+        if (!noteName) {
+          return;
+        }
+        const [mode, edge] = homeworkRangePickerTarget.split(":");
+        syncHomeworkRangePickerSelection(mode === "bass" ? "bass" : "treble", edge === "end" ? "end" : "start", noteName);
+      });
+      [
+        [homeworkRangeSingleWindow, "single", "move"],
+        [homeworkRangeSingleStartBracket, "single", "start"],
+        [homeworkRangeSingleEndBracket, "single", "end"],
+        [homeworkRangeBassWindow, "bass", "move"],
+        [homeworkRangeBassStartBracket, "bass", "start"],
+        [homeworkRangeBassEndBracket, "bass", "end"],
+        [homeworkRangeTrebleWindow, "treble", "move"],
+        [homeworkRangeTrebleStartBracket, "treble", "start"],
+        [homeworkRangeTrebleEndBracket, "treble", "end"]
+      ].forEach(([element, mode, edge]) => {
+        element?.addEventListener("pointerdown", (event) => beginHomeworkRangeDrag(mode, edge, event));
+        element?.addEventListener("pointermove", moveHomeworkRangeDrag);
+        element?.addEventListener("pointerup", endHomeworkRangeDrag);
+        element?.addEventListener("pointercancel", endHomeworkRangeDrag);
+      });
       lessonPassResetButton.addEventListener("click", () => {
         isLessonPassResetConfirmOpen = true;
         syncLessonPassPanel();
@@ -8948,6 +9719,7 @@
       });
 
       buildKeyboard();
+      buildKeyboardInto(homeworkRangeWhiteKeys, homeworkRangeBlackKeys);
       populateSchoolRangeSelect(schoolTrebleStartSelect, "treble", levelRangesByMode.treble[0][0]);
       populateSchoolRangeSelect(schoolTrebleEndSelect, "treble", levelRangesByMode.treble[0][1]);
       populateSchoolRangeSelect(schoolBassStartSelect, "bass", levelRangesByMode.bass[0][0]);
@@ -8956,6 +9728,7 @@
       syncTutorLessonDerivedFields({ forceEnd: true });
       syncTutorLessonFormUi();
       updateSchoolModeFields();
+      renderHomeworkRangePicker();
       renderLibraryPanel();
       renderDebugConsole();
       keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
