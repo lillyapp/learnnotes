@@ -295,6 +295,39 @@
         min-height: 2.1em;
       }
 
+      .home-module-title-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .home-module-alert {
+        width: 22px;
+        height: 22px;
+        color: #111111;
+        flex: 0 0 auto;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .home-module-alert.is-active {
+        opacity: 1;
+        animation: homeModuleAlertPulse 1.25s ease-in-out infinite;
+      }
+
+      @keyframes homeModuleAlertPulse {
+        0%, 100% {
+          transform: scale(0.92);
+        }
+
+        50% {
+          transform: scale(1.18);
+        }
+      }
+
       .home-module-copy {
         margin: 0;
         font-size: 14px;
@@ -1967,6 +2000,48 @@
         overflow: visible;
       }
 
+      .practice-homework-panel {
+        width: min(100%, 760px);
+        margin: 0 auto 20px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.88);
+        display: grid;
+        gap: 6px;
+      }
+
+      .practice-homework-panel.is-hidden {
+        display: none;
+      }
+
+      .practice-homework-copy {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .practice-homework-meta {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .practice-homework-status {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .practice-homework-status[data-state="error"] {
+        color: #b22b2b;
+      }
+
+      .practice-homework-status[data-state="success"] {
+        color: #1d7a3c;
+      }
+
       .sheet-music-double {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2643,11 +2718,33 @@
         text-align: center;
         font-size: clamp(16px, 1.3vw, 22px);
         color: var(--text);
+        display: grid;
+        gap: 8px;
       }
 
       .target-description strong {
         color: var(--text);
         font-weight: 600;
+      }
+
+      .target-description-homework {
+        display: grid;
+        gap: 4px;
+      }
+
+      .target-description-task {
+        font-size: clamp(14px, 1vw, 18px);
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .target-description-meta {
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .target-description-prompt {
+        font-size: inherit;
       }
 
       @media (prefers-color-scheme: dark) {
@@ -2794,7 +2891,10 @@
                 </div>
               </div>
               <div class="home-module-label">
-                <h2 class="home-module-title">Noten lernen</h2>
+                <div class="home-module-title-row">
+                  <h2 class="home-module-title">Noten lernen</h2>
+                  <i class="home-module-alert" id="home-module-notes-alert" data-lucide="clock-alert" aria-hidden="true"></i>
+                </div>
                 <p class="home-module-copy">Direkt in den Trainer mit Notensystem, SRS und Aufgabenmodus.</p>
               </div>
             </button>
@@ -3042,6 +3142,14 @@
                   <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
                 </label>
                 <label>
+                  Freies Üben danach
+                  <select class="school-select" id="school-allow-free-practice">
+                    <option value="no">Nein</option>
+                    <option value="yes">Ja</option>
+                  </select>
+                </label>
+                <div></div>
+                <label>
                   Violine Start
                   <select class="school-select" id="school-treble-start"></select>
                 </label>
@@ -3086,6 +3194,11 @@
             <div class="bar-notes" id="double-treble-notes" aria-live="polite"></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
+        </div>
+        <div class="practice-homework-panel is-hidden" id="practice-homework-panel" aria-live="polite">
+          <p class="practice-homework-copy" id="practice-homework-copy"></p>
+          <p class="practice-homework-meta" id="practice-homework-meta"></p>
+          <p class="practice-homework-status" id="practice-homework-status"></p>
         </div>
         <div class="trainer-info" id="trainer-info">
           <p class="target-description" id="target-description" aria-live="polite"></p>
@@ -3307,12 +3420,14 @@
       const schoolBassStartSelect = document.getElementById("school-bass-start");
       const schoolBassEndSelect = document.getElementById("school-bass-end");
       const schoolTargetAccuracyInput = document.getElementById("school-target-accuracy");
+      const schoolAllowFreePracticeSelect = document.getElementById("school-allow-free-practice");
       const schoolDueDateInput = document.getElementById("school-due-date");
       const schoolDescriptionInput = document.getElementById("school-description");
       const schoolSaveButton = document.getElementById("school-save-button");
       const schoolStatus = document.getElementById("school-status");
       const homeView = document.getElementById("home-view");
       const homeModuleNotes = document.getElementById("home-module-notes");
+      const homeModuleNotesAlert = document.getElementById("home-module-notes-alert");
       const homeModuleIceCream = document.getElementById("home-module-ice-cream");
       const homeModuleTutor = document.getElementById("home-module-tutor");
       const homeModuleManagement = document.getElementById("home-module-management");
@@ -3321,6 +3436,10 @@
       const homeModuleBookworm = document.getElementById("home-module-bookworm");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
+      const practiceHomeworkPanel = document.getElementById("practice-homework-panel");
+      const practiceHomeworkCopy = document.getElementById("practice-homework-copy");
+      const practiceHomeworkMeta = document.getElementById("practice-homework-meta");
+      const practiceHomeworkStatus = document.getElementById("practice-homework-status");
       const keyboard = document.getElementById("keyboard");
       const keyboardLevels = document.getElementById("keyboard-levels");
       const keyboardKeys = document.getElementById("keyboard-keys");
@@ -3491,6 +3610,7 @@
       let lessonBusy = false;
       let tutorStudentEmails = [];
       let tutorAssignments = [];
+      let studentAssignments = [];
       let tutorLessons = [];
       let studentLessons = [];
       let tutorStudentProfiles = new Map();
@@ -3506,6 +3626,7 @@
       let studentCalendarMonth = (() => startOfWeek(new Date()))();
       let userRole = null;
       let activeHomework = null;
+      let homeworkCompletionBusy = false;
       let srsStates = {
         treble: null,
         bass: null
@@ -3611,8 +3732,9 @@
       }
 
       function updateInfoUi() {
+        const showHomeworkInfo = isHomeworkModeActive();
         toggleInfoButton.classList.toggle("is-active", isInfoVisible);
-        trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
+        trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || (!isInfoVisible && !showHomeworkInfo));
       }
 
       function formatDebugValue(value) {
@@ -3908,6 +4030,25 @@
         } else {
           delete schoolStatus.dataset.state;
         }
+        syncPracticeHomeworkPanel();
+      }
+
+      function syncHomeworkAttentionUi() {
+        if (!homeModuleNotesAlert) {
+          return;
+        }
+
+        const hasPendingHomework = Boolean(authUser) && userRole === "student" && Boolean(activeHomework?.is_active);
+        homeModuleNotesAlert.classList.toggle("is-active", hasPendingHomework);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
       }
 
       function todayActivityKey() {
@@ -3957,6 +4098,67 @@
         const rangeEnd = homework.mode === "bass" ? homework.bass_range_end : homework.treble_range_end;
         const label = homework.mode === "bass" ? "Bass" : "Violine";
         return `${label}: ${rangeStart}-${rangeEnd}, Ziel ${homework.target_accuracy}%`;
+      }
+
+      function homeworkPracticeDescriptionHtml(promptHtml) {
+        if (!isHomeworkModeActive()) {
+          return promptHtml;
+        }
+
+        const taskText = activeHomework?.description?.trim() || "Bearbeite die aktuelle Hausaufgabe.";
+        const metaParts = [homeworkSummaryText(activeHomework)];
+        const dueText = homeworkDueText(activeHomework);
+        if (dueText) {
+          metaParts.push(`Fällig: ${dueText}`);
+        }
+
+        return `
+          <div class="target-description-homework">
+            <span class="target-description-task">${escapeHtml(taskText)}</span>
+            <span class="target-description-meta">${escapeHtml(metaParts.filter(Boolean).join(" · "))}</span>
+          </div>
+          <div class="target-description-prompt">${promptHtml}</div>
+        `;
+      }
+
+      function homeworkAllowsFreePractice(homework) {
+        return String(homework?.allow_free_practice_after_complete || "") === "true"
+          || homework?.allow_free_practice_after_complete === true;
+      }
+
+      function syncPracticeHomeworkPanel() {
+        if (!practiceHomeworkPanel || !practiceHomeworkCopy || !practiceHomeworkMeta || !practiceHomeworkStatus) {
+          return;
+        }
+
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
+        const isHomeworkMode = isHomeworkModeActive();
+        const statusText = schoolStatus?.textContent?.trim() || "";
+        const statusState = schoolStatus?.dataset?.state || "";
+        const showPanel = !hidesTrainerContent && (isHomeworkMode || Boolean(statusText));
+
+        practiceHomeworkPanel.classList.toggle("is-hidden", !showPanel);
+        if (!showPanel) {
+          practiceHomeworkCopy.textContent = "";
+          practiceHomeworkMeta.textContent = "";
+          practiceHomeworkStatus.textContent = "";
+          delete practiceHomeworkStatus.dataset.state;
+          return;
+        }
+
+        practiceHomeworkCopy.textContent = isHomeworkMode
+          ? (activeHomework?.description?.trim() || "Bearbeite die aktuelle Hausaufgabe.")
+          : "";
+        practiceHomeworkMeta.textContent = isHomeworkMode
+          ? [homeworkSummaryText(activeHomework), `Status: ${homeworkCompletionPercent(activeHomework)}%`].filter(Boolean).join(" · ")
+          : "";
+        practiceHomeworkStatus.textContent = statusText;
+
+        if (statusState) {
+          practiceHomeworkStatus.dataset.state = statusState;
+        } else {
+          delete practiceHomeworkStatus.dataset.state;
+        }
       }
 
       function homeworkDueText(homework) {
@@ -4009,6 +4211,58 @@
         }, 0);
 
         return Math.round((progressTotal / trackedNotes.length) * 100);
+      }
+
+      async function maybeUnlockHomeworkFreePractice() {
+        if (
+          !supabaseClient ||
+          !authUser ||
+          !isHomeworkModeActive() ||
+          !activeHomework?.id ||
+          !homeworkAllowsFreePractice(activeHomework) ||
+          homeworkCompletionBusy
+        ) {
+          return;
+        }
+
+        const completion = homeworkCompletionPercent(activeHomework);
+        const target = Math.max(50, Math.min(100, Number(activeHomework.target_accuracy) || 90));
+        if (completion < target) {
+          return;
+        }
+
+        homeworkCompletionBusy = true;
+        const completedHomeworkId = activeHomework.id;
+
+        try {
+          const { error } = await supabaseClient
+            .from("homework_assignments")
+            .update({ is_active: false })
+            .eq("id", completedHomeworkId)
+            .eq("is_active", true);
+
+          if (error) {
+            throw error;
+          }
+
+          studentAssignments = studentAssignments.map((assignment) =>
+            assignment.id === completedHomeworkId
+              ? { ...assignment, is_active: false }
+              : assignment
+          );
+          activeHomework = null;
+          selectedRange = [...manualSelectedRange];
+          isDoubleModeEnabled = false;
+          activeSrsMode = null;
+          setSchoolStatus("Hausaufgabe erledigt. Freies Üben ist jetzt wieder verfügbar.", "success");
+          updateModeUi();
+          updateInfoUi();
+          generateRound();
+        } catch (error) {
+          console.error("[Homework] Freies Üben konnte nicht freigeschaltet werden", error);
+        } finally {
+          homeworkCompletionBusy = false;
+        }
       }
 
       function applyHomeworkConfiguration() {
@@ -4187,7 +4441,8 @@
           return null;
         }
 
-        return tutorAssignments.find((assignment) => assignment.id === lesson.homework_assignment_id) || null;
+        const source = userRole === "tutor" ? tutorAssignments : studentAssignments;
+        return source.find((assignment) => assignment.id === lesson.homework_assignment_id) || null;
       }
 
       function upcomingStudentLesson() {
@@ -4857,6 +5112,8 @@
         const showHomeworkFields = lessonCreateHomeworkSelect?.value === "yes";
         lessonAdvancedFields?.classList.toggle("is-hidden", !isLessonAdvancedOpen);
         lessonHomeworkFields?.classList.toggle("is-hidden", !showHomeworkFields);
+        lessonHomeworkConfigFields?.classList.toggle("is-hidden", !showHomeworkFields);
+        lessonHomeworkConfigFields?.setAttribute("aria-hidden", showHomeworkFields ? "false" : "true");
         lessonTitleBlock?.setAttribute("data-state", isLessonAdvancedOpen ? "active" : "");
         syncLessonPassPanel();
       }
@@ -4884,6 +5141,7 @@
         lessonMapUrlInput.value = "";
         lessonCreateHomeworkSelect.value = "no";
         lessonPassPasswordInput.value = "";
+        schoolAllowFreePracticeSelect.value = "no";
         schoolDueDateInput.value = "";
         schoolDescriptionInput.value = "";
         isLessonAdvancedOpen = false;
@@ -4926,6 +5184,7 @@
         schoolTrebleEndSelect.value = assignment?.treble_range_end || schoolTrebleEndSelect.value;
         schoolBassStartSelect.value = assignment?.bass_range_start || schoolBassStartSelect.value;
         schoolBassEndSelect.value = assignment?.bass_range_end || schoolBassEndSelect.value;
+        schoolAllowFreePracticeSelect.value = homeworkAllowsFreePractice(assignment) ? "yes" : "no";
         isLessonAdvancedOpen = Boolean(lesson.location_text || lesson.map_url);
         isLessonPassResetConfirmOpen = false;
         lessonPassPasswordInput.value = "";
@@ -5116,6 +5375,32 @@
         return activeHomework;
       }
 
+      async function loadStudentAssignments() {
+        if (!supabaseClient || !authUser || userRole !== "student") {
+          studentAssignments = [];
+          activeHomework = null;
+          return [];
+        }
+
+        const { data, error } = await supabaseClient
+          .from("homework_assignments")
+          .select("*")
+          .eq("student_email", currentStudentRef())
+          .order("is_active", { ascending: false })
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          setSchoolStatus(`Hausaufgaben laden fehlgeschlagen: ${error.message}`, "error");
+          studentAssignments = [];
+          activeHomework = null;
+          return [];
+        }
+
+        studentAssignments = data || [];
+        activeHomework = studentAssignments.find((assignment) => assignment.is_active) || null;
+        return studentAssignments;
+      }
+
       async function loadStudentLessons() {
         if (!supabaseClient || !authUser || userRole !== "student") {
           studentLessons = [];
@@ -5152,6 +5437,7 @@
         tutorStudentEmails = [];
         tutorStudentProfiles = new Map();
         tutorAssignments = [];
+        studentAssignments = [];
         tutorLessons = [];
         studentLessons = [];
 
@@ -5165,7 +5451,7 @@
         if (userRole === "tutor") {
           await Promise.all([loadTutorAssignments(), loadTutorLessons()]);
         } else {
-          await Promise.all([loadActiveHomework(), loadStudentLessons()]);
+          await Promise.all([loadStudentAssignments(), loadStudentLessons()]);
         }
         applyHomeworkConfiguration();
         applyTutorLessonDefaults();
@@ -5201,6 +5487,7 @@
         const shouldCreateHomework = lessonCreateHomeworkSelect.value === "yes";
         const mode = schoolModeSelect.value;
         const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
+        const allowFreePractice = schoolAllowFreePracticeSelect.value === "yes";
         const dueAt = schoolDueDateInput.value || null;
         const description = schoolDescriptionInput.value.trim();
         const trebleStart = schoolTrebleStartSelect.value;
@@ -5268,6 +5555,7 @@
               bass_range_start: bassStart,
               bass_range_end: bassEnd,
               target_accuracy: targetAccuracy,
+              allow_free_practice_after_complete: allowFreePractice,
               due_at: dueAt,
               description: description || null,
               is_active: true
@@ -5518,6 +5806,7 @@
         tutorStudentEmails = [];
         tutorStudentProfiles = new Map();
         tutorAssignments = [];
+        studentAssignments = [];
         tutorLessons = [];
         studentLessons = [];
         currentUserProfile = null;
@@ -5733,8 +6022,10 @@
         libraryView.classList.toggle("is-hidden", !canSeeLibrary || !isLibraryVisible || isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
-        trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || !isInfoVisible);
+        trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || (!isInfoVisible && !isHomeworkMode));
+        practiceHomeworkPanel.classList.toggle("is-hidden", hidesTrainerContent || (!isHomeworkMode && !(schoolStatus?.textContent?.trim())));
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || !isKeyboardVisible);
+        syncPracticeHomeworkPanel();
       }
 
       function noteStatFor(mode, noteName) {
@@ -6713,12 +7004,13 @@
         const bassDisabled = mode === "treble";
         const showHomeworkFields = lessonCreateHomeworkSelect.value === "yes";
 
-        schoolTrebleStartSelect.disabled = trebleDisabled || schoolBusy;
-        schoolTrebleEndSelect.disabled = trebleDisabled || schoolBusy;
-        schoolBassStartSelect.disabled = bassDisabled || schoolBusy;
-        schoolBassEndSelect.disabled = bassDisabled || schoolBusy;
-        schoolModeSelect.disabled = schoolBusy;
+        schoolTrebleStartSelect.disabled = trebleDisabled || schoolBusy || !showHomeworkFields;
+        schoolTrebleEndSelect.disabled = trebleDisabled || schoolBusy || !showHomeworkFields;
+        schoolBassStartSelect.disabled = bassDisabled || schoolBusy || !showHomeworkFields;
+        schoolBassEndSelect.disabled = bassDisabled || schoolBusy || !showHomeworkFields;
+        schoolModeSelect.disabled = schoolBusy || !showHomeworkFields;
         schoolTargetAccuracyInput.disabled = schoolBusy || !showHomeworkFields;
+        schoolAllowFreePracticeSelect.disabled = schoolBusy || !showHomeworkFields;
         schoolDueDateInput.disabled = schoolBusy || !showHomeworkFields;
         schoolDescriptionInput.disabled = schoolBusy || !showHomeworkFields;
         lessonLocationTextInput.disabled = schoolBusy;
@@ -7171,7 +7463,7 @@
           : currentNotes[activeIndex];
 
         if ((!isDoubleModeEnabled && !activeNote) || (isDoubleModeEnabled && activeNote.length === 0)) {
-          targetDescription.innerHTML = "Alle Noten geschafft.";
+          targetDescription.innerHTML = homeworkPracticeDescriptionHtml("Alle Noten geschafft.");
           return;
         }
 
@@ -7201,12 +7493,14 @@
             }
           });
 
-          targetDescription.innerHTML = `<strong>${descriptions.join(" | ")}</strong>`;
+          targetDescription.innerHTML = homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" | ")}</strong>`);
         } else {
           syncClefToActiveNote();
 
           const handLabel = clefConfigs[currentClef].handLabel ? `, ${clefConfigs[currentClef].handLabel}` : "";
-          targetDescription.innerHTML = `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`;
+          targetDescription.innerHTML = homeworkPracticeDescriptionHtml(
+            `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`
+          );
 
           const targetKey = document.querySelector(`[data-midi="${activeNote.midi}"]`);
           if (targetKey) {
@@ -7336,6 +7630,7 @@
           const rangeChanged = recordSrsAttempt(true);
           const state = activeSrsState();
           recordNoteStat(activeNote.clef, activeNote.name, true);
+          void maybeUnlockHomeworkFreePractice();
           if (activeNote.isNew && state) {
             state.newNotes = state.newNotes.filter((noteName) => noteName !== activeNote.name);
           }
@@ -7410,6 +7705,9 @@
         }
 
         if (matched) {
+          if (pairState.bassDone && pairState.trebleDone) {
+            void maybeUnlockHomeworkFreePractice();
+          }
           lastPlayedMidi = null;
           renderDoubleNotes();
 
