@@ -1578,6 +1578,11 @@
 
       function updateAuthUi() {
         toggleAuthButton.classList.toggle("is-active", isAuthPanelVisible);
+        if (authUser) {
+          toggleAuthButton.setAttribute("data-badge", "✓");
+        } else {
+          toggleAuthButton.removeAttribute("data-badge");
+        }
         authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
         authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
