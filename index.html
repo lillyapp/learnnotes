@@ -283,6 +283,17 @@
         display: none;
       }
 
+      .library-view {
+        width: min(97vw, 1480px);
+        display: grid;
+        gap: 22px;
+        align-content: start;
+      }
+
+      .library-view.is-hidden {
+        display: none;
+      }
+
       .tutor-view-header {
         display: flex;
         justify-content: space-between;
@@ -1544,7 +1555,7 @@
       }
 
       .library-panel {
-        width: min(92vw, 760px);
+        width: min(100%, 920px);
         padding: 18px 20px;
         border: 1px solid var(--border);
         border-radius: 20px;
@@ -2362,9 +2373,6 @@
           <button class="toolbar-button" id="toggle-info-button" type="button" aria-label="Informationen ein- oder ausblenden" title="Informationen">
             <i data-lucide="info"></i>
           </button>
-          <button class="toolbar-button" id="toggle-library-button" type="button" aria-label="Notenbibliothek ein- oder ausblenden" title="Notenbibliothek">
-            <i data-lucide="library-big"></i>
-          </button>
           <button class="toolbar-button" id="toggle-home-button" type="button" aria-label="Startseite ein- oder ausblenden" title="Startseite">
             <i data-lucide="component"></i>
           </button>
@@ -2376,9 +2384,6 @@
           </button>
           <button class="toolbar-button" id="toggle-srs-bass-button" type="button" aria-label="SRS-Modus Bass ein- oder ausschalten" title="SRS Bass" data-badge="B">
             <i data-lucide="brain"></i>
-          </button>
-          <button class="toolbar-button" id="toggle-auth-button" type="button" aria-label="Anmeldung ein- oder ausblenden" title="Anmeldung">
-            <i data-lucide="user-round"></i>
           </button>
           <div class="level-indicator is-hidden" id="level-indicator" aria-live="polite">
             <span class="level-indicator-label" id="level-indicator-label">Level</span>
@@ -2470,23 +2475,34 @@
             <button class="home-module is-hidden" id="home-module-tutor" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
                 <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-running.svg" alt="">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-man-petting-a-dog.svg" alt="">
                 </div>
               </div>
               <div class="home-module-label">
-                <h2 class="home-module-title">Tutorenansicht</h2>
+                <h2 class="home-module-title">Tutoren</h2>
                 <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
               </div>
             </button>
             <button class="home-module is-hidden" id="home-module-calendar" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
                 <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-sitting-reading.svg" alt="">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-clumsy-man-dropping-documents-and-files.svg" alt="">
                 </div>
               </div>
               <div class="home-module-label">
                 <h2 class="home-module-title">Kalender</h2>
                 <p class="home-module-copy">Sieh deinen aktuellen Unterrichtsmonat und den nächsten Termin auf einen Blick.</p>
+              </div>
+            </button>
+            <button class="home-module" id="home-module-library" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/bookworm-immersed-in-book-leisure-or-self-education.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Bibliothek</h2>
+                <p class="home-module-copy">Behalte gelernte Noten und deinen aktuellen Sicherheitsstand im Blick.</p>
               </div>
             </button>
             <button class="home-module is-muted" id="home-module-bookworm" type="button" data-theme="notes">
@@ -2549,21 +2565,10 @@
         </section>
         <section class="tutor-view is-hidden" id="student-calendar-view" aria-label="Kalenderansicht">
           <div class="tutor-view-header">
-            <div class="tutor-view-copy">
-              <p class="tutor-view-kicker">Kalender</p>
-              <h1 class="tutor-view-title">Mein Unterricht</h1>
-              <p class="tutor-view-subtitle">Verfolge deinen aktuellen Unterrichtsmonat und sieh sofort, wann die nächste Stunde stattfindet.</p>
-            </div>
             <button class="tutor-back" id="student-calendar-back-button" type="button">Zurück</button>
           </div>
-          <div class="tutor-dashboard calendar-view">
+          <div class="tutor-dashboard">
             <section class="tutor-card calendar-card">
-              <div class="tutor-card-header">
-                <div>
-                  <h2 class="tutor-card-title">Monatsansicht</h2>
-                  <p class="tutor-card-copy">Alle aktuell sichtbaren Unterrichte in einer Kalenderübersicht.</p>
-                </div>
-              </div>
               <div class="tutor-calendar-shell">
                 <div class="tutor-calendar-toolbar">
                   <h3 class="tutor-calendar-month" id="student-calendar-month-label">März 2026</h3>
@@ -2592,13 +2597,7 @@
               </div>
             </section>
             <div style="display:grid; gap:18px;">
-              <section class="tutor-card calendar-next-lesson">
-                <div class="tutor-card-header">
-                  <div>
-                    <h2 class="tutor-card-title">Nächster Unterricht</h2>
-                    <p class="tutor-card-copy">Dein nächster anstehender Termin mit den wichtigsten Details.</p>
-                  </div>
-                </div>
+              <section class="tutor-card is-hidden" id="student-detail-card">
                 <div id="student-next-lesson-panel"></div>
               </section>
             </div>
@@ -2742,7 +2741,12 @@
         <div class="trainer-info" id="trainer-info">
           <p class="target-description" id="target-description" aria-live="polite"></p>
         </div>
-        <div class="library-panel is-hidden" id="library-panel" aria-live="polite"></div>
+        <section class="library-view is-hidden" id="library-view" aria-label="Bibliothek">
+          <div class="tutor-view-header">
+            <button class="tutor-back" id="library-back-button" type="button">Zurück</button>
+          </div>
+          <div class="library-panel" id="library-panel" aria-live="polite"></div>
+        </section>
         <div class="keyboard is-hidden" id="keyboard" aria-label="Virtuelles Klavier">
           <div class="keyboard-levels is-hidden" id="keyboard-levels" aria-hidden="true"></div>
           <div class="keyboard-keys" id="keyboard-keys">
@@ -2793,12 +2797,10 @@
       const toggleRangeButton = document.getElementById("toggle-range-button");
       const toggleKeyboardButton = document.getElementById("toggle-keyboard-button");
       const toggleInfoButton = document.getElementById("toggle-info-button");
-      const toggleLibraryButton = document.getElementById("toggle-library-button");
       const toggleHomeButton = document.getElementById("toggle-home-button");
       const toggleDoubleButton = document.getElementById("toggle-double-button");
       const toggleSrsTrebleButton = document.getElementById("toggle-srs-treble-button");
       const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
-      const toggleAuthButton = document.getElementById("toggle-auth-button");
       const toolbar = document.querySelector(".toolbar");
       const authPanel = document.getElementById("auth-panel");
       const authForm = document.getElementById("auth-form");
@@ -2840,6 +2842,7 @@
       const studentCalendarNextButton = document.getElementById("student-calendar-next-button");
       const studentCalendarSubscribeButton = document.getElementById("student-calendar-subscribe-button");
       const studentCalendarGrid = document.getElementById("student-calendar-grid");
+      const studentDetailCard = document.getElementById("student-detail-card");
       const studentNextLessonPanel = document.getElementById("student-next-lesson-panel");
       const tutorModal = document.getElementById("tutor-modal");
       const tutorModalCloseButton = document.getElementById("tutor-modal-close-button");
@@ -2880,6 +2883,7 @@
       const homeModuleIceCream = document.getElementById("home-module-ice-cream");
       const homeModuleTutor = document.getElementById("home-module-tutor");
       const homeModuleCalendar = document.getElementById("home-module-calendar");
+      const homeModuleLibrary = document.getElementById("home-module-library");
       const homeModuleBookworm = document.getElementById("home-module-bookworm");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
@@ -2899,6 +2903,8 @@
       const levelIndicatorLabel = document.getElementById("level-indicator-label");
       const levelIndicatorValue = document.getElementById("level-indicator-value");
       const trainerInfo = document.getElementById("trainer-info");
+      const libraryView = document.getElementById("library-view");
+      const libraryBackButton = document.getElementById("library-back-button");
       const libraryPanel = document.getElementById("library-panel");
       const targetDescription = document.getElementById("target-description");
       const doubleBassClef = document.getElementById("double-bass-clef");
@@ -2997,12 +3003,12 @@
         bass: [...levelRangesByMode.bass[0]],
         treble: [...levelRangesByMode.treble[0]]
       };
-      let isAuthPanelVisible = false;
+      let isAuthPanelVisible = true;
       let isRangeSelectorVisible = false;
       let isKeyboardVisible = false;
       let isInfoVisible = false;
       let isLibraryVisible = false;
-      let isHomeViewVisible = true;
+      let isHomeViewVisible = false;
       let isTutorViewVisible = false;
       let isStudentCalendarViewVisible = false;
       let isDoubleModeEnabled = false;
@@ -3030,6 +3036,7 @@
       let currentUserProfile = null;
       let editingTutorLessonId = null;
       let selectedTutorLessonId = null;
+      let selectedStudentLessonId = null;
       let activeLessonDrag = null;
       let isLessonAdvancedOpen = false;
       let isLessonPassResetConfirmOpen = false;
@@ -3321,16 +3328,9 @@
       }
 
       function updateAuthUi() {
-        toggleAuthButton.classList.toggle("is-active", isAuthPanelVisible);
-        if (authUser) {
-          toggleAuthButton.setAttribute("data-badge", "");
-          toggleAuthButton.setAttribute("data-badge-icon", "badge-check");
-        } else {
-          toggleAuthButton.removeAttribute("data-badge");
-          toggleAuthButton.removeAttribute("data-badge-icon");
-        }
         authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
+        authBackButton.classList.toggle("is-hidden", !authUser);
         authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authSignInButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
@@ -3629,6 +3629,10 @@
         return tutorLessons.find((lesson) => lesson.id === selectedTutorLessonId) || null;
       }
 
+      function selectedStudentLesson() {
+        return studentLessons.find((lesson) => lesson.id === selectedStudentLessonId) || null;
+      }
+
       function assignmentForLesson(lesson) {
         if (!lesson?.homework_assignment_id) {
           return null;
@@ -3822,6 +3826,7 @@
         weekStart,
         selectedLessonId = "",
         interactive = false,
+        clickable = false,
         onLessonSelect = null
       } = {}) {
         if (!gridEl || !weekdaysEl) {
@@ -3876,7 +3881,8 @@
         });
 
         for (const lesson of lessonsInWeek) {
-          const block = document.createElement(interactive ? "button" : "div");
+          const isSelectable = interactive || clickable || Boolean(onLessonSelect);
+          const block = document.createElement(isSelectable ? "button" : "div");
           block.className = "week-timetable-event";
           if (!interactive) {
             block.classList.add("is-readonly");
@@ -3900,7 +3906,7 @@
             <span>${lesson.location_text || lessonStudentRef(lesson) || "Kein Ort"}</span>
           `;
 
-          if (interactive) {
+          if (isSelectable) {
             block.type = "button";
             block.addEventListener("click", (event) => {
               if (block.dataset.dragMoved === "true") {
@@ -3912,6 +3918,9 @@
               event.stopPropagation();
               onLessonSelect?.(lesson.id);
             });
+          }
+
+          if (interactive) {
             block.addEventListener("pointerdown", (event) => {
               event.preventDefault();
               activeLessonDrag = {
@@ -3985,10 +3994,26 @@
         }
         const visibleStart = normalizeCalendarDate(studentCalendarMonth);
         const visibleDayCount = visibleCalendarDayCount(studentCalendarGrid);
+        const visibleEnd = new Date(visibleStart);
+        visibleEnd.setDate(visibleStart.getDate() + visibleDayCount);
+        const selectedLesson = selectedStudentLesson();
+        if (selectedLesson) {
+          const selectedDate = normalizeCalendarDate(new Date(selectedLesson.starts_at));
+          if (selectedDate < visibleStart || selectedDate >= visibleEnd) {
+            selectedStudentLessonId = null;
+          }
+        }
         studentCalendarMonthLabel.textContent = formatTutorMonth(visibleStart, visibleDayCount);
         renderWeekTimetable(studentCalendarGrid, document.querySelector("#student-calendar-view .tutor-calendar-weekdays"), studentLessons, {
           weekStart: visibleStart,
-          interactive: false
+          selectedLessonId: selectedStudentLessonId,
+          interactive: false,
+          clickable: true,
+          onLessonSelect: (lessonId) => {
+            selectedStudentLessonId = lessonId;
+            renderStudentCalendar();
+            renderStudentNextLessonPanel();
+          }
         });
       }
 
@@ -3998,27 +4023,37 @@
         }
 
         studentNextLessonPanel.replaceChildren();
-        const lesson = upcomingStudentLesson();
+        const lesson = selectedStudentLesson() || upcomingStudentLesson();
+        if (studentDetailCard) {
+          studentDetailCard.classList.toggle("is-hidden", !lesson);
+        }
         if (!lesson) {
-          const empty = document.createElement("div");
-          empty.className = "calendar-next-empty";
-          empty.textContent = "Aktuell ist kein kommender Unterricht hinterlegt.";
-          studentNextLessonPanel.appendChild(empty);
           return;
         }
 
-        const card = document.createElement("div");
-        card.className = "tutor-assignment-entry";
+        const assignment = assignmentForLesson(lesson);
         const metaChips = lessonMetaChipsHtml(profileForLessonDisplay(lesson));
+        const card = document.createElement("div");
+        card.className = "tutor-detail-block";
         card.innerHTML = `
           <div class="tutor-entry-topline">
             <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
-            <span class="tutor-entry-pill">${formatTutorDate(lesson.starts_at)}</span>
           </div>
+          <div class="tutor-detail-meta">
+            <div class="tutor-detail-pair">
+              ${detailMetaRowHtml("calendar-clock", "Start", formatTutorDateTime(lesson.starts_at))}
+              ${detailMetaRowHtml("clock-3", "Ende", lesson.ends_at ? formatTutorDateTime(lesson.ends_at) : "Offen")}
+            </div>
+            ${detailMetaRowHtml("map-pin", "Adresse", lesson.location_text || "Keine Adresse hinterlegt")}
+            ${detailMetaRowHtml("music-4", "Modus", assignment ? homeworkSummaryText(assignment) : "Keine Hausaufgabe verknüpft")}
+            <div class="tutor-detail-pair">
+              ${detailMetaRowHtml("calendar-check-2", "Fällig", assignment ? homeworkDueText(assignment) : "Kein Datum")}
+              ${detailMetaRowHtml("target", "Ziel", assignment ? `${assignment.target_accuracy}% sicher` : "Kein Ziel")}
+            </div>
+          </div>
+          ${detailContentCardHtml("notebook-pen", "Unterrichtsnotiz", `<p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>`)}
+          ${detailContentCardHtml("book-open-text", "Hausaufgabe", `<p class="tutor-entry-copy">${assignment?.description || "Keine Hausaufgabe verknüpft."}</p>`)}
           ${metaChips}
-          <p class="tutor-entry-meta">${formatTutorDateTime(lesson.starts_at)}${lesson.ends_at ? ` bis ${formatTutorDateTime(lesson.ends_at)}` : ""}</p>
-          <p class="tutor-entry-copy">${lesson.location_text || "Keine Adresse hinterlegt."}</p>
-          <p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>
         `;
         studentNextLessonPanel.appendChild(card);
         lucide.createIcons();
@@ -4524,6 +4559,12 @@
         }
 
         studentLessons = data || [];
+        if (selectedStudentLessonId && !studentLessons.some((lesson) => lesson.id === selectedStudentLessonId)) {
+          selectedStudentLessonId = null;
+        }
+        if (!selectedStudentLessonId && studentLessons.length) {
+          selectedStudentLessonId = upcomingStudentLesson()?.id || studentLessons[0].id;
+        }
         return studentLessons;
       }
 
@@ -4898,6 +4939,9 @@
         currentUserProfile = null;
         editingTutorLessonId = null;
         calendarSubscriptionUrl = "";
+        isAuthPanelVisible = true;
+        isHomeViewVisible = false;
+        isLibraryVisible = false;
         renderStudentEmailOptions();
         updateAuthUi();
         updateTutorUi();
@@ -4916,6 +4960,10 @@
         authUser = nextUser;
         authPasswordInput.value = "";
         isAuthPanelVisible = false;
+        isHomeViewVisible = true;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
+        isLibraryVisible = false;
         updateAuthUi();
         await loadSignedInState();
         updateAuthUi();
@@ -5012,14 +5060,18 @@
         const isHomeworkMode = isHomeworkModeActive();
         const canSeeTutorView = Boolean(authUser) && userRole === "tutor";
         const canSeeStudentCalendar = Boolean(authUser) && userRole === "student";
+        const canSeeLibrary = Boolean(authUser);
         if (!canSeeTutorView) {
           isTutorViewVisible = false;
         }
         if (!canSeeStudentCalendar) {
           isStudentCalendarViewVisible = false;
         }
-        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible;
-        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible;
+        if (!canSeeLibrary) {
+          isLibraryVisible = false;
+        }
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible;
+        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
@@ -5028,15 +5080,15 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible);
         homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
         tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
         studentCalendarView.classList.toggle("is-hidden", !canSeeStudentCalendar || !isStudentCalendarViewVisible || isAuthPanelVisible);
+        libraryView.classList.toggle("is-hidden", !canSeeLibrary || !isLibraryVisible || isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || !isInfoVisible);
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || !isKeyboardVisible);
-        libraryPanel.classList.toggle("is-hidden", hidesTrainerContent || !isLibraryVisible);
       }
 
       function noteStatFor(mode, noteName) {
@@ -5106,8 +5158,6 @@
       }
 
       function updateLibraryUi() {
-        toggleLibraryButton.classList.toggle("is-active", isLibraryVisible);
-        libraryPanel.classList.toggle("is-hidden", !isLibraryVisible);
         updateModeUi();
       }
 
@@ -6627,11 +6677,18 @@
         isInfoVisible = !isInfoVisible;
         updateInfoUi();
       });
-      toggleLibraryButton.addEventListener("click", () => {
-        isLibraryVisible = !isLibraryVisible;
-        updateLibraryUi();
-      });
       toggleHomeButton.addEventListener("click", () => {
+        if (!authUser) {
+          isAuthPanelVisible = true;
+          isHomeViewVisible = false;
+          isTutorViewVisible = false;
+          isStudentCalendarViewVisible = false;
+          isLibraryVisible = false;
+          updateAuthUi();
+          updateModeUi();
+          updateInfoUi();
+          return;
+        }
         isHomeViewVisible = !isHomeViewVisible;
         if (isHomeViewVisible) {
           isTutorViewVisible = false;
@@ -6641,16 +6698,6 @@
         }
         updateModeUi();
         updateInfoUi();
-      });
-      toggleAuthButton.addEventListener("click", () => {
-        isAuthPanelVisible = !isAuthPanelVisible;
-        if (isAuthPanelVisible) {
-          isTutorViewVisible = false;
-          isStudentCalendarViewVisible = false;
-        }
-        updateAuthUi();
-        updateTutorUi();
-        updateModeUi();
       });
       toggleDoubleButton.addEventListener("click", () => {
         if (isHomeworkModeActive()) {
@@ -7246,6 +7293,9 @@
       authSubscriptionGoogleButton.addEventListener("click", () => openCalendarSubscription("google"));
       authSubscriptionOutlookButton.addEventListener("click", () => openCalendarSubscription("outlook"));
       authBackButton.addEventListener("click", () => {
+        if (!authUser) {
+          return;
+        }
         isAuthPanelVisible = false;
         updateAuthUi();
         updateModeUi();
@@ -7260,6 +7310,11 @@
       });
       studentCalendarBackButton.addEventListener("click", () => {
         isStudentCalendarViewVisible = false;
+        isHomeViewVisible = true;
+        updateModeUi();
+      });
+      libraryBackButton.addEventListener("click", () => {
+        isLibraryVisible = false;
         isHomeViewVisible = true;
         updateModeUi();
       });
@@ -7345,6 +7400,7 @@
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
+        isLibraryVisible = false;
         updateModeUi();
         generateRound();
       });
@@ -7365,6 +7421,7 @@
         isHomeViewVisible = false;
         isTutorViewVisible = true;
         isStudentCalendarViewVisible = false;
+        isLibraryVisible = false;
         await loadTutorContext();
         updateModeUi();
       });
@@ -7375,8 +7432,17 @@
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = true;
+        isLibraryVisible = false;
         await loadTutorContext();
         updateModeUi();
+      });
+      homeModuleLibrary.addEventListener("click", () => {
+        isHomeViewVisible = false;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
+        isLibraryVisible = true;
+        renderLibraryPanel();
+        updateLibraryUi();
       });
       midiIndicatorButton.addEventListener("click", () => initMidi());
       midiTooltip.addEventListener("click", () => setDebugConsoleOpen(true));
