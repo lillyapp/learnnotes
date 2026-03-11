@@ -913,7 +913,6 @@
       .keyboard-range-overlay {
         position: absolute;
         inset: 0;
-        pointer-events: none;
         z-index: 3;
       }
 
@@ -937,6 +936,41 @@
         pointer-events: auto;
         touch-action: none;
         cursor: grab;
+      }
+
+      .range-window {
+        position: absolute;
+        top: 8px;
+        height: calc(100% - 16px);
+        border-top: 3px solid rgba(17, 17, 17, 0.92);
+        border-bottom: 3px solid rgba(17, 17, 17, 0.92);
+        background: rgba(17, 17, 17, 0.08);
+        pointer-events: auto;
+        touch-action: none;
+        cursor: grab;
+      }
+
+      .range-window.is-dragging {
+        cursor: grabbing;
+      }
+
+      .range-window.is-passive {
+        pointer-events: none;
+        border-top-color: rgba(17, 17, 17, 0.72);
+        border-bottom-color: rgba(17, 17, 17, 0.72);
+        background: rgba(17, 17, 17, 0.04);
+      }
+
+      .range-window[data-range-role="bass"] {
+        border-top-color: rgba(27, 111, 212, 0.92);
+        border-bottom-color: rgba(27, 111, 212, 0.92);
+        background: rgba(27, 111, 212, 0.1);
+      }
+
+      .range-window[data-range-role="treble"] {
+        border-top-color: rgba(187, 40, 40, 0.92);
+        border-bottom-color: rgba(187, 40, 40, 0.92);
+        background: rgba(187, 40, 40, 0.1);
       }
 
       .range-bracket::after {
@@ -1234,14 +1268,17 @@
             <div class="white-keys" id="white-keys"></div>
             <div class="black-keys" id="black-keys"></div>
           </div>
-          <div class="keyboard-range-overlay" aria-hidden="true">
-            <div class="range-bracket range-bracket-start" id="range-bracket-start"></div>
-            <div class="range-bracket range-bracket-end" id="range-bracket-end"></div>
-            <div class="range-bracket range-bracket-start is-passive" data-range-role="bass" id="double-range-bass-start"></div>
-            <div class="range-bracket range-bracket-end is-passive" data-range-role="bass" id="double-range-bass-end"></div>
-            <div class="range-bracket range-bracket-start is-passive" data-range-role="treble" id="double-range-treble-start"></div>
-            <div class="range-bracket range-bracket-end is-passive" data-range-role="treble" id="double-range-treble-end"></div>
-          </div>
+        <div class="keyboard-range-overlay" aria-hidden="true">
+          <div class="range-window" id="range-window"></div>
+          <div class="range-bracket range-bracket-start" id="range-bracket-start"></div>
+          <div class="range-bracket range-bracket-end" id="range-bracket-end"></div>
+          <div class="range-window is-passive" data-range-role="bass" id="double-range-bass-window"></div>
+          <div class="range-bracket range-bracket-start is-passive" data-range-role="bass" id="double-range-bass-start"></div>
+          <div class="range-bracket range-bracket-end is-passive" data-range-role="bass" id="double-range-bass-end"></div>
+          <div class="range-window is-passive" data-range-role="treble" id="double-range-treble-window"></div>
+          <div class="range-bracket range-bracket-start is-passive" data-range-role="treble" id="double-range-treble-start"></div>
+          <div class="range-bracket range-bracket-end is-passive" data-range-role="treble" id="double-range-treble-end"></div>
+        </div>
         </div>
       </div>
     </main>
@@ -1294,10 +1331,13 @@
       const keyboard = document.getElementById("keyboard");
       const keyboardLevels = document.getElementById("keyboard-levels");
       const keyboardKeys = document.getElementById("keyboard-keys");
+      const rangeWindow = document.getElementById("range-window");
       const rangeBracketStart = document.getElementById("range-bracket-start");
       const rangeBracketEnd = document.getElementById("range-bracket-end");
+      const doubleRangeBassWindow = document.getElementById("double-range-bass-window");
       const doubleRangeBassStart = document.getElementById("double-range-bass-start");
       const doubleRangeBassEnd = document.getElementById("double-range-bass-end");
+      const doubleRangeTrebleWindow = document.getElementById("double-range-treble-window");
       const doubleRangeTrebleStart = document.getElementById("double-range-treble-start");
       const doubleRangeTrebleEnd = document.getElementById("double-range-treble-end");
       const levelIndicator = document.getElementById("level-indicator");
@@ -1396,7 +1436,7 @@
       let currentClef = "treble";
       let selectedRange = ["C4", "C8"];
       let manualSelectedRange = [...selectedRange];
-      let activeDragEdge = null;
+      let activeDragState = null;
       let doubleSelectedRanges = {
         bass: [...levelRangesByMode.bass[0]],
         treble: [...levelRangesByMode.treble[0]]
@@ -1762,30 +1802,34 @@
 
         authBusy = true;
         updateAuthUi();
+        try {
+          const request = action === "sign-up"
+            ? supabaseClient.auth.signUp({ email, password })
+            : supabaseClient.auth.signInWithPassword({ email, password });
 
-        const request = action === "sign-up"
-          ? supabaseClient.auth.signUp({ email, password })
-          : supabaseClient.auth.signInWithPassword({ email, password });
+          const { data, error } = await request;
 
-        const { data, error } = await request;
-        authBusy = false;
+          if (error) {
+            setAuthStatus(error.message, "error");
+            return;
+          }
 
-        if (error) {
+          authUser = data.user || data.session?.user || null;
+          if (authUser) {
+            isAuthPanelVisible = false;
+          }
+
+          if (authUser) {
+            await loadRemoteProgress();
+          } else if (action === "sign-up") {
+            setAuthStatus("Registrierung angelegt. Falls Mail-Bestätigung aktiv ist, bestätige zuerst deine E-Mail.", "success");
+          }
+        } catch (error) {
+          console.error("[Auth] Anfrage fehlgeschlagen", error);
+          setAuthStatus(error?.message || "Supabase-Anfrage fehlgeschlagen.", "error");
+        } finally {
+          authBusy = false;
           updateAuthUi();
-          setAuthStatus(error.message, "error");
-          return;
-        }
-
-        authUser = data.user || data.session?.user || null;
-        if (authUser) {
-          isAuthPanelVisible = false;
-        }
-        updateAuthUi();
-
-        if (authUser) {
-          await loadRemoteProgress();
-        } else if (action === "sign-up") {
-          setAuthStatus("Registrierung angelegt. Falls Mail-Bestätigung aktiv ist, bestätige zuerst deine E-Mail.", "success");
         }
       }
 
@@ -1796,22 +1840,27 @@
 
         authBusy = true;
         updateAuthUi();
-        await saveRemoteProgress("sign-out");
-        const { error } = await supabaseClient.auth.signOut();
-        authBusy = false;
+        try {
+          await saveRemoteProgress("sign-out");
+          const { error } = await supabaseClient.auth.signOut();
 
-        if (error) {
+          if (error) {
+            setAuthStatus(error.message, "error");
+            return;
+          }
+
+          authUser = null;
+          window.clearTimeout(remoteSaveTimer);
+          authEmailInput.value = "";
+          authPasswordInput.value = "";
+          resetLocalProgressState();
+        } catch (error) {
+          console.error("[Auth] Abmelden fehlgeschlagen", error);
+          setAuthStatus(error?.message || "Abmelden fehlgeschlagen.", "error");
+        } finally {
+          authBusy = false;
           updateAuthUi();
-          setAuthStatus(error.message, "error");
-          return;
         }
-
-        authUser = null;
-        window.clearTimeout(remoteSaveTimer);
-        authEmailInput.value = "";
-        authPasswordInput.value = "";
-        resetLocalProgressState();
-        updateAuthUi();
       }
 
       async function initSupabase() {
@@ -2019,6 +2068,10 @@
       }
 
       function currentVisibleKeyboardRange() {
+        if (isRangeSelectorVisible) {
+          return [midiNumberToName(keyboardRange.start), midiNumberToName(keyboardRange.end)];
+        }
+
         if (isDoubleModeEnabled) {
           const bassRange = activeDoubleRange("bass");
           const trebleRange = activeDoubleRange("treble");
@@ -2597,30 +2650,53 @@
         }
       }
 
+      function positionRangeWindow(windowElement, range) {
+        const [rangeStart, rangeEnd] = range;
+        const startCenter = keyCenterInKeyboard(rangeStart);
+        const endCenter = keyCenterInKeyboard(rangeEnd);
+
+        if (startCenter === null || endCenter === null) {
+          return;
+        }
+
+        windowElement.style.left = `${startCenter}px`;
+        windowElement.style.width = `${Math.max(0, endCenter - startCenter)}px`;
+      }
+
       function syncRangeBracketPositions() {
         positionRangeBracketPair(rangeBracketStart, rangeBracketEnd, selectedRange);
+        positionRangeWindow(rangeWindow, selectedRange);
 
         const showManualRange = isRangeSelectorVisible && !isDoubleModeEnabled;
+        rangeWindow.style.display = showManualRange ? "" : "none";
         rangeBracketStart.style.display = showManualRange ? "" : "none";
         rangeBracketEnd.style.display = showManualRange ? "" : "none";
 
         if (!isDoubleModeEnabled) {
+          doubleRangeBassWindow.style.display = "none";
           doubleRangeBassStart.style.display = "none";
           doubleRangeBassEnd.style.display = "none";
+          doubleRangeTrebleWindow.style.display = "none";
           doubleRangeTrebleStart.style.display = "none";
           doubleRangeTrebleEnd.style.display = "none";
           return;
         }
 
+        positionRangeWindow(doubleRangeBassWindow, activeDoubleRange("bass"));
         positionRangeBracketPair(doubleRangeBassStart, doubleRangeBassEnd, activeDoubleRange("bass"), "Bass");
+        positionRangeWindow(doubleRangeTrebleWindow, activeDoubleRange("treble"));
         positionRangeBracketPair(doubleRangeTrebleStart, doubleRangeTrebleEnd, activeDoubleRange("treble"), "Violine");
         const isEditable = isRangeSelectorVisible;
+        doubleRangeBassWindow.classList.toggle("is-passive", !isEditable);
         doubleRangeBassStart.classList.toggle("is-passive", !isEditable);
         doubleRangeBassEnd.classList.toggle("is-passive", !isEditable);
+        doubleRangeTrebleWindow.classList.toggle("is-passive", !isEditable);
         doubleRangeTrebleStart.classList.toggle("is-passive", !isEditable);
         doubleRangeTrebleEnd.classList.toggle("is-passive", !isEditable);
+        doubleRangeBassWindow.style.display = "";
         doubleRangeBassStart.style.display = "";
         doubleRangeBassEnd.style.display = "";
+        doubleRangeTrebleWindow.style.display = "";
         doubleRangeTrebleStart.style.display = "";
         doubleRangeTrebleEnd.style.display = "";
       }
@@ -3202,12 +3278,95 @@
         return nearest;
       }
 
-      function updateDraggedRange(clientX) {
-        if (!activeDragEdge) {
+      function nearestAvailableNoteIndexFromPointer(clientX, mode = null) {
+        const options = mode ? rangeOptionsForMode(mode) : selectableRangeOptions();
+        let nearestIndex = -1;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        for (let index = 0; index < options.length; index += 1) {
+          const center = keyCenterInKeyboard(options[index].name);
+
+          if (center === null) {
+            continue;
+          }
+
+          const distance = Math.abs(clientX - (keyboard.getBoundingClientRect().left + center));
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestIndex = index;
+          }
+        }
+
+        return nearestIndex;
+      }
+
+      function shiftManualSelectedRange(stepDelta) {
+        const options = selectableRangeOptions().map((note) => note.name);
+        const startIndex = options.indexOf(selectedRange[0]);
+        const endIndex = options.indexOf(selectedRange[1]);
+        const width = endIndex - startIndex;
+        const nextStart = Math.max(0, Math.min(options.length - 1 - width, startIndex + stepDelta));
+        const nextRange = [options[nextStart], options[nextStart + width]];
+
+        if (nextRange[0] === selectedRange[0] && nextRange[1] === selectedRange[1]) {
           return;
         }
 
-        const [mode, edge] = activeDragEdge.split(":");
+        selectedRange = nextRange;
+        manualSelectedRange = [...selectedRange];
+        queueRemoteSave("manual-range");
+        generateRound();
+      }
+
+      function shiftDoubleSelectedRange(mode, stepDelta) {
+        const options = rangeOptionsForMode(mode).map((note) => note.name);
+        const currentRange = activeDoubleRange(mode);
+        const startIndex = options.indexOf(currentRange[0]);
+        const endIndex = options.indexOf(currentRange[1]);
+        const width = endIndex - startIndex;
+        const nextStart = Math.max(0, Math.min(options.length - 1 - width, startIndex + stepDelta));
+        const nextRange = [options[nextStart], options[nextStart + width]];
+
+        if (nextRange[0] === currentRange[0] && nextRange[1] === currentRange[1]) {
+          return;
+        }
+
+        doubleSelectedRanges[mode] = nextRange;
+        syncRangeBracketPositions();
+        queueRemoteSave("double-range");
+        generateDoubleRound();
+      }
+
+      function updateDraggedRange(clientX) {
+        if (!activeDragState) {
+          return;
+        }
+
+        if (activeDragState.edge === "move") {
+          const targetMode = activeDragState.mode === "manual" ? null : activeDragState.mode;
+          const nextIndex = nearestAvailableNoteIndexFromPointer(clientX, targetMode);
+
+          if (nextIndex === -1) {
+            return;
+          }
+
+          const delta = nextIndex - activeDragState.pointerIndex;
+          if (delta === 0) {
+            return;
+          }
+
+          activeDragState.pointerIndex = nextIndex;
+
+          if (targetMode) {
+            shiftDoubleSelectedRange(targetMode, delta);
+            return;
+          }
+
+          shiftManualSelectedRange(delta);
+          return;
+        }
+
+        const [mode, edge] = [activeDragState.mode, activeDragState.edge];
         const targetMode = mode === "manual" ? null : mode;
         const targetEdge = edge || mode;
         const nextNote = nearestAvailableNoteFromPointer(clientX, targetMode);
@@ -3223,15 +3382,20 @@
         updateSelectedRangeByEdge(targetEdge, nextNote);
       }
 
-      function beginRangeDrag(edge, event) {
-        activeDragEdge = edge;
+      function beginRangeDrag(target, event) {
+        const [mode, edge] = target.split(":");
+        activeDragState = {
+          mode,
+          edge,
+          pointerIndex: nearestAvailableNoteIndexFromPointer(event.clientX, mode === "manual" ? null : mode)
+        };
         event.currentTarget.classList.add("is-dragging");
         event.currentTarget.setPointerCapture(event.pointerId);
         updateDraggedRange(event.clientX);
       }
 
       function moveRangeDrag(event) {
-        if (!activeDragEdge) {
+        if (!activeDragState) {
           return;
         }
 
@@ -3239,7 +3403,7 @@
       }
 
       function endRangeDrag(event) {
-        activeDragEdge = null;
+        activeDragState = null;
         event.currentTarget.classList.remove("is-dragging");
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
           event.currentTarget.releasePointerCapture(event.pointerId);
@@ -3329,28 +3493,40 @@
 
       toggleSrsTrebleButton.addEventListener("click", () => toggleSrsMode("treble"));
       toggleSrsBassButton.addEventListener("click", () => toggleSrsMode("bass"));
+      rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("manual:move", event));
       rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("manual:end", event));
       rangeBracketStart.addEventListener("pointerdown", (event) => beginRangeDrag("manual:start", event));
+      rangeWindow.addEventListener("pointermove", moveRangeDrag);
       rangeBracketStart.addEventListener("pointermove", moveRangeDrag);
       rangeBracketEnd.addEventListener("pointermove", moveRangeDrag);
+      rangeWindow.addEventListener("pointerup", endRangeDrag);
       rangeBracketStart.addEventListener("pointerup", endRangeDrag);
       rangeBracketEnd.addEventListener("pointerup", endRangeDrag);
+      rangeWindow.addEventListener("pointercancel", endRangeDrag);
       rangeBracketStart.addEventListener("pointercancel", endRangeDrag);
       rangeBracketEnd.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeBassWindow.addEventListener("pointerdown", (event) => beginRangeDrag("bass:move", event));
       doubleRangeBassStart.addEventListener("pointerdown", (event) => beginRangeDrag("bass:start", event));
       doubleRangeBassEnd.addEventListener("pointerdown", (event) => beginRangeDrag("bass:end", event));
+      doubleRangeTrebleWindow.addEventListener("pointerdown", (event) => beginRangeDrag("treble:move", event));
       doubleRangeTrebleStart.addEventListener("pointerdown", (event) => beginRangeDrag("treble:start", event));
       doubleRangeTrebleEnd.addEventListener("pointerdown", (event) => beginRangeDrag("treble:end", event));
+      doubleRangeBassWindow.addEventListener("pointermove", moveRangeDrag);
       doubleRangeBassStart.addEventListener("pointermove", moveRangeDrag);
       doubleRangeBassEnd.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeTrebleWindow.addEventListener("pointermove", moveRangeDrag);
       doubleRangeTrebleStart.addEventListener("pointermove", moveRangeDrag);
       doubleRangeTrebleEnd.addEventListener("pointermove", moveRangeDrag);
+      doubleRangeBassWindow.addEventListener("pointerup", endRangeDrag);
       doubleRangeBassStart.addEventListener("pointerup", endRangeDrag);
       doubleRangeBassEnd.addEventListener("pointerup", endRangeDrag);
+      doubleRangeTrebleWindow.addEventListener("pointerup", endRangeDrag);
       doubleRangeTrebleStart.addEventListener("pointerup", endRangeDrag);
       doubleRangeTrebleEnd.addEventListener("pointerup", endRangeDrag);
+      doubleRangeBassWindow.addEventListener("pointercancel", endRangeDrag);
       doubleRangeBassStart.addEventListener("pointercancel", endRangeDrag);
       doubleRangeBassEnd.addEventListener("pointercancel", endRangeDrag);
+      doubleRangeTrebleWindow.addEventListener("pointercancel", endRangeDrag);
       doubleRangeTrebleStart.addEventListener("pointercancel", endRangeDrag);
       doubleRangeTrebleEnd.addEventListener("pointercancel", endRangeDrag);
       window.addEventListener("resize", () => {
