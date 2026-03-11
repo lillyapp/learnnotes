@@ -90,6 +90,105 @@
         display: none;
       }
 
+      .home-view {
+        width: min(92vw, 1080px);
+        display: grid;
+        gap: 26px;
+        align-content: start;
+        justify-items: stretch;
+      }
+
+      .home-view.is-hidden {
+        display: none;
+      }
+
+      .home-heading {
+        margin: 0;
+        padding-left: 14px;
+        font-size: clamp(42px, 6vw, 72px);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--text);
+        text-align: left;
+      }
+
+      .home-modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+        gap: 22px;
+        justify-content: start;
+      }
+
+      .home-module {
+        min-height: 260px;
+        border: 1px solid var(--border);
+        border-radius: 32px;
+        overflow: hidden;
+        background: var(--surface);
+        cursor: pointer;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        box-shadow: 0 18px 40px rgba(17, 17, 17, 0.08);
+      }
+
+      .home-module-art {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 28%, rgba(255, 110, 110, 0.92), transparent 26%),
+          radial-gradient(circle at 72% 22%, rgba(255, 193, 99, 0.92), transparent 24%),
+          radial-gradient(circle at 58% 76%, rgba(87, 171, 255, 0.9), transparent 28%),
+          radial-gradient(circle at 20% 88%, rgba(88, 214, 160, 0.9), transparent 24%),
+          linear-gradient(135deg, #f4efe8, #f8f7f3 46%, #f2efe8);
+      }
+
+      .home-module[data-theme="dummy"] .home-module-art {
+        background:
+          radial-gradient(circle at 22% 30%, rgba(98, 118, 255, 0.88), transparent 28%),
+          radial-gradient(circle at 74% 28%, rgba(255, 99, 163, 0.9), transparent 24%),
+          radial-gradient(circle at 50% 72%, rgba(255, 165, 76, 0.9), transparent 26%),
+          radial-gradient(circle at 24% 82%, rgba(145, 216, 108, 0.82), transparent 22%),
+          linear-gradient(135deg, #eef2f8, #f6f3ef 52%, #f5f8fb);
+      }
+
+      .home-module-art::after {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 26px;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 60%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 55%);
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      .home-module-label {
+        min-height: 33.333%;
+        padding: 20px 22px 22px;
+        background: #ffffff;
+        display: grid;
+        align-content: center;
+        justify-items: start;
+        gap: 8px;
+      }
+
+      .home-module-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #111111;
+      }
+
+      .home-module-copy {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #5f5f5f;
+        text-align: left;
+      }
+
       .auth-panel {
         width: min(92vw, 520px);
         padding: 28px 28px 24px;
@@ -340,7 +439,83 @@
         border-radius: 14px;
         background: var(--surface);
         display: grid;
+        gap: 14px;
+      }
+
+      .school-progress {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+      }
+
+      .school-progress-ring {
+        --progress: 0;
+        width: 88px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at center, var(--surface) 56%, transparent 57%),
+          conic-gradient(#1d7a3c calc(var(--progress) * 1%), rgba(0, 0, 0, 0.08) 0);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+
+      .school-progress-value {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .school-summary-copy {
+        display: grid;
         gap: 4px;
+      }
+
+      .school-deadline-card {
+        min-width: 132px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface-soft);
+        display: grid;
+        justify-items: center;
+        align-content: start;
+        gap: 6px;
+        text-align: center;
+      }
+
+      .school-deadline-card svg {
+        width: 20px;
+        height: 20px;
+        color: var(--text);
+      }
+
+      .school-deadline-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--text-soft);
+      }
+
+      .school-deadline-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .school-summary-meta {
+        display: grid;
+        gap: 2px;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .school-description {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.45;
+        color: var(--text);
       }
 
       .school-summary strong {
@@ -1407,6 +1582,14 @@
               Ziel in Prozent
               <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
             </label>
+            <label>
+              Faellig bis
+              <input class="school-field" id="school-due-date" type="date">
+            </label>
+            <label style="grid-column: 1 / -1;">
+              Beschreibung
+              <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage taeglich langsam und achte auf sichere Zuordnung."></textarea>
+            </label>
           </div>
           <div class="school-actions" id="school-actions">
             <button class="school-submit" id="school-save-button" type="button">Hausaufgabe zuweisen</button>
@@ -1517,6 +1700,8 @@
       const schoolBassStartSelect = document.getElementById("school-bass-start");
       const schoolBassEndSelect = document.getElementById("school-bass-end");
       const schoolTargetAccuracyInput = document.getElementById("school-target-accuracy");
+      const schoolDueDateInput = document.getElementById("school-due-date");
+      const schoolDescriptionInput = document.getElementById("school-description");
       const schoolSaveButton = document.getElementById("school-save-button");
       const schoolStatus = document.getElementById("school-status");
       const sheetMusic = document.querySelector(".sheet-music");
@@ -1924,6 +2109,58 @@
         return `${label}: ${rangeStart}-${rangeEnd}, Ziel ${homework.target_accuracy}%`;
       }
 
+      function homeworkDueText(homework) {
+        if (!homework?.due_at) {
+          return "Offen";
+        }
+
+        const dueDate = new Date(homework.due_at);
+        if (Number.isNaN(dueDate.getTime())) {
+          return homework.due_at;
+        }
+
+        return dueDate.toLocaleDateString("de-DE");
+      }
+
+      function homeworkTrackedNotes(homework) {
+        if (!homework) {
+          return [];
+        }
+
+        if (homework.mode === "double") {
+          return [
+            ...notesInRange("bass", [homework.bass_range_start, homework.bass_range_end]).map((name) => ({ mode: "bass", name })),
+            ...notesInRange("treble", [homework.treble_range_start, homework.treble_range_end]).map((name) => ({ mode: "treble", name }))
+          ];
+        }
+
+        const range = homework.mode === "bass"
+          ? [homework.bass_range_start, homework.bass_range_end]
+          : [homework.treble_range_start, homework.treble_range_end];
+
+        return notesInRange(homework.mode, range).map((name) => ({ mode: homework.mode, name }));
+      }
+
+      function homeworkCompletionPercent(homework) {
+        const trackedNotes = homeworkTrackedNotes(homework);
+        if (!trackedNotes.length) {
+          return 0;
+        }
+
+        const targetRatio = Math.max(0.5, Math.min(1, (homework?.target_accuracy || 90) / 100));
+        const progressTotal = trackedNotes.reduce((sum, entry) => {
+          const stat = noteStatFor(entry.mode, entry.name);
+          if (!stat || stat.attempts === 0) {
+            return sum;
+          }
+
+          const accuracy = stat.correct / stat.attempts;
+          return sum + Math.min(1, accuracy / targetRatio);
+        }, 0);
+
+        return Math.round((progressTotal / trackedNotes.length) * 100);
+      }
+
       function applyHomeworkConfiguration() {
         if (!isHomeworkModeActive()) {
           return;
@@ -1966,12 +2203,37 @@
           schoolSaveButton.disabled = schoolBusy;
           schoolStudentSummary.classList.add("is-hidden");
         } else if (isHomeworkModeActive()) {
+          const completion = homeworkCompletionPercent(activeHomework);
           schoolPanelTitle.textContent = "Hausaufgabe";
           schoolPanelCopy.textContent = "Diese Aufgabe wurde dir automatisch zugewiesen und konfiguriert den Trainer.";
           schoolAssignmentForm.classList.add("is-hidden");
           schoolSaveButton.classList.add("is-hidden");
           schoolStudentSummary.classList.remove("is-hidden");
-          schoolStudentSummary.innerHTML = `<strong>Aktive Aufgabe</strong><span>${homeworkSummaryText(activeHomework)}</span>`;
+          schoolStudentSummary.innerHTML = `
+            <div class="school-progress">
+              <div class="school-summary-copy">
+                <div class="school-progress-ring" style="--progress: ${completion}">
+                  <span class="school-progress-value">${completion}%</span>
+                </div>
+                <strong>Aktive Aufgabe</strong>
+                <span>${homeworkSummaryText(activeHomework)}</span>
+                ${activeHomework.description ? `<p class="school-description">${activeHomework.description}</p>` : ""}
+                <div class="school-summary-meta">
+                  <span>Ziel erreicht, sobald alle Noten im Schnitt ${activeHomework.target_accuracy}% sicher sind.</span>
+                </div>
+              </div>
+              <div class="school-deadline-card">
+                <i data-lucide="calendar-days"></i>
+                <span class="school-deadline-label">FAELLIG AM</span>
+                <span class="school-deadline-value">${homeworkDueText(activeHomework)}</span>
+              </div>
+            </div>
+          `;
+          lucide.createIcons({
+            attrs: {
+              "stroke-width": 1.9
+            }
+          });
         } else {
           schoolPanelTitle.textContent = "Tutor-Modul";
           schoolPanelCopy.textContent = "Keine aktive Hausaufgabe.";
@@ -2064,6 +2326,8 @@
         const studentEmail = schoolStudentEmailInput.value.trim().toLowerCase();
         const mode = schoolModeSelect.value;
         const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
+        const dueAt = schoolDueDateInput.value || null;
+        const description = schoolDescriptionInput.value.trim();
         const trebleStart = schoolTrebleStartSelect.value;
         const trebleEnd = schoolTrebleEndSelect.value;
         const bassStart = schoolBassStartSelect.value;
@@ -2097,6 +2361,8 @@
             bass_range_start: bassStart,
             bass_range_end: bassEnd,
             target_accuracy: targetAccuracy,
+            due_at: dueAt,
+            description: description || null,
             is_active: true
           };
 
@@ -2916,6 +3182,8 @@
         schoolStudentEmailInput.disabled = schoolBusy;
         schoolModeSelect.disabled = schoolBusy;
         schoolTargetAccuracyInput.disabled = schoolBusy;
+        schoolDueDateInput.disabled = schoolBusy;
+        schoolDescriptionInput.disabled = schoolBusy;
       }
 
       function clampSrsWindowStart(startIndex, windowSize, total) {
