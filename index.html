@@ -58,9 +58,9 @@
       }
 
       main {
-        width: calc(100vw - 20px);
-        height: calc(100vh - 20px);
-        margin: 10px;
+        width: calc(100vw - 8px);
+        height: calc(100vh - 8px);
+        margin: 4px;
         display: grid;
         place-items: center;
       }
@@ -91,7 +91,7 @@
       }
 
       .home-view {
-        width: min(92vw, 1080px);
+        width: min(97vw, 1380px);
         display: grid;
         gap: 26px;
         align-content: start;
@@ -273,7 +273,7 @@
       }
 
       .tutor-view {
-        width: min(92vw, 1120px);
+        width: min(97vw, 1480px);
         display: grid;
         gap: 22px;
         align-content: start;
@@ -333,23 +333,34 @@
 
       .tutor-dashboard {
         display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-        gap: 18px;
+        grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.55fr);
+        gap: 14px;
         align-items: start;
+        max-height: calc(100svh - 104px);
+        min-height: 0;
       }
 
       .tutor-card {
-        padding: 22px 24px;
+        padding: 18px 20px;
         border: 1px solid var(--border);
         border-radius: 24px;
         background: var(--surface-soft);
         display: grid;
         gap: 14px;
+        min-height: 0;
+      }
+
+      .calendar-card {
+        max-height: calc(100svh - 126px);
+        overflow: auto;
       }
 
       .tutor-calendar-shell {
         display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr);
         gap: 16px;
+        min-height: 0;
+        height: 100%;
       }
 
       .tutor-calendar-toolbar {
@@ -497,6 +508,15 @@
         gap: 8px;
       }
 
+      .tutor-calendar-weekdays.is-timetable {
+        grid-template-columns: 72px repeat(7, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .tutor-calendar-weekday.is-time-spacer {
+        justify-content: flex-start;
+      }
+
       .tutor-calendar-day {
         min-height: 132px;
         padding: 12px;
@@ -571,20 +591,172 @@
         color: var(--text-soft);
       }
 
-      .tutor-detail-empty {
-        min-height: 220px;
+      .week-timetable {
         display: grid;
-        place-items: center;
-        text-align: center;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 8px;
+        align-items: start;
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: none;
+        min-height: 0;
+      }
+
+      .week-timetable-times {
+        display: grid;
+        grid-template-rows: repeat(28, var(--calendar-slot-height, 44px));
+        position: sticky;
+        left: 0;
+        background: var(--surface-soft);
+        z-index: 2;
+      }
+
+      .week-timetable-time {
+        position: relative;
+        transform: translateY(-9px);
+        font-size: 11px;
         color: var(--text-soft);
-        border: 1px dashed var(--border);
+      }
+
+      .week-timetable-board {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-rows: repeat(28, var(--calendar-slot-height, 44px));
+        min-width: 700px;
+        gap: 1px;
+        border: 1px solid var(--border);
         border-radius: 20px;
-        background: var(--surface);
-        padding: 24px;
+        overflow: hidden;
+        background: rgba(17, 17, 17, 0.08);
+      }
+
+      .week-timetable-cell {
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .week-timetable-cell.is-today {
+        background: rgba(224, 235, 255, 0.92);
+      }
+
+      .week-timetable-event-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .week-timetable-event {
+        position: absolute;
+        inset-inline-start: calc(var(--event-left) * 1%);
+        width: calc(var(--event-width) * 1%);
+        inset-block-start: calc(var(--event-top) * 1px);
+        height: calc(var(--event-height) * 1px);
+        margin: 3px;
+        padding: 10px 10px 8px;
+        border: 1px solid rgba(17, 17, 17, 0.12);
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(17, 17, 17, 0.94), rgba(17, 17, 17, 0.82));
+        color: #ffffff;
+        display: grid;
+        align-content: start;
+        gap: 4px;
+        text-align: left;
+        pointer-events: auto;
+        box-shadow: 0 12px 24px rgba(17, 17, 17, 0.12);
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+
+      .week-timetable-event.is-readonly {
+        cursor: default;
+      }
+
+      .week-timetable-event:not(.is-readonly) {
+        cursor: grab;
+      }
+
+      .week-timetable-event.is-selected {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 12px 24px rgba(17, 17, 17, 0.16);
+      }
+
+      .week-timetable-event.is-dragging {
+        opacity: 0.72;
+        cursor: grabbing;
+        z-index: 3;
+        box-shadow: 0 18px 36px rgba(17, 17, 17, 0.2);
+      }
+
+      .week-timetable-event strong {
+        font-size: 12px;
+        line-height: 1.25;
+      }
+
+      .week-timetable-event span {
+        font-size: 11px;
+        line-height: 1.35;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .calendar-view {
+        display: grid;
+        gap: 18px;
+      }
+
+      .calendar-next-lesson {
+        display: grid;
+        gap: 12px;
+      }
+
+      .calendar-next-empty {
+        padding: 18px;
+        border: 1px dashed var(--border);
+        border-radius: 18px;
+        color: var(--text-soft);
+        background: rgba(255, 255, 255, 0.56);
+      }
+
+      .calendar-subscription-panel {
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        display: grid;
+        gap: 10px;
+      }
+
+      .calendar-subscription-panel.is-hidden {
+        display: none;
+      }
+
+      .calendar-subscription-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .calendar-subscription-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .calendar-subscription-hint {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--text-soft);
       }
 
       .tutor-detail-block {
         display: grid;
+        gap: 10px;
+      }
+
+      .tutor-detail-actions {
+        display: flex;
+        flex-wrap: wrap;
         gap: 10px;
       }
 
@@ -593,16 +765,64 @@
         gap: 8px;
       }
 
+      .tutor-detail-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
       .tutor-detail-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
         font-size: 14px;
         color: var(--text-soft);
+        padding: 8px 0;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .tutor-detail-row i,
+      .tutor-detail-row svg {
+        width: 16px;
+        height: 16px;
+        color: var(--text);
       }
 
       .tutor-detail-row strong {
         color: var(--text);
+        line-height: 1.35;
+      }
+
+      .tutor-detail-row strong {
+        font-weight: 600;
+      }
+
+      .tutor-detail-row.is-copy {
+        align-items: start;
+      }
+
+      .tutor-detail-row.is-copy i,
+      .tutor-detail-row.is-copy svg {
+        width: 16px;
+        height: 16px;
+        color: var(--text);
+        margin-top: 1px;
+      }
+
+      .tutor-detail-row.is-copy .tutor-entry-copy {
+        margin: 0;
+      }
+
+      .tutor-detail-block .tutor-entry-topline .lesson-meta-chips {
+        justify-content: flex-end;
+      }
+
+      @media (max-width: 640px) {
+        .tutor-detail-pair {
+          grid-template-columns: 1fr;
+        }
       }
 
       .tutor-modal {
@@ -611,7 +831,7 @@
         z-index: 40;
         display: grid;
         place-items: center;
-        padding: 24px;
+        padding: 14px;
         background: rgba(17, 17, 17, 0.28);
       }
 
@@ -620,13 +840,14 @@
       }
 
       .tutor-modal-card {
-        width: min(760px, 92vw);
-        max-height: min(86vh, 920px);
+        width: min(920px, 96vw);
+        max-height: min(92vh, 1040px);
         overflow: auto;
-        padding: 24px;
+        padding: 20px;
         border-radius: 28px;
         border: 1px solid var(--border);
-        background: var(--surface-soft);
+        background: #ffffff;
+        box-shadow: 0 24px 48px rgba(17, 17, 17, 0.18);
         display: grid;
         gap: 18px;
       }
@@ -634,15 +855,34 @@
       @media (max-width: 1024px) {
         .tutor-dashboard {
           grid-template-columns: 1fr;
+          max-height: calc(100svh - 86px);
+        }
+
+        .calendar-card {
+          max-height: calc(100svh - 110px);
         }
 
         .tutor-calendar-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+
+        .calendar-subscription-actions {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .tutor-dashboard {
+          max-height: calc(100svh - 78px);
+        }
+
+        .calendar-card {
+          max-height: calc(100svh - 94px);
+        }
       }
 
       .auth-panel {
-        width: min(92vw, 520px);
+        width: min(96vw, 620px);
         padding: 28px 28px 24px;
         border: 1px solid var(--border);
         border-radius: 28px;
@@ -750,6 +990,65 @@
 
       .auth-subscription.is-hidden {
         display: none;
+      }
+
+      .auth-profile {
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        display: grid;
+        gap: 10px;
+      }
+
+      .auth-profile.is-hidden {
+        display: none;
+      }
+
+      .auth-profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .auth-profile-grid label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .lesson-meta-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .lesson-meta-chip {
+        min-height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.06);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .lesson-meta-chip.is-alert {
+        background: #c93535;
+        color: #ffffff;
+      }
+
+      .lesson-meta-chip.is-alert svg {
+        color: #ffffff;
+      }
+
+      .lesson-meta-chip svg {
+        width: 14px;
+        height: 14px;
       }
 
       .auth-subscription-title {
@@ -898,6 +1197,64 @@
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+      }
+
+      .school-inline-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .school-inline-header .tutor-icon-button {
+        width: 36px;
+        height: 36px;
+        flex: 0 0 auto;
+      }
+
+      .school-field-block[data-state="active"] .tutor-icon-button {
+        border-color: var(--text);
+        background: rgba(17, 17, 17, 0.06);
+      }
+
+      .lesson-pass-panel {
+        grid-column: 1 / -1;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        display: grid;
+        gap: 10px;
+      }
+
+      .lesson-pass-panel.is-hidden {
+        display: none;
+      }
+
+      .lesson-pass-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .lesson-pass-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--text-soft);
+      }
+
+      .lesson-pass-confirm {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .lesson-form-main.is-disabled {
+        opacity: 0.4;
+        pointer-events: none;
       }
 
       .school-submit {
@@ -2060,6 +2417,28 @@
             </div>
             <p class="auth-subscription-hint" id="auth-subscription-hint">Der Link ist privat. Nicht weitergeben.</p>
           </div>
+          <div class="auth-profile is-hidden" id="auth-profile-panel">
+            <p class="auth-subscription-title">Unterrichtsprofil</p>
+            <div class="auth-profile-grid">
+              <label>
+                Zahlungsart
+                <input class="auth-field" id="profile-payment-method" type="text" placeholder="Bar, PayPal, Überweisung">
+              </label>
+              <label>
+                Kundenart
+                <select class="auth-field" id="profile-customer-type">
+                  <option value="">Bitte wählen</option>
+                  <option value="single">Einzelabrechnung</option>
+                  <option value="subscription">Abo / 10er Karte</option>
+                </select>
+              </label>
+              <label style="grid-column: 1 / -1;">
+                Standarddauer
+                <input class="auth-field" id="profile-standard-duration" type="number" min="15" max="180" step="5" placeholder="z. B. 45">
+              </label>
+            </div>
+            <button class="auth-submit is-secondary" id="profile-save-button" type="button">Profil speichern</button>
+          </div>
           <p class="auth-status" id="auth-status">Supabase nicht verbunden</p>
         </div>
         <section class="home-view" id="home-view" aria-label="Startseite">
@@ -2099,6 +2478,17 @@
                 <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
               </div>
             </button>
+            <button class="home-module is-hidden" id="home-module-calendar" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-sitting-reading.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Kalender</h2>
+                <p class="home-module-copy">Sieh deinen aktuellen Unterrichtsmonat und den nächsten Termin auf einen Blick.</p>
+              </div>
+            </button>
             <button class="home-module is-muted" id="home-module-bookworm" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
                 <span class="home-module-badge">DEMNÄCHST</span>
@@ -2115,21 +2505,10 @@
         </section>
         <section class="tutor-view is-hidden" id="tutor-view" aria-label="Tutorenansicht">
           <div class="tutor-view-header">
-            <div class="tutor-view-copy">
-              <p class="tutor-view-kicker">Tutorenansicht</p>
-              <h1 class="tutor-view-title">Unterrichte & Hausaufgaben</h1>
-              <p class="tutor-view-subtitle">Verwalte anstehende Unterrichte in einer Kalenderansicht, notiere passende Hausaufgaben und weise Aufgaben gezielt an deine Schüler:innen zu.</p>
-            </div>
             <button class="tutor-back" id="tutor-back-button" type="button">Zurück</button>
           </div>
           <div class="tutor-dashboard">
-            <section class="tutor-card">
-              <div class="tutor-card-header">
-                <div>
-                  <h2 class="tutor-card-title">Unterrichtskalender</h2>
-                  <p class="tutor-card-copy">Klicke auf einen Termin, um Unterricht und Hausaufgabe im Detail zu sehen. Neue Einträge legst du über das Plus an.</p>
-                </div>
-              </div>
+            <section class="tutor-card calendar-card">
               <div class="tutor-calendar-shell">
                 <div class="tutor-calendar-toolbar">
                   <h3 class="tutor-calendar-month" id="tutor-calendar-month-label">März 2026</h3>
@@ -2142,6 +2521,9 @@
                     </button>
                     <button class="tutor-icon-button" id="tutor-add-button" type="button" aria-label="Neuen Termin anlegen">
                       <i data-lucide="plus"></i>
+                    </button>
+                    <button class="tutor-icon-button" id="tutor-calendar-subscribe-button" type="button" aria-label="Kalender abonnieren" title="Kalender abonnieren">
+                      <i data-lucide="calendar-sync"></i>
                     </button>
                   </div>
                 </div>
@@ -2158,24 +2540,66 @@
               </div>
             </section>
             <div style="display:grid; gap:18px;">
-              <section class="tutor-card">
-                <div class="tutor-card-header">
-                  <div>
-                    <h2 class="tutor-card-title">Termin-Details</h2>
-                    <p class="tutor-card-copy">Hier siehst du den ausgewählten Unterricht mit Hausaufgabe und Zielen.</p>
-                  </div>
-                </div>
+              <section class="tutor-card is-hidden" id="tutor-detail-card">
                 <div id="tutor-detail-panel"></div>
               </section>
-              <section class="tutor-card">
-                <div class="tutor-card-header">
-                  <div>
-                    <h2 class="tutor-card-title">Hausaufgaben im Überblick</h2>
-                    <p class="tutor-card-copy">Alle aktuellen und zuletzt erstellten Aufgaben mit Schüler, Modus, Ziel und Fälligkeit.</p>
+              <p class="school-status" id="school-status"></p>
+            </div>
+          </div>
+        </section>
+        <section class="tutor-view is-hidden" id="student-calendar-view" aria-label="Kalenderansicht">
+          <div class="tutor-view-header">
+            <div class="tutor-view-copy">
+              <p class="tutor-view-kicker">Kalender</p>
+              <h1 class="tutor-view-title">Mein Unterricht</h1>
+              <p class="tutor-view-subtitle">Verfolge deinen aktuellen Unterrichtsmonat und sieh sofort, wann die nächste Stunde stattfindet.</p>
+            </div>
+            <button class="tutor-back" id="student-calendar-back-button" type="button">Zurück</button>
+          </div>
+          <div class="tutor-dashboard calendar-view">
+            <section class="tutor-card calendar-card">
+              <div class="tutor-card-header">
+                <div>
+                  <h2 class="tutor-card-title">Monatsansicht</h2>
+                  <p class="tutor-card-copy">Alle aktuell sichtbaren Unterrichte in einer Kalenderübersicht.</p>
+                </div>
+              </div>
+              <div class="tutor-calendar-shell">
+                <div class="tutor-calendar-toolbar">
+                  <h3 class="tutor-calendar-month" id="student-calendar-month-label">März 2026</h3>
+                  <div class="tutor-calendar-toolbar-actions">
+                    <button class="tutor-icon-button" id="student-calendar-prev-button" type="button" aria-label="Vorheriger Monat">
+                      <i data-lucide="chevron-left"></i>
+                    </button>
+                    <button class="tutor-icon-button" id="student-calendar-next-button" type="button" aria-label="Nächster Monat">
+                      <i data-lucide="chevron-right"></i>
+                    </button>
+                    <button class="tutor-icon-button" id="student-calendar-subscribe-button" type="button" aria-label="Kalender abonnieren" title="Kalender abonnieren">
+                      <i data-lucide="calendar-sync"></i>
+                    </button>
                   </div>
                 </div>
-                <div class="tutor-assignment-list" id="tutor-assignment-list"></div>
-                <p class="school-status" id="school-status">Bereit zum Planen von Unterricht und Hausaufgaben.</p>
+                <div class="tutor-calendar-weekdays">
+                  <div class="tutor-calendar-weekday">Mo</div>
+                  <div class="tutor-calendar-weekday">Di</div>
+                  <div class="tutor-calendar-weekday">Mi</div>
+                  <div class="tutor-calendar-weekday">Do</div>
+                  <div class="tutor-calendar-weekday">Fr</div>
+                  <div class="tutor-calendar-weekday">Sa</div>
+                  <div class="tutor-calendar-weekday">So</div>
+                </div>
+                <div class="tutor-calendar-grid" id="student-calendar-grid"></div>
+              </div>
+            </section>
+            <div style="display:grid; gap:18px;">
+              <section class="tutor-card calendar-next-lesson">
+                <div class="tutor-card-header">
+                  <div>
+                    <h2 class="tutor-card-title">Nächster Unterricht</h2>
+                    <p class="tutor-card-copy">Dein nächster anstehender Termin mit den wichtigsten Details.</p>
+                  </div>
+                </div>
+                <div id="student-next-lesson-panel"></div>
               </section>
             </div>
           </div>
@@ -2190,16 +2614,26 @@
               <button class="tutor-back" id="tutor-modal-close-button" type="button">Schließen</button>
             </div>
             <div class="school-grid" id="lesson-form">
-              <label>
+              <label style="grid-column: 1 / -1;">
                 Schüler auswählen
                 <select class="school-select" id="lesson-student-select">
                   <option value="">Bitte wählen</option>
                 </select>
               </label>
-              <label>
-                Schüler E-Mail
-                <input class="school-field" id="lesson-student-email" type="email" placeholder="student@example.com">
-              </label>
+              <div class="lesson-pass-panel is-hidden" id="lesson-pass-panel">
+                <div class="lesson-pass-row">
+                  <div class="lesson-meta-chips" id="lesson-pass-chips"></div>
+                  <button class="school-submit is-secondary" id="lesson-pass-reset-button" type="button">Karte auffüllen</button>
+                </div>
+                <p class="lesson-pass-copy" id="lesson-pass-copy"></p>
+                <div class="lesson-pass-confirm">
+                  <input class="school-field" id="lesson-pass-password" type="password" placeholder="Passwort zur Bestätigung">
+                  <button class="school-submit is-secondary" id="lesson-pass-confirm-button" type="button">Bestätigen</button>
+                </div>
+              </div>
+              <input id="lesson-student-email" type="hidden">
+              <datalist id="lesson-student-suggestions"></datalist>
+              <div class="school-grid" id="lesson-form-main" style="grid-column: 1 / -1;">
               <label>
                 Start
                 <input class="school-field" id="lesson-starts-at" type="datetime-local">
@@ -2208,53 +2642,78 @@
                 Ende
                 <input class="school-field" id="lesson-ends-at" type="datetime-local">
               </label>
-              <label style="grid-column: 1 / -1;">
-                Titel
+              <div class="school-field-block" style="grid-column: 1 / -1;" id="lesson-title-block">
+                <div class="school-inline-header">
+                  <span>Titel</span>
+                  <button class="tutor-icon-button" id="lesson-advanced-toggle-button" type="button" aria-label="Weitere Felder anzeigen" title="Weitere Felder">
+                    <i data-lucide="ellipsis"></i>
+                  </button>
+                </div>
                 <input class="school-field" id="lesson-title" type="text" placeholder="Zum Beispiel: Dienstag, Lesetraining in C-Lage">
-              </label>
-              <label style="grid-column: 1 / -1;">
-                Unterrichtsnotiz
-                <textarea class="school-field" id="lesson-homework-note" rows="4" placeholder="Was ist im Unterricht geplant?"></textarea>
-              </label>
+              </div>
               <label>
-                Modus
-                <select class="school-select" id="school-mode-select">
-                  <option value="treble">Violine</option>
-                  <option value="bass">Bass</option>
-                  <option value="double">Dual</option>
+                Hausaufgabe erstellen
+                <select class="school-select" id="lesson-create-homework">
+                  <option value="no">Nein</option>
+                  <option value="yes">Ja</option>
                 </select>
               </label>
-              <label>
-                Ziel in Prozent
-                <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
-              </label>
-              <label>
-                Violine Start
-                <select class="school-select" id="school-treble-start"></select>
-              </label>
-              <label>
-                Violine Ende
-                <select class="school-select" id="school-treble-end"></select>
-              </label>
-              <label>
-                Bass Start
-                <select class="school-select" id="school-bass-start"></select>
-              </label>
-              <label>
-                Bass Ende
-                <select class="school-select" id="school-bass-end"></select>
-              </label>
-              <label>
-                Fällig bis
-                <input class="school-field" id="school-due-date" type="date">
-              </label>
-              <label style="grid-column: 1 / -1;">
-                Hausaufgabe
-                <textarea class="school-field" id="school-description" rows="4" placeholder="Zum Beispiel: Spiele diese Lage täglich langsam und achte auf sichere Zuordnung."></textarea>
-              </label>
+              <div></div>
+              <div class="school-grid is-hidden" id="lesson-advanced-fields" style="grid-column: 1 / -1;">
+                <label style="grid-column: 1 / -1;">
+                  Adresse
+                  <input class="school-field" id="lesson-location-text" type="text" placeholder="">
+                </label>
+                <label style="grid-column: 1 / -1;">
+                  Map-Link
+                  <input class="school-field" id="lesson-map-url" type="url" placeholder="">
+                </label>
+              </div>
+              <div class="school-grid is-hidden" id="lesson-homework-fields" style="grid-column: 1 / -1;">
+                <label>
+                  Fällig bis
+                  <input class="school-field" id="school-due-date" type="date">
+                </label>
+                <div></div>
+                <label style="grid-column: 1 / -1;">
+                  Hausaufgabe
+                  <textarea class="school-field" id="school-description" rows="4" placeholder="Was soll geübt werden?"></textarea>
+                </label>
+              </div>
+              <div class="school-grid is-hidden" id="lesson-homework-config-fields" aria-hidden="true" style="grid-column: 1 / -1;">
+                <label>
+                  Modus
+                  <select class="school-select" id="school-mode-select">
+                    <option value="treble">Violine</option>
+                    <option value="bass">Bass</option>
+                    <option value="double">Dual</option>
+                  </select>
+                </label>
+                <label>
+                  Ziel in Prozent
+                  <input class="school-field" id="school-target-accuracy" type="number" min="50" max="100" step="1" value="90">
+                </label>
+                <label>
+                  Violine Start
+                  <select class="school-select" id="school-treble-start"></select>
+                </label>
+                <label>
+                  Violine Ende
+                  <select class="school-select" id="school-treble-end"></select>
+                </label>
+                <label>
+                  Bass Start
+                  <select class="school-select" id="school-bass-start"></select>
+                </label>
+                <label>
+                  Bass Ende
+                  <select class="school-select" id="school-bass-end"></select>
+                </label>
+              </div>
+              </div>
             </div>
             <div class="school-actions" id="school-actions">
-              <button class="school-submit" id="school-save-button" type="button">Termin & Hausaufgabe speichern</button>
+              <button class="school-submit" id="school-save-button" type="button">Termin speichern</button>
             </div>
           </div>
         </div>
@@ -2358,6 +2817,11 @@
       const authSubscriptionGoogleButton = document.getElementById("auth-subscription-google-button");
       const authSubscriptionOutlookButton = document.getElementById("auth-subscription-outlook-button");
       const authSubscriptionHint = document.getElementById("auth-subscription-hint");
+      const authProfilePanel = document.getElementById("auth-profile-panel");
+      const profilePaymentMethodInput = document.getElementById("profile-payment-method");
+      const profileCustomerTypeSelect = document.getElementById("profile-customer-type");
+      const profileStandardDurationInput = document.getElementById("profile-standard-duration");
+      const profileSaveButton = document.getElementById("profile-save-button");
       const authStatus = document.getElementById("auth-status");
       const tutorView = document.getElementById("tutor-view");
       const tutorBackButton = document.getElementById("tutor-back-button");
@@ -2365,17 +2829,41 @@
       const tutorCalendarPrevButton = document.getElementById("tutor-calendar-prev-button");
       const tutorCalendarNextButton = document.getElementById("tutor-calendar-next-button");
       const tutorAddButton = document.getElementById("tutor-add-button");
+      const tutorCalendarSubscribeButton = document.getElementById("tutor-calendar-subscribe-button");
       const tutorCalendarGrid = document.getElementById("tutor-calendar-grid");
+      const tutorDetailCard = document.getElementById("tutor-detail-card");
       const tutorDetailPanel = document.getElementById("tutor-detail-panel");
-      const tutorAssignmentList = document.getElementById("tutor-assignment-list");
+      const studentCalendarView = document.getElementById("student-calendar-view");
+      const studentCalendarBackButton = document.getElementById("student-calendar-back-button");
+      const studentCalendarMonthLabel = document.getElementById("student-calendar-month-label");
+      const studentCalendarPrevButton = document.getElementById("student-calendar-prev-button");
+      const studentCalendarNextButton = document.getElementById("student-calendar-next-button");
+      const studentCalendarSubscribeButton = document.getElementById("student-calendar-subscribe-button");
+      const studentCalendarGrid = document.getElementById("student-calendar-grid");
+      const studentNextLessonPanel = document.getElementById("student-next-lesson-panel");
       const tutorModal = document.getElementById("tutor-modal");
       const tutorModalCloseButton = document.getElementById("tutor-modal-close-button");
       const lessonStudentSelect = document.getElementById("lesson-student-select");
       const lessonStudentEmailInput = document.getElementById("lesson-student-email");
+      const lessonStudentSuggestions = document.getElementById("lesson-student-suggestions");
+      const lessonFormMain = document.getElementById("lesson-form-main");
       const lessonStartsAtInput = document.getElementById("lesson-starts-at");
       const lessonEndsAtInput = document.getElementById("lesson-ends-at");
       const lessonTitleInput = document.getElementById("lesson-title");
-      const lessonHomeworkNoteInput = document.getElementById("lesson-homework-note");
+      const lessonTitleBlock = document.getElementById("lesson-title-block");
+      const lessonAdvancedToggleButton = document.getElementById("lesson-advanced-toggle-button");
+      const lessonAdvancedFields = document.getElementById("lesson-advanced-fields");
+      const lessonCreateHomeworkSelect = document.getElementById("lesson-create-homework");
+      const lessonPassPanel = document.getElementById("lesson-pass-panel");
+      const lessonPassChips = document.getElementById("lesson-pass-chips");
+      const lessonPassCopy = document.getElementById("lesson-pass-copy");
+      const lessonPassResetButton = document.getElementById("lesson-pass-reset-button");
+      const lessonPassPasswordInput = document.getElementById("lesson-pass-password");
+      const lessonPassConfirmButton = document.getElementById("lesson-pass-confirm-button");
+      const lessonHomeworkFields = document.getElementById("lesson-homework-fields");
+      const lessonHomeworkConfigFields = document.getElementById("lesson-homework-config-fields");
+      const lessonLocationTextInput = document.getElementById("lesson-location-text");
+      const lessonMapUrlInput = document.getElementById("lesson-map-url");
       const schoolAssignmentForm = document.getElementById("school-assignment-form");
       const schoolModeSelect = document.getElementById("school-mode-select");
       const schoolTrebleStartSelect = document.getElementById("school-treble-start");
@@ -2391,6 +2879,7 @@
       const homeModuleNotes = document.getElementById("home-module-notes");
       const homeModuleIceCream = document.getElementById("home-module-ice-cream");
       const homeModuleTutor = document.getElementById("home-module-tutor");
+      const homeModuleCalendar = document.getElementById("home-module-calendar");
       const homeModuleBookworm = document.getElementById("home-module-bookworm");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
@@ -2515,6 +3004,7 @@
       let isLibraryVisible = false;
       let isHomeViewVisible = true;
       let isTutorViewVisible = false;
+      let isStudentCalendarViewVisible = false;
       let isDoubleModeEnabled = false;
       let midiAccessRef = null;
       let midiOutputsRef = [];
@@ -2535,12 +3025,17 @@
       let tutorStudentEmails = [];
       let tutorAssignments = [];
       let tutorLessons = [];
+      let studentLessons = [];
+      let tutorStudentProfiles = new Map();
+      let currentUserProfile = null;
+      let editingTutorLessonId = null;
       let selectedTutorLessonId = null;
+      let activeLessonDrag = null;
+      let isLessonAdvancedOpen = false;
+      let isLessonPassResetConfirmOpen = false;
       let isTutorModalOpen = false;
-      let tutorCalendarMonth = (() => {
-        const now = new Date();
-        return new Date(now.getFullYear(), now.getMonth(), 1);
-      })();
+      let tutorCalendarMonth = (() => startOfWeek(new Date()))();
+      let studentCalendarMonth = (() => startOfWeek(new Date()))();
       let userRole = null;
       let activeHomework = null;
       let srsStates = {
@@ -2587,6 +3082,31 @@
         }
 
         window.open(target, "_blank", "noopener,noreferrer");
+      }
+
+      function detectCalendarSubscriptionMethod() {
+        const ua = navigator.userAgent || "";
+        const platform = navigator.platform || "";
+        const maxTouchPoints = Number(navigator.maxTouchPoints || 0);
+        const isIPhone = /iPhone/i.test(ua);
+        const isIPad = /iPad/i.test(ua) || (/Mac/i.test(platform) && maxTouchPoints > 1);
+        const isMac = /Mac/i.test(platform) && maxTouchPoints <= 1;
+        const isAndroid = /Android/i.test(ua);
+        const isWindows = /Win/i.test(platform);
+
+        if (isIPhone || isIPad || isMac) return "apple";
+        if (isAndroid) return "google";
+        if (isWindows) return "outlook";
+        return "copy";
+      }
+
+      function syncCalendarSubscriptionPanels() {
+        if (tutorCalendarSubscribeButton) {
+          tutorCalendarSubscribeButton.disabled = !authUser || calendarSubscriptionBusy;
+        }
+        if (studentCalendarSubscribeButton) {
+          studentCalendarSubscribeButton.disabled = !authUser || calendarSubscriptionBusy;
+        }
       }
 
       function defaultDoubleSelectedRanges() {
@@ -2766,6 +3286,7 @@
           calendarSubscriptionUrl = "";
           authSubscriptionPanel.classList.add("is-hidden");
           authSubscriptionUrlField.value = "";
+          syncCalendarSubscriptionPanels();
           return;
         }
 
@@ -2790,11 +3311,13 @@
           authSubscriptionUrlField.value = "";
           authSubscriptionCopy.textContent = error?.message || "Kalender-Link konnte nicht erzeugt werden.";
           authSubscriptionHint.textContent = "Pruefe RPC, `calendar_feed_tokens` und die Edge Function `calendar-feed`.";
+          syncCalendarSubscriptionPanels();
           return;
         }
 
         calendarSubscriptionUrl = `${SUPABASE_URL}/functions/v1/calendar-feed?token=${encodeURIComponent(data)}`;
         authSubscriptionUrlField.value = calendarSubscriptionUrl;
+        syncCalendarSubscriptionPanels();
       }
 
       function updateAuthUi() {
@@ -2814,11 +3337,14 @@
         authSignUpButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authSignOutButton.disabled = authBusy || !authUser;
         authSignOutButton.classList.toggle("is-hidden", !authUser);
-        authSubscriptionPanel.classList.toggle("is-hidden", !authUser);
+        authSubscriptionPanel.classList.toggle("is-hidden", !authUser || userRole === "tutor");
         authSubscriptionCopyButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
         authSubscriptionAppleButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
         authSubscriptionGoogleButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
         authSubscriptionOutlookButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
+        profileSaveButton.disabled = authBusy || !authUser;
+        syncProfilePanel();
+        syncCalendarSubscriptionPanels();
 
         if (!isSupabaseConfigured()) {
           setAuthStatus("Supabase Anon Key fehlt. Setze window.SUPABASE_ANON_KEY im HTML.", "error");
@@ -2980,11 +3506,22 @@
         });
       }
 
-      function formatTutorMonth(date) {
-        return date.toLocaleDateString("de-DE", {
-          month: "long",
-          year: "numeric"
+      function formatTutorMonth(date, dayCount = 7) {
+        const rangeStart = normalizeCalendarDate(date);
+        const rangeEnd = new Date(rangeStart);
+        rangeEnd.setDate(rangeStart.getDate() + Math.max(0, dayCount - 1));
+        const sameMonth = rangeStart.getMonth() === rangeEnd.getMonth() && rangeStart.getFullYear() === rangeEnd.getFullYear();
+        const startText = rangeStart.toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: "short"
         });
+        const endText = rangeEnd.toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: sameMonth ? undefined : "short",
+          year: rangeStart.getFullYear() === rangeEnd.getFullYear() ? undefined : "numeric"
+        });
+        const yearText = rangeEnd.getFullYear();
+        return `${startText} - ${endText} ${yearText}`;
       }
 
       function formatTutorDateTime(dateString) {
@@ -3005,10 +3542,87 @@
         });
       }
 
+      function formatDateTimeLocalValue(dateString) {
+        if (!dateString) {
+          return "";
+        }
+
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+
+        const pad = (value) => String(value).padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      }
+
       function normalizeCalendarDate(date) {
         const copy = new Date(date);
         copy.setHours(0, 0, 0, 0);
         return copy;
+      }
+
+      function startOfWeek(date) {
+        const copy = new Date(date);
+        const weekday = (copy.getDay() + 6) % 7;
+        copy.setDate(copy.getDate() - weekday);
+        copy.setHours(0, 0, 0, 0);
+        return copy;
+      }
+
+      function buildWeekDays(weekStart) {
+        return Array.from({ length: 7 }, (_, index) => {
+          const day = new Date(weekStart);
+          day.setDate(weekStart.getDate() + index);
+          return day;
+        });
+      }
+
+      function buildCalendarDays(startDate, dayCount) {
+        return Array.from({ length: dayCount }, (_, index) => {
+          const day = new Date(startDate);
+          day.setDate(startDate.getDate() + index);
+          return day;
+        });
+      }
+
+      const CALENDAR_START_HOUR = 7;
+      const CALENDAR_END_HOUR = 21;
+      const CALENDAR_SLOT_MINUTES = 30;
+      const CALENDAR_SLOT_HEIGHT = 44;
+      const CALENDAR_SLOT_HEIGHT_MIN = 26;
+      const CALENDAR_TIME_COLUMN_WIDTH = 72;
+      const CALENDAR_SLOT_COUNT = ((CALENDAR_END_HOUR - CALENDAR_START_HOUR) * 60) / CALENDAR_SLOT_MINUTES;
+      const CALENDAR_DRAG_THRESHOLD = 8;
+
+      function visibleCalendarDayCount(containerEl) {
+        const width = Math.max(0, Math.round(containerEl?.clientWidth || containerEl?.getBoundingClientRect?.().width || window.innerWidth || 0));
+        if (width <= 520) return 1;
+        if (width <= 820) return 3;
+        if (width <= 1120) return 5;
+        return 7;
+      }
+
+      function lessonEndDate(lesson) {
+        const start = new Date(lesson.starts_at);
+        if (lesson.ends_at) {
+          const end = new Date(lesson.ends_at);
+          if (!Number.isNaN(end.getTime()) && end > start) {
+            return end;
+          }
+        }
+        return new Date(start.getTime() + 45 * 60 * 1000);
+      }
+
+      function formatTimeOnly(dateString) {
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) {
+          return "--:--";
+        }
+        return date.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
       }
 
       function selectedTutorLesson() {
@@ -3023,207 +3637,471 @@
         return tutorAssignments.find((assignment) => assignment.id === lesson.homework_assignment_id) || null;
       }
 
-      function renderTutorCalendar() {
-        tutorCalendarGrid.replaceChildren();
-        tutorCalendarMonthLabel.textContent = formatTutorMonth(tutorCalendarMonth);
-        const monthStart = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth(), 1);
-        const firstWeekday = (monthStart.getDay() + 6) % 7;
-        const gridStart = new Date(monthStart);
-        gridStart.setDate(monthStart.getDate() - firstWeekday);
-        const today = normalizeCalendarDate(new Date());
-        const lessonBuckets = new Map();
+      function upcomingStudentLesson() {
+        const now = Date.now();
+        return studentLessons
+          .filter((lesson) => new Date(lesson.ends_at || lesson.starts_at).getTime() >= now)
+          .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0] || null;
+      }
 
-        for (const lesson of tutorLessons) {
-          const startsAt = new Date(lesson.starts_at);
-          if (Number.isNaN(startsAt.getTime())) {
-            continue;
-          }
-          const key = normalizeCalendarDate(startsAt).toISOString().slice(0, 10);
-          const entries = lessonBuckets.get(key) || [];
-          entries.push(lesson);
-          lessonBuckets.set(key, entries);
+      function renderWeekHeader(weekdaysEl, visibleStart, visibleDayCount) {
+        if (!weekdaysEl) {
+          return;
         }
+        weekdaysEl.replaceChildren();
+        weekdaysEl.classList.add("is-timetable");
+        weekdaysEl.style.gridTemplateColumns = `${CALENDAR_TIME_COLUMN_WIDTH}px repeat(${visibleDayCount}, minmax(0, 1fr))`;
 
-        for (let offset = 0; offset < 42; offset += 1) {
-          const day = new Date(gridStart);
-          day.setDate(gridStart.getDate() + offset);
-          const dayCard = document.createElement("div");
-          dayCard.className = "tutor-calendar-day";
-          const key = day.toISOString().slice(0, 10);
-          const lessons = (lessonBuckets.get(key) || []).sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
-          const isOutside = day.getMonth() !== tutorCalendarMonth.getMonth();
-          const isToday = normalizeCalendarDate(day).getTime() === today.getTime();
-          const containsSelected = lessons.some((lesson) => lesson.id === selectedTutorLessonId);
+        const spacer = document.createElement("div");
+        spacer.className = "tutor-calendar-weekday is-time-spacer";
+        spacer.textContent = "Zeit";
+        weekdaysEl.appendChild(spacer);
 
-          if (isOutside) {
-            dayCard.classList.add("is-outside");
-          }
-          if (isToday) {
-            dayCard.classList.add("is-today");
-          }
-          if (containsSelected) {
-            dayCard.classList.add("is-selected");
-          }
-
-          if (!lessons.length) {
-            dayCard.classList.add("is-empty");
-          }
-
-          const number = document.createElement("p");
-          number.className = "tutor-calendar-day-number";
-          number.textContent = String(day.getDate());
-          dayCard.appendChild(number);
-
-          const label = document.createElement("p");
-          label.className = "tutor-calendar-day-label";
+        const today = normalizeCalendarDate(new Date()).getTime();
+        for (const day of buildCalendarDays(visibleStart, visibleDayCount)) {
+          const label = document.createElement("div");
+          label.className = "tutor-calendar-weekday";
           label.textContent = day.toLocaleDateString("de-DE", {
-            weekday: "short"
+            weekday: "short",
+            day: "2-digit",
+            month: "2-digit"
           });
-          dayCard.appendChild(label);
-
-          const items = document.createElement("div");
-          items.className = "tutor-calendar-day-items";
-
-          if (!lessons.length) {
-            const empty = document.createElement("button");
-            empty.type = "button";
-            empty.className = "tutor-calendar-chip";
-            empty.innerHTML = "<span>Kein Termin</span>";
-            empty.addEventListener("click", () => {
-              selectedTutorLessonId = null;
-              renderTutorCalendar();
-              renderTutorDetailPanel();
-            });
-            items.appendChild(empty);
-          } else {
-            for (const lesson of lessons.slice(0, 3)) {
-              const chip = document.createElement("button");
-              chip.type = "button";
-              chip.className = "tutor-calendar-chip";
-              const title = lesson.title || lesson.student_email || "Unterricht";
-              chip.innerHTML = `
-                <strong>${title}</strong>
-                <span>${new Date(lesson.starts_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · ${lesson.student_email || "Kein Schüler"}</span>
-              `;
-              chip.addEventListener("click", (event) => {
-                event.stopPropagation();
-                selectedTutorLessonId = lesson.id;
-                renderTutorCalendar();
-                renderTutorDetailPanel();
-              });
-              items.appendChild(chip);
-            }
-
-            if (lessons.length > 3) {
-              const more = document.createElement("div");
-              more.className = "tutor-calendar-chip";
-              more.innerHTML = `<span>+${lessons.length - 3} weitere</span>`;
-              items.appendChild(more);
-            }
+          if (normalizeCalendarDate(day).getTime() === today) {
+            label.style.color = "var(--text)";
           }
-
-          dayCard.addEventListener("click", () => {
-            if (lessons.length) {
-              selectedTutorLessonId = lessons[0].id;
-            } else {
-              selectedTutorLessonId = null;
-            }
-            renderTutorCalendar();
-            renderTutorDetailPanel();
-          });
-
-          dayCard.appendChild(items);
-          tutorCalendarGrid.appendChild(dayCard);
+          weekdaysEl.appendChild(label);
         }
       }
 
-      function renderTutorDetailPanel() {
-        tutorDetailPanel.replaceChildren();
-        const lesson = selectedTutorLesson();
+      function viewportHeightPx() {
+        return Math.max(320, Math.round(window.visualViewport?.height || window.innerHeight || 0));
+      }
 
-        if (!lesson) {
-          const empty = document.createElement("div");
-          empty.className = "tutor-detail-empty";
-          empty.textContent = "Wähle einen Termin im Kalender aus, um Unterricht und Hausaufgabe zu sehen.";
-          tutorDetailPanel.appendChild(empty);
+      function timetableSlotHeightPx(gridEl) {
+        if (!gridEl) {
+          return CALENDAR_SLOT_HEIGHT;
+        }
+
+        const rect = gridEl.getBoundingClientRect();
+        const availableHeight = Math.max(0, viewportHeightPx() - rect.top - 28);
+        const responsiveHeight = availableHeight > 0
+          ? Math.floor(availableHeight / CALENDAR_SLOT_COUNT)
+          : CALENDAR_SLOT_HEIGHT;
+
+        return Math.max(CALENDAR_SLOT_HEIGHT_MIN, Math.min(CALENDAR_SLOT_HEIGHT, responsiveHeight || CALENDAR_SLOT_HEIGHT));
+      }
+
+      function eventBlockMetrics(lesson, visibleStart, visibleDayCount, slotHeight = CALENDAR_SLOT_HEIGHT) {
+        const start = new Date(lesson.starts_at);
+        const end = lessonEndDate(lesson);
+        const dayIndex = Math.floor((normalizeCalendarDate(start) - visibleStart) / 86400000);
+        if (dayIndex < 0 || dayIndex >= visibleDayCount) {
+          return null;
+        }
+        const startMinutes = start.getHours() * 60 + start.getMinutes();
+        const endMinutes = end.getHours() * 60 + end.getMinutes();
+        const gridStartMinutes = CALENDAR_START_HOUR * 60;
+        const topMinutes = Math.max(0, startMinutes - gridStartMinutes);
+        const bottomMinutes = Math.max(topMinutes + CALENDAR_SLOT_MINUTES, Math.min((CALENDAR_END_HOUR * 60) - gridStartMinutes, endMinutes - gridStartMinutes));
+        const topPx = (topMinutes / CALENDAR_SLOT_MINUTES) * slotHeight;
+        const heightPx = Math.max(slotHeight, ((bottomMinutes - topMinutes) / CALENDAR_SLOT_MINUTES) * slotHeight);
+        return { dayIndex, topPx, heightPx };
+      }
+
+      async function rescheduleTutorLesson(lessonId, nextStart) {
+        const lesson = tutorLessons.find((entry) => entry.id === lessonId) || null;
+        if (!lesson || !supabaseClient || lessonBusy) {
           return;
         }
 
-        const assignment = assignmentForLesson(lesson);
+        const currentStart = new Date(lesson.starts_at);
+        if (currentStart.getTime() === nextStart.getTime()) {
+          return;
+        }
+        const currentEnd = lessonEndDate(lesson);
+        const durationMs = currentEnd.getTime() - currentStart.getTime();
+        const nextEnd = new Date(nextStart.getTime() + durationMs);
+
+        lessonBusy = true;
+        schoolBusy = true;
+        updateTutorUi();
+
+        try {
+          const { data: updatedLesson, error } = await supabaseClient
+            .from("tutor_lessons")
+            .update({
+              starts_at: nextStart.toISOString(),
+              ends_at: lesson.ends_at ? nextEnd.toISOString() : null
+            })
+            .eq("id", lessonId)
+            .select("*")
+            .single();
+
+          if (error) {
+            throw error;
+          }
+
+          selectedTutorLessonId = updatedLesson.id;
+          await loadTutorLessons();
+          setSchoolStatus("Termin verschoben.", "success");
+        } catch (error) {
+          console.error("[Tutor] Termin verschieben fehlgeschlagen", error);
+          setSchoolStatus(error?.message || "Termin konnte nicht verschoben werden.", "error");
+        } finally {
+          lessonBusy = false;
+          schoolBusy = false;
+          updateTutorUi();
+        }
+      }
+
+      function updateTutorLessonDrag(event) {
+        if (!activeLessonDrag || activeLessonDrag.pointerId !== event.pointerId) {
+          return;
+        }
+
+        const deltaX = event.clientX - activeLessonDrag.startClientX;
+        const deltaY = event.clientY - activeLessonDrag.startClientY;
+        if (!activeLessonDrag.didMove && Math.hypot(deltaX, deltaY) >= CALENDAR_DRAG_THRESHOLD) {
+          activeLessonDrag.didMove = true;
+        }
+
+        if (activeLessonDrag.didMove) {
+          activeLessonDrag.blockEl.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        }
+      }
+
+      function finishTutorLessonDrag(event) {
+        if (!activeLessonDrag) {
+          return;
+        }
+
+        const {
+          lessonId,
+          boardEl,
+          weekStart,
+          visibleDayCount,
+          pointerId,
+          blockEl,
+          didMove
+        } = activeLessonDrag;
+        activeLessonDrag = null;
+        if (event.currentTarget.hasPointerCapture?.(pointerId)) {
+          event.currentTarget.releasePointerCapture(pointerId);
+        }
+        blockEl.classList.remove("is-dragging");
+        blockEl.style.transform = "";
+
+        if (!didMove) {
+          return;
+        }
+
+        blockEl.dataset.dragMoved = "true";
+        window.setTimeout(() => {
+          if (blockEl.dataset.dragMoved === "true") {
+            delete blockEl.dataset.dragMoved;
+          }
+        }, 0);
+
+        const rect = boardEl.getBoundingClientRect();
+        const relativeX = event.clientX - rect.left;
+        const relativeY = event.clientY - rect.top;
+        const dayWidth = rect.width / visibleDayCount;
+        const slotHeight = rect.height > 0
+          ? rect.height / CALENDAR_SLOT_COUNT
+          : timetableSlotHeightPx(boardEl.closest(".week-timetable"));
+        const dayIndex = Math.max(0, Math.min(visibleDayCount - 1, Math.floor(relativeX / dayWidth)));
+        const slotIndex = Math.max(0, Math.min(CALENDAR_SLOT_COUNT - 1, Math.round(relativeY / slotHeight)));
+        const totalMinutes = (CALENDAR_START_HOUR * 60) + (slotIndex * CALENDAR_SLOT_MINUTES);
+        const nextStart = new Date(weekStart);
+        nextStart.setDate(weekStart.getDate() + dayIndex);
+        nextStart.setHours(Math.floor(totalMinutes / 60), totalMinutes % 60, 0, 0);
+        void rescheduleTutorLesson(lessonId, nextStart);
+      }
+
+      function renderWeekTimetable(gridEl, weekdaysEl, lessons, {
+        weekStart,
+        selectedLessonId = "",
+        interactive = false,
+        onLessonSelect = null
+      } = {}) {
+        if (!gridEl || !weekdaysEl) {
+          return;
+        }
+
+        const visibleDayCount = visibleCalendarDayCount(gridEl);
+        const visibleStart = normalizeCalendarDate(weekStart);
+        renderWeekHeader(weekdaysEl, visibleStart, visibleDayCount);
+        gridEl.replaceChildren();
+        gridEl.classList.remove("tutor-calendar-grid");
+        gridEl.classList.add("week-timetable");
+        const slotHeight = timetableSlotHeightPx(gridEl);
+        gridEl.style.setProperty("--calendar-slot-height", `${slotHeight}px`);
+
+        const timesCol = document.createElement("div");
+        timesCol.className = "week-timetable-times";
+        for (let slotIndex = 0; slotIndex < CALENDAR_SLOT_COUNT; slotIndex += 1) {
+          const minutes = (CALENDAR_START_HOUR * 60) + (slotIndex * CALENDAR_SLOT_MINUTES);
+          const label = document.createElement("div");
+          label.className = "week-timetable-time";
+          if (minutes % 60 === 0) {
+            label.textContent = `${String(Math.floor(minutes / 60)).padStart(2, "0")}:00`;
+          }
+          timesCol.appendChild(label);
+        }
+
+        const board = document.createElement("div");
+        board.className = "week-timetable-board";
+        board.style.gridTemplateColumns = `repeat(${visibleDayCount}, minmax(0, 1fr))`;
+        board.style.minWidth = `${Math.max(320, visibleDayCount * 140)}px`;
+        const visibleDays = buildCalendarDays(visibleStart, visibleDayCount);
+        const today = normalizeCalendarDate(new Date()).getTime();
+
+        for (let slotIndex = 0; slotIndex < CALENDAR_SLOT_COUNT; slotIndex += 1) {
+          for (let dayIndex = 0; dayIndex < visibleDayCount; dayIndex += 1) {
+            const cell = document.createElement("div");
+            cell.className = "week-timetable-cell";
+            if (normalizeCalendarDate(visibleDays[dayIndex]).getTime() === today) {
+              cell.classList.add("is-today");
+            }
+            board.appendChild(cell);
+          }
+        }
+
+        const eventLayer = document.createElement("div");
+        eventLayer.className = "week-timetable-event-layer";
+
+        const lessonsInWeek = lessons.filter((lesson) => {
+          const start = normalizeCalendarDate(new Date(lesson.starts_at)).getTime();
+          return start >= visibleStart.getTime() && start < (visibleStart.getTime() + (visibleDayCount * 86400000));
+        });
+
+        for (const lesson of lessonsInWeek) {
+          const block = document.createElement(interactive ? "button" : "div");
+          block.className = "week-timetable-event";
+          if (!interactive) {
+            block.classList.add("is-readonly");
+          }
+          if (lesson.id === selectedLessonId) {
+            block.classList.add("is-selected");
+          }
+
+          const metrics = eventBlockMetrics(lesson, visibleStart, visibleDayCount, slotHeight);
+          if (!metrics) {
+            continue;
+          }
+          const { dayIndex, topPx, heightPx } = metrics;
+          block.style.setProperty("--event-left", `${(dayIndex / visibleDayCount) * 100}`);
+          block.style.setProperty("--event-width", `${100 / visibleDayCount}`);
+          block.style.setProperty("--event-top", String(topPx));
+          block.style.setProperty("--event-height", String(heightPx - 6));
+          block.innerHTML = `
+            <strong>${lesson.title || lessonStudentRef(lesson) || "Unterricht"}</strong>
+            <span>${formatTimeOnly(lesson.starts_at)} - ${formatTimeOnly(lessonEndDate(lesson).toISOString())}</span>
+            <span>${lesson.location_text || lessonStudentRef(lesson) || "Kein Ort"}</span>
+          `;
+
+          if (interactive) {
+            block.type = "button";
+            block.addEventListener("click", (event) => {
+              if (block.dataset.dragMoved === "true") {
+                delete block.dataset.dragMoved;
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+              }
+              event.stopPropagation();
+              onLessonSelect?.(lesson.id);
+            });
+            block.addEventListener("pointerdown", (event) => {
+              event.preventDefault();
+              activeLessonDrag = {
+                lessonId: lesson.id,
+                boardEl: board,
+                weekStart: visibleStart,
+                visibleDayCount,
+                pointerId: event.pointerId,
+                blockEl: block,
+                startClientX: event.clientX,
+                startClientY: event.clientY,
+                didMove: false
+              };
+              block.classList.add("is-dragging");
+              block.setPointerCapture?.(event.pointerId);
+            });
+            block.addEventListener("pointermove", (event) => {
+              updateTutorLessonDrag(event);
+            });
+            block.addEventListener("pointerup", (event) => {
+              finishTutorLessonDrag(event);
+            });
+            block.addEventListener("pointercancel", (event) => {
+              if (activeLessonDrag?.pointerId === event.pointerId) {
+                activeLessonDrag = null;
+              }
+              block.classList.remove("is-dragging");
+              block.style.transform = "";
+              if (block.hasPointerCapture?.(event.pointerId)) {
+                block.releasePointerCapture(event.pointerId);
+              }
+            });
+          }
+
+          eventLayer.appendChild(block);
+        }
+
+        board.appendChild(eventLayer);
+        gridEl.appendChild(timesCol);
+        gridEl.appendChild(board);
+      }
+
+      function renderTutorCalendar() {
+        const visibleStart = normalizeCalendarDate(tutorCalendarMonth);
+        const visibleDayCount = visibleCalendarDayCount(tutorCalendarGrid);
+        const visibleEnd = new Date(visibleStart);
+        visibleEnd.setDate(visibleStart.getDate() + visibleDayCount);
+        const selectedLesson = selectedTutorLesson();
+        if (selectedLesson) {
+          const selectedDate = normalizeCalendarDate(new Date(selectedLesson.starts_at));
+          if (selectedDate < visibleStart || selectedDate >= visibleEnd) {
+            selectedTutorLessonId = null;
+          }
+        }
+        tutorCalendarMonthLabel.textContent = formatTutorMonth(visibleStart, visibleDayCount);
+        renderWeekTimetable(tutorCalendarGrid, document.querySelector("#tutor-view .tutor-calendar-weekdays"), tutorLessons, {
+          weekStart: visibleStart,
+          selectedLessonId: selectedTutorLessonId,
+          interactive: true,
+          onLessonSelect: (lessonId) => {
+            selectedTutorLessonId = lessonId;
+            renderTutorCalendar();
+            renderTutorDetailPanel();
+          }
+        });
+      }
+
+      function renderStudentCalendar() {
+        if (!studentCalendarGrid || !studentCalendarMonthLabel) {
+          return;
+        }
+        const visibleStart = normalizeCalendarDate(studentCalendarMonth);
+        const visibleDayCount = visibleCalendarDayCount(studentCalendarGrid);
+        studentCalendarMonthLabel.textContent = formatTutorMonth(visibleStart, visibleDayCount);
+        renderWeekTimetable(studentCalendarGrid, document.querySelector("#student-calendar-view .tutor-calendar-weekdays"), studentLessons, {
+          weekStart: visibleStart,
+          interactive: false
+        });
+      }
+
+      function renderStudentNextLessonPanel() {
+        if (!studentNextLessonPanel) {
+          return;
+        }
+
+        studentNextLessonPanel.replaceChildren();
+        const lesson = upcomingStudentLesson();
+        if (!lesson) {
+          const empty = document.createElement("div");
+          empty.className = "calendar-next-empty";
+          empty.textContent = "Aktuell ist kein kommender Unterricht hinterlegt.";
+          studentNextLessonPanel.appendChild(empty);
+          return;
+        }
+
         const card = document.createElement("div");
-        card.className = "tutor-detail-block";
+        card.className = "tutor-assignment-entry";
+        const metaChips = lessonMetaChipsHtml(profileForLessonDisplay(lesson));
         card.innerHTML = `
           <div class="tutor-entry-topline">
             <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
             <span class="tutor-entry-pill">${formatTutorDate(lesson.starts_at)}</span>
           </div>
-          <div class="tutor-detail-meta">
-            <div class="tutor-detail-row"><span>Schüler</span><strong>${lesson.student_email || "Kein Schüler"}</strong></div>
-            <div class="tutor-detail-row"><span>Start</span><strong>${formatTutorDateTime(lesson.starts_at)}</strong></div>
-            <div class="tutor-detail-row"><span>Ende</span><strong>${lesson.ends_at ? formatTutorDateTime(lesson.ends_at) : "Offen"}</strong></div>
-            <div class="tutor-detail-row"><span>Modus</span><strong>${assignment ? homeworkSummaryText(assignment) : "Keine Hausaufgabe verknüpft"}</strong></div>
-            <div class="tutor-detail-row"><span>Fällig am</span><strong>${assignment ? homeworkDueText(assignment) : "Kein Datum"}</strong></div>
-            <div class="tutor-detail-row"><span>Ziel</span><strong>${assignment ? `${assignment.target_accuracy}% sicher` : "Kein Ziel"}</strong></div>
-          </div>
-          <div class="tutor-card">
-            <h4 class="tutor-card-title" style="font-size:18px;">Unterrichtsnotiz</h4>
-            <p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>
-          </div>
-          <div class="tutor-card">
-            <h4 class="tutor-card-title" style="font-size:18px;">Hausaufgabe</h4>
-            <p class="tutor-entry-copy">${assignment?.description || "Keine Hausaufgabe verknüpft."}</p>
-          </div>
+          ${metaChips}
+          <p class="tutor-entry-meta">${formatTutorDateTime(lesson.starts_at)}${lesson.ends_at ? ` bis ${formatTutorDateTime(lesson.ends_at)}` : ""}</p>
+          <p class="tutor-entry-copy">${lesson.location_text || "Keine Adresse hinterlegt."}</p>
+          <p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>
         `;
-        tutorDetailPanel.appendChild(card);
+        studentNextLessonPanel.appendChild(card);
+        lucide.createIcons();
       }
 
-      function renderTutorAssignmentList() {
-        tutorAssignmentList.replaceChildren();
+      function renderTutorDetailPanel() {
+        tutorDetailPanel.replaceChildren();
+        const lesson = selectedTutorLesson();
+        if (tutorDetailCard) {
+          tutorDetailCard.classList.toggle("is-hidden", !lesson);
+        }
 
-        if (!tutorAssignments.length) {
-          const empty = document.createElement("div");
-          empty.className = "tutor-assignment-entry is-empty";
-          empty.textContent = "Noch keine Hausaufgaben zugewiesen.";
-          tutorAssignmentList.appendChild(empty);
+        if (!lesson) {
           return;
         }
 
-        for (const assignment of tutorAssignments) {
-          const entry = document.createElement("article");
-          entry.className = "tutor-assignment-entry";
-          const stateLabel = assignment.is_active ? "Aktiv" : "Archiv";
-          entry.innerHTML = `
-            <div class="tutor-entry-topline">
-              <h3 class="tutor-entry-title">${assignment.student_email}</h3>
-              <span class="tutor-entry-pill">${stateLabel}</span>
+        const assignment = assignmentForLesson(lesson);
+        const metaChips = lessonMetaChipsHtml(profileForLessonDisplay(lesson));
+        const card = document.createElement("div");
+        card.className = "tutor-detail-block";
+        card.innerHTML = `
+          <div class="tutor-entry-topline">
+            <h3 class="tutor-entry-title">${lesson.title || "Unterricht"}</h3>
+          </div>
+          <div class="tutor-detail-meta">
+            ${detailMetaRowHtml("user-round", "Schüler", lessonStudentRef(lesson) || "Kein Schüler")}
+            <div class="tutor-detail-pair">
+              ${detailMetaRowHtml("calendar-clock", "Start", formatTutorDateTime(lesson.starts_at))}
+              ${detailMetaRowHtml("clock-3", "Ende", lesson.ends_at ? formatTutorDateTime(lesson.ends_at) : "Offen")}
             </div>
-            <p class="tutor-entry-meta">${homeworkSummaryText(assignment)} · Fällig ${homeworkDueText(assignment)}</p>
-            <p class="tutor-entry-copy">${assignment.description || "Keine Beschreibung hinterlegt."}</p>
-          `;
-          tutorAssignmentList.appendChild(entry);
-        }
+            ${detailMetaRowHtml("map-pin", "Adresse", lesson.location_text || "Keine Adresse hinterlegt")}
+            ${detailMetaRowHtml("music-4", "Modus", assignment ? homeworkSummaryText(assignment) : "Keine Hausaufgabe verknüpft")}
+            <div class="tutor-detail-pair">
+              ${detailMetaRowHtml("calendar-check-2", "Fällig", assignment ? homeworkDueText(assignment) : "Kein Datum")}
+              ${detailMetaRowHtml("target", "Ziel", assignment ? `${assignment.target_accuracy}% sicher` : "Kein Ziel")}
+            </div>
+          </div>
+          ${detailContentCardHtml("notebook-pen", "Unterrichtsnotiz", `<p class="tutor-entry-copy">${lesson.homework_note || "Keine Unterrichtsnotiz hinterlegt."}</p>`)}
+          ${detailContentCardHtml("book-open-text", "Hausaufgabe", `<p class="tutor-entry-copy">${assignment?.description || "Keine Hausaufgabe verknüpft."}</p>`)}
+          ${metaChips}
+          <div class="tutor-detail-actions">
+            <button class="auth-submit is-secondary" id="tutor-edit-lesson-button" type="button">Bearbeiten</button>
+            <button class="auth-submit is-secondary" id="tutor-delete-lesson-button" type="button">Löschen</button>
+          </div>
+        `;
+        tutorDetailPanel.appendChild(card);
+        card.querySelector("#tutor-edit-lesson-button")?.addEventListener("click", () => {
+          startEditTutorLesson();
+        });
+        card.querySelector("#tutor-delete-lesson-button")?.addEventListener("click", () => {
+          void deleteTutorLesson();
+        });
+        lucide.createIcons();
       }
 
       function updateTutorUi() {
         const isTutor = Boolean(authUser) && userRole === "tutor";
+        const isStudent = Boolean(authUser) && userRole === "student";
         if (!isTutor) {
           isTutorViewVisible = false;
           isTutorModalOpen = false;
         }
+        if (!isStudent) {
+          isStudentCalendarViewVisible = false;
+        }
         homeModuleTutor.classList.toggle("is-hidden", !isTutor);
+        homeModuleCalendar.classList.toggle("is-hidden", !isStudent);
         schoolSaveButton.disabled = schoolBusy || !isTutor;
+        schoolSaveButton.textContent = editingTutorLessonId ? "Termin aktualisieren" : "Termin speichern";
         lessonStudentSelect.disabled = lessonBusy || !isTutor;
         tutorModal.classList.toggle("is-hidden", !isTutorModalOpen || !isTutorViewVisible);
         tutorModal.setAttribute("aria-hidden", isTutorModalOpen && isTutorViewVisible ? "false" : "true");
         renderStudentEmailOptions();
         renderTutorCalendar();
         renderTutorDetailPanel();
-        renderTutorAssignmentList();
+        renderStudentCalendar();
+        renderStudentNextLessonPanel();
         updateSchoolModeFields();
       }
 
       function renderStudentEmailOptions() {
         lessonStudentSelect.replaceChildren();
+        lessonStudentSuggestions?.replaceChildren();
 
         const createPlaceholderOption = () => {
           const option = document.createElement("option");
@@ -3236,14 +4114,25 @@
 
         lessonStudentSelect.appendChild(createPlaceholderOption());
 
-        for (const email of tutorStudentEmails) {
+        for (const studentRef of tutorStudentEmails) {
           const lessonOption = document.createElement("option");
-          lessonOption.value = email;
-          lessonOption.textContent = email;
-          if (lessonStudentEmailInput.value.trim().toLowerCase() === email) {
+          lessonOption.value = studentRef;
+          const profile = tutorStudentProfiles.get(studentRef) || null;
+          const email = String(profile?.email || "").trim().toLowerCase();
+          lessonOption.textContent = email && email !== studentRef
+            ? `${studentRef} (${email})`
+            : studentRef;
+          if (normalizeStudentRef(lessonStudentEmailInput.value) === studentRef) {
             lessonOption.selected = true;
           }
           lessonStudentSelect.appendChild(lessonOption);
+
+          if (lessonStudentSuggestions) {
+            const suggestion = document.createElement("option");
+            suggestion.value = studentRef;
+            suggestion.label = lessonOption.textContent;
+            lessonStudentSuggestions.appendChild(suggestion);
+          }
         }
       }
 
@@ -3266,6 +4155,7 @@
         }
 
         if (existingProfile) {
+          currentUserProfile = existingProfile;
           userRole = existingProfile.role || "student";
           return existingProfile;
         }
@@ -3275,6 +4165,7 @@
           .insert({
             user_id: authUser.id,
             email: authUser.email.toLowerCase(),
+            userName: normalizeStudentRef(authUser.email.split("@")[0]),
             role: "student"
           })
           .select("*")
@@ -3296,6 +4187,7 @@
           }
 
           if (retriedProfile) {
+            currentUserProfile = retriedProfile;
             userRole = retriedProfile.role || "student";
             return retriedProfile;
           }
@@ -3305,8 +4197,191 @@
           return null;
         }
 
+        currentUserProfile = insertedProfile;
         userRole = insertedProfile?.role || "student";
         return insertedProfile;
+      }
+
+      function applyTutorLessonDefaults() {
+        if (!lessonLocationTextInput || !lessonMapUrlInput) {
+          return;
+        }
+
+        const defaultLocation = currentUserProfile?.default_lesson_location || "";
+        const defaultMapUrl = currentUserProfile?.default_lesson_map_url || "";
+        lessonLocationTextInput.placeholder = defaultLocation || "Standardadresse des Tutors";
+        lessonMapUrlInput.placeholder = defaultMapUrl || "Standard-Map-Link des Tutors";
+      }
+
+      function profileForStudentRef(studentRef) {
+        return tutorStudentProfiles.get(normalizeStudentRef(studentRef)) || null;
+      }
+
+      function defaultLessonTitle(studentRef) {
+        const normalized = normalizeStudentRef(studentRef);
+        return normalized ? `Musikunterricht (${normalized})` : "Musikunterricht";
+      }
+
+      function autoLessonEndValue(startsAt, studentRef) {
+        if (!startsAt) {
+          return "";
+        }
+
+        const profile = profileForStudentRef(studentRef);
+        const duration = Number(profile?.standard_lesson_duration_minutes || 0);
+        if (!duration) {
+          return "";
+        }
+
+        const start = new Date(startsAt);
+        if (Number.isNaN(start.getTime())) {
+          return "";
+        }
+
+        return formatDateTimeLocalValue(new Date(start.getTime() + (duration * 60 * 1000)).toISOString());
+      }
+
+      function syncTutorLessonFormUi() {
+        const showHomeworkFields = lessonCreateHomeworkSelect?.value === "yes";
+        lessonAdvancedFields?.classList.toggle("is-hidden", !isLessonAdvancedOpen);
+        lessonHomeworkFields?.classList.toggle("is-hidden", !showHomeworkFields);
+        lessonTitleBlock?.setAttribute("data-state", isLessonAdvancedOpen ? "active" : "");
+        syncLessonPassPanel();
+      }
+
+      function syncTutorLessonDerivedFields({ forceEnd = false } = {}) {
+        const studentRef = normalizeStudentRef(lessonStudentEmailInput.value || lessonStudentSelect.value);
+        lessonStudentEmailInput.value = studentRef;
+        lessonTitleInput.placeholder = defaultLessonTitle(studentRef);
+
+        const suggestedEnd = autoLessonEndValue(lessonStartsAtInput.value, studentRef);
+        if (suggestedEnd && (forceEnd || !lessonEndsAtInput.value || lessonEndsAtInput.dataset.autoManaged === "true")) {
+          lessonEndsAtInput.value = suggestedEnd;
+          lessonEndsAtInput.dataset.autoManaged = "true";
+        }
+      }
+
+      function resetTutorLessonForm() {
+        lessonStudentSelect.value = "";
+        lessonStudentEmailInput.value = "";
+        lessonStartsAtInput.value = "";
+        lessonEndsAtInput.value = "";
+        delete lessonEndsAtInput.dataset.autoManaged;
+        lessonTitleInput.value = "";
+        lessonLocationTextInput.value = "";
+        lessonMapUrlInput.value = "";
+        lessonCreateHomeworkSelect.value = "no";
+        lessonPassPasswordInput.value = "";
+        schoolDueDateInput.value = "";
+        schoolDescriptionInput.value = "";
+        isLessonAdvancedOpen = false;
+        isLessonPassResetConfirmOpen = false;
+        editingTutorLessonId = null;
+        applyTutorLessonDefaults();
+        syncTutorLessonDerivedFields({ forceEnd: true });
+        syncTutorLessonFormUi();
+        syncLessonPassPanel();
+      }
+
+      function startCreateTutorLesson() {
+        resetTutorLessonForm();
+        isTutorModalOpen = true;
+        updateTutorUi();
+      }
+
+      function startEditTutorLesson() {
+        const lesson = selectedTutorLesson();
+        if (!lesson) {
+          return;
+        }
+
+        const assignment = assignmentForLesson(lesson);
+        editingTutorLessonId = lesson.id;
+        lessonStudentSelect.value = lessonStudentRef(lesson) || "";
+        lessonStudentEmailInput.value = lessonStudentRef(lesson) || "";
+        lessonStartsAtInput.value = formatDateTimeLocalValue(lesson.starts_at);
+        lessonEndsAtInput.value = formatDateTimeLocalValue(lesson.ends_at);
+        delete lessonEndsAtInput.dataset.autoManaged;
+        lessonTitleInput.value = lesson.title || "";
+        lessonLocationTextInput.value = lesson.location_text || "";
+        lessonMapUrlInput.value = lesson.map_url || "";
+        lessonCreateHomeworkSelect.value = assignment ? "yes" : "no";
+        schoolModeSelect.value = assignment?.mode || "treble";
+        schoolTargetAccuracyInput.value = String(assignment?.target_accuracy || 90);
+        schoolDueDateInput.value = assignment?.due_at || "";
+        schoolDescriptionInput.value = assignment?.description || "";
+        schoolTrebleStartSelect.value = assignment?.treble_range_start || schoolTrebleStartSelect.value;
+        schoolTrebleEndSelect.value = assignment?.treble_range_end || schoolTrebleEndSelect.value;
+        schoolBassStartSelect.value = assignment?.bass_range_start || schoolBassStartSelect.value;
+        schoolBassEndSelect.value = assignment?.bass_range_end || schoolBassEndSelect.value;
+        isLessonAdvancedOpen = Boolean(lesson.location_text || lesson.map_url);
+        isLessonPassResetConfirmOpen = false;
+        lessonPassPasswordInput.value = "";
+        applyTutorLessonDefaults();
+        syncTutorLessonDerivedFields();
+        syncTutorLessonFormUi();
+        syncLessonPassPanel();
+        updateSchoolModeFields();
+        isTutorModalOpen = true;
+        updateTutorUi();
+      }
+
+      async function deleteTutorLesson() {
+        const lesson = selectedTutorLesson();
+        if (!supabaseClient || !authUser || userRole !== "tutor" || !lesson || lessonBusy) {
+          return;
+        }
+
+        const confirmed = window.confirm(`Termin "${lesson.title || "Unterricht"}" wirklich löschen?`);
+        if (!confirmed) {
+          return;
+        }
+
+        lessonBusy = true;
+        schoolBusy = true;
+        updateTutorUi();
+
+        try {
+          const assignmentId = lesson.homework_assignment_id || null;
+          const lessonStudent = lessonStudentRef(lesson);
+          const { error: lessonDeleteError } = await supabaseClient
+            .from("tutor_lessons")
+            .delete()
+            .eq("id", lesson.id);
+
+          if (lessonDeleteError) {
+            throw lessonDeleteError;
+          }
+
+          if (assignmentId) {
+            const { error: assignmentDeleteError } = await supabaseClient
+              .from("homework_assignments")
+              .delete()
+              .eq("id", assignmentId);
+
+            if (assignmentDeleteError) {
+              throw assignmentDeleteError;
+            }
+          }
+
+          if (lessonStudent) {
+            await applyLessonPassDelta(lessonStudent, 1);
+          }
+
+          if (selectedTutorLessonId === lesson.id) {
+            selectedTutorLessonId = null;
+          }
+          editingTutorLessonId = null;
+          setSchoolStatus("Termin wurde gelöscht.", "success");
+          await Promise.all([loadTutorLessons(), loadTutorAssignments()]);
+        } catch (error) {
+          console.error("[Tutor] Unterricht löschen fehlgeschlagen", error);
+          setSchoolStatus(error?.message || "Termin löschen fehlgeschlagen.", "error");
+        } finally {
+          lessonBusy = false;
+          schoolBusy = false;
+          updateTutorUi();
+        }
       }
 
       async function loadTutorStudents() {
@@ -3318,20 +4393,33 @@
 
         const { data, error } = await supabaseClient
           .from("user_profiles")
-          .select("email")
-          .eq("role", "student")
-          .order("email", { ascending: true });
+          .select("*")
+          .eq("role", "student");
 
         if (error) {
           console.error("[School] Schülerliste laden fehlgeschlagen", error);
           setSchoolStatus(`Schülerliste laden fehlgeschlagen: ${error.message}`, "error");
           tutorStudentEmails = [];
+          tutorStudentProfiles = new Map();
           renderStudentEmailOptions();
           return [];
         }
 
-        tutorStudentEmails = (data || [])
-          .map((entry) => entry.email?.trim().toLowerCase())
+        const rows = (data || []).sort((left, right) => {
+          const leftRef = profileStudentRef(left);
+          const rightRef = profileStudentRef(right);
+          return leftRef.localeCompare(rightRef, "de", { sensitivity: "base" });
+        });
+        tutorStudentProfiles = new Map(
+          rows
+            .map((entry) => {
+              const studentRef = profileStudentRef(entry);
+              return studentRef ? [studentRef, entry] : null;
+            })
+            .filter(Boolean)
+        );
+        tutorStudentEmails = rows
+          .map((entry) => profileStudentRef(entry))
           .filter(Boolean);
         renderStudentEmailOptions();
         return tutorStudentEmails;
@@ -3400,7 +4488,7 @@
         const { data, error } = await supabaseClient
           .from("homework_assignments")
           .select("*")
-          .eq("student_email", authUser.email.toLowerCase())
+          .eq("student_email", currentStudentRef())
           .eq("is_active", true)
           .order("created_at", { ascending: false })
           .limit(1)
@@ -3416,12 +4504,38 @@
         return activeHomework;
       }
 
+      async function loadStudentLessons() {
+        if (!supabaseClient || !authUser || userRole !== "student") {
+          studentLessons = [];
+          return [];
+        }
+
+        const { data, error } = await supabaseClient
+          .from("tutor_lessons")
+          .select("*")
+          .eq("student_email", currentStudentRef())
+          .order("starts_at", { ascending: true });
+
+        if (error) {
+          console.error("[Student] Unterrichte laden fehlgeschlagen", error);
+          setSchoolStatus(`Kalender laden fehlgeschlagen: ${error.message}`, "error");
+          studentLessons = [];
+          return [];
+        }
+
+        studentLessons = data || [];
+        return studentLessons;
+      }
+
       async function loadTutorContext() {
         userRole = null;
         activeHomework = null;
+        currentUserProfile = null;
         tutorStudentEmails = [];
+        tutorStudentProfiles = new Map();
         tutorAssignments = [];
         tutorLessons = [];
+        studentLessons = [];
 
         if (!authUser) {
           updateTutorUi();
@@ -3433,17 +4547,20 @@
         if (userRole === "tutor") {
           await Promise.all([loadTutorAssignments(), loadTutorLessons()]);
         } else {
-          await loadActiveHomework();
+          await Promise.all([loadActiveHomework(), loadStudentLessons()]);
         }
         applyHomeworkConfiguration();
+        applyTutorLessonDefaults();
         if (userRole === "tutor") {
-          setSchoolStatus("Bereit zum Planen von Unterricht und Hausaufgaben.", "");
+          setSchoolStatus("", "");
         } else if (isHomeworkModeActive()) {
           setSchoolStatus(`Aktive Hausaufgabe geladen. ${homeworkSummaryText(activeHomework)}`, "success");
         } else {
           setSchoolStatus("Keine aktive Hausaufgabe.", "");
         }
         updateTutorUi();
+        renderStudentCalendar();
+        renderStudentNextLessonPanel();
         await refreshCalendarSubscriptionUi();
       }
 
@@ -3452,11 +4569,18 @@
           return;
         }
 
-        const studentEmail = lessonStudentEmailInput.value.trim().toLowerCase();
+        const editingLesson = editingTutorLessonId
+          ? tutorLessons.find((entry) => entry.id === editingTutorLessonId) || null
+          : null;
+        const studentRef = normalizeStudentRef(lessonStudentEmailInput.value);
         const startsAt = lessonStartsAtInput.value;
         const endsAt = lessonEndsAtInput.value;
-        const title = lessonTitleInput.value.trim();
-        const lessonNote = lessonHomeworkNoteInput.value.trim();
+        const title = lessonTitleInput.value.trim() || defaultLessonTitle(studentRef);
+        const defaultLocation = String(currentUserProfile?.default_lesson_location || "").trim();
+        const defaultMapUrl = String(currentUserProfile?.default_lesson_map_url || "").trim();
+        const locationText = lessonLocationTextInput.value.trim() || defaultLocation;
+        const mapUrl = lessonMapUrlInput.value.trim() || defaultMapUrl;
+        const shouldCreateHomework = lessonCreateHomeworkSelect.value === "yes";
         const mode = schoolModeSelect.value;
         const targetAccuracy = Math.max(50, Math.min(100, Number(schoolTargetAccuracyInput.value) || 90));
         const dueAt = schoolDueDateInput.value || null;
@@ -3466,8 +4590,8 @@
         const bassStart = schoolBassStartSelect.value;
         const bassEnd = schoolBassEndSelect.value;
 
-        if (!studentEmail) {
-          setSchoolStatus("Bitte eine Schüler-E-Mail für den Unterricht wählen.", "error");
+        if (!studentRef) {
+          setSchoolStatus("Bitte einen Schüler-Username für den Unterricht wählen.", "error");
           return;
         }
 
@@ -3476,9 +4600,26 @@
           return;
         }
 
-        if (endsAt && new Date(endsAt) <= new Date(startsAt)) {
+        if (!endsAt) {
+          setSchoolStatus("Bitte eine Endzeit für den Unterricht festlegen.", "error");
+          return;
+        }
+
+        if (new Date(endsAt) <= new Date(startsAt)) {
           setSchoolStatus("Das Unterrichtsende muss nach dem Start liegen.", "error");
           return;
+        }
+
+        if (mapUrl) {
+          try {
+            const parsedMapUrl = new URL(mapUrl);
+            if (!/^https?:$/i.test(parsedMapUrl.protocol)) {
+              throw new Error("Map-Link muss mit http oder https beginnen.");
+            }
+          } catch (error) {
+            setSchoolStatus(error?.message || "Bitte einen gueltigen Map-Link hinterlegen.", "error");
+            return;
+          }
         }
 
         if (mode !== "bass" && semitoneValue(trebleStart) > semitoneValue(trebleEnd)) {
@@ -3495,69 +4636,142 @@
         schoolBusy = true;
         updateTutorUi();
         try {
-          const homeworkPayload = {
-            tutor_user_id: authUser.id,
-            tutor_email: authUser.email,
-            student_email: studentEmail,
-            mode,
-            treble_range_start: trebleStart,
-            treble_range_end: trebleEnd,
-            bass_range_start: bassStart,
-            bass_range_end: bassEnd,
-            target_accuracy: targetAccuracy,
-            due_at: dueAt,
-            description: description || null,
-            is_active: true
-          };
+          let lessonHomeworkId = editingLesson?.homework_assignment_id || null;
+          const previousStudentRef = editingLesson ? lessonStudentRef(editingLesson) : "";
 
-          const { error: deactivateError } = await supabaseClient
-            .from("homework_assignments")
-            .update({ is_active: false })
-            .eq("student_email", studentEmail)
-            .eq("is_active", true);
-
-          if (deactivateError) {
-            throw deactivateError;
-          }
-
-          const { data: insertedHomework, error: homeworkError } = await supabaseClient
-            .from("homework_assignments")
-            .insert(homeworkPayload)
-            .select("*")
-            .single();
-
-          if (homeworkError) {
-            throw homeworkError;
-          }
-
-          const { data: insertedLesson, error: lessonError } = await supabaseClient
-            .from("tutor_lessons")
-            .insert({
+          if (shouldCreateHomework) {
+            const homeworkPayload = {
               tutor_user_id: authUser.id,
               tutor_email: authUser.email,
-              student_email: studentEmail,
-              title: title || null,
-              homework_note: lessonNote || null,
-              starts_at: new Date(startsAt).toISOString(),
-              ends_at: endsAt ? new Date(endsAt).toISOString() : null,
-              homework_assignment_id: insertedHomework.id
-            })
-            .select("*")
-            .single();
+              student_email: studentRef,
+              mode,
+              treble_range_start: trebleStart,
+              treble_range_end: trebleEnd,
+              bass_range_start: bassStart,
+              bass_range_end: bassEnd,
+              target_accuracy: targetAccuracy,
+              due_at: dueAt,
+              description: description || null,
+              is_active: true
+            };
+
+            const { error: deactivateError } = await supabaseClient
+              .from("homework_assignments")
+              .update({ is_active: false })
+              .eq("student_email", studentRef)
+              .eq("is_active", true);
+
+            if (deactivateError) {
+              throw deactivateError;
+            }
+
+            if (lessonHomeworkId) {
+              const { error: homeworkError } = await supabaseClient
+                .from("homework_assignments")
+                .update(homeworkPayload)
+                .eq("id", lessonHomeworkId)
+                .select("*")
+                .single();
+
+              if (homeworkError) {
+                throw homeworkError;
+              }
+            } else {
+              const { data: createdHomework, error: homeworkError } = await supabaseClient
+                .from("homework_assignments")
+                .insert(homeworkPayload)
+                .select("*")
+                .single();
+
+              if (homeworkError) {
+                throw homeworkError;
+              }
+              lessonHomeworkId = createdHomework.id;
+            }
+          } else if (lessonHomeworkId) {
+            const { error: homeworkDeleteError } = await supabaseClient
+              .from("homework_assignments")
+              .delete()
+              .eq("id", lessonHomeworkId);
+
+            if (homeworkDeleteError) {
+              throw homeworkDeleteError;
+            }
+
+            lessonHomeworkId = null;
+          }
+
+          if (
+            currentUserProfile &&
+            (String(currentUserProfile.default_lesson_location || "") !== locationText ||
+              String(currentUserProfile.default_lesson_map_url || "") !== mapUrl)
+          ) {
+            const { data: updatedProfile, error: profileUpdateError } = await supabaseClient
+              .from("user_profiles")
+              .update({
+                default_lesson_location: locationText || null,
+                default_lesson_map_url: mapUrl || null
+              })
+              .eq("user_id", authUser.id)
+              .select("*")
+              .single();
+
+            if (profileUpdateError) {
+              throw profileUpdateError;
+            }
+
+            currentUserProfile = updatedProfile;
+          }
+
+          const lessonPayload = {
+            tutor_user_id: authUser.id,
+            tutor_email: authUser.email,
+            student_email: studentRef,
+            title: title || null,
+            homework_note: null,
+            location_text: locationText || null,
+            map_url: mapUrl || null,
+            starts_at: new Date(startsAt).toISOString(),
+            ends_at: endsAt ? new Date(endsAt).toISOString() : null,
+            homework_assignment_id: lessonHomeworkId
+          };
+
+          const lessonMutation = editingLesson
+            ? supabaseClient
+              .from("tutor_lessons")
+              .update(lessonPayload)
+              .eq("id", editingLesson.id)
+              .select("*")
+              .single()
+            : supabaseClient
+              .from("tutor_lessons")
+              .insert(lessonPayload)
+              .select("*")
+              .single();
+
+          const { data: insertedLesson, error: lessonError } = await lessonMutation;
 
           if (lessonError) {
             throw lessonError;
           }
 
-          lessonStartsAtInput.value = "";
-          lessonEndsAtInput.value = "";
-          lessonTitleInput.value = "";
-          lessonHomeworkNoteInput.value = "";
-          schoolDueDateInput.value = "";
-          schoolDescriptionInput.value = "";
+          if (editingLesson && previousStudentRef && previousStudentRef !== studentRef) {
+            await applyLessonPassDelta(previousStudentRef, 1);
+          }
+
+          if (!editingLesson || previousStudentRef !== studentRef) {
+            await applyLessonPassDelta(studentRef, -1);
+          }
+
+          resetTutorLessonForm();
           selectedTutorLessonId = insertedLesson.id;
           isTutorModalOpen = false;
-          setSchoolStatus(`Termin und Hausaufgabe für ${studentEmail} gespeichert.`, "success");
+          setSchoolStatus(
+            editingLesson
+              ? `Termin und Hausaufgabe für ${studentRef} aktualisiert.`
+              : `Termin und Hausaufgabe für ${studentRef} gespeichert.`,
+            "success"
+          );
           await Promise.all([loadTutorLessons(), loadTutorAssignments()]);
         } catch (error) {
           console.error("[Tutor] Unterricht speichern fehlgeschlagen", error);
@@ -3675,9 +4889,14 @@
         userRole = null;
         activeHomework = null;
         isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
         tutorStudentEmails = [];
+        tutorStudentProfiles = new Map();
         tutorAssignments = [];
         tutorLessons = [];
+        studentLessons = [];
+        currentUserProfile = null;
+        editingTutorLessonId = null;
         calendarSubscriptionUrl = "";
         renderStudentEmailOptions();
         updateAuthUi();
@@ -3792,11 +5011,15 @@
       function updateModeUi() {
         const isHomeworkMode = isHomeworkModeActive();
         const canSeeTutorView = Boolean(authUser) && userRole === "tutor";
+        const canSeeStudentCalendar = Boolean(authUser) && userRole === "student";
         if (!canSeeTutorView) {
           isTutorViewVisible = false;
         }
-        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible;
-        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible;
+        if (!canSeeStudentCalendar) {
+          isStudentCalendarViewVisible = false;
+        }
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible;
+        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
@@ -3805,9 +5028,10 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible);
         homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
         tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
+        studentCalendarView.classList.toggle("is-hidden", !canSeeStudentCalendar || !isStudentCalendarViewVisible || isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || !isInfoVisible);
@@ -4362,15 +5586,20 @@
         const mode = schoolModeSelect.value;
         const trebleDisabled = mode === "bass";
         const bassDisabled = mode === "treble";
+        const showHomeworkFields = lessonCreateHomeworkSelect.value === "yes";
 
         schoolTrebleStartSelect.disabled = trebleDisabled || schoolBusy;
         schoolTrebleEndSelect.disabled = trebleDisabled || schoolBusy;
         schoolBassStartSelect.disabled = bassDisabled || schoolBusy;
         schoolBassEndSelect.disabled = bassDisabled || schoolBusy;
         schoolModeSelect.disabled = schoolBusy;
-        schoolTargetAccuracyInput.disabled = schoolBusy;
-        schoolDueDateInput.disabled = schoolBusy;
-        schoolDescriptionInput.disabled = schoolBusy;
+        schoolTargetAccuracyInput.disabled = schoolBusy || !showHomeworkFields;
+        schoolDueDateInput.disabled = schoolBusy || !showHomeworkFields;
+        schoolDescriptionInput.disabled = schoolBusy || !showHomeworkFields;
+        lessonLocationTextInput.disabled = schoolBusy;
+        lessonMapUrlInput.disabled = schoolBusy;
+        lessonCreateHomeworkSelect.disabled = schoolBusy;
+        lessonAdvancedToggleButton.disabled = schoolBusy;
       }
 
       function clampSrsWindowStart(startIndex, windowSize, total) {
@@ -5406,6 +6635,7 @@
         isHomeViewVisible = !isHomeViewVisible;
         if (isHomeViewVisible) {
           isTutorViewVisible = false;
+          isStudentCalendarViewVisible = false;
           isLibraryVisible = false;
           isInfoVisible = false;
         }
@@ -5416,6 +6646,7 @@
         isAuthPanelVisible = !isAuthPanelVisible;
         if (isAuthPanelVisible) {
           isTutorViewVisible = false;
+          isStudentCalendarViewVisible = false;
         }
         updateAuthUi();
         updateTutorUi();
@@ -5514,6 +6745,12 @@
       window.addEventListener("resize", () => {
         syncRangeBracketPositions();
         renderKeyboardLevels();
+        if (isTutorViewVisible) {
+          renderTutorCalendar();
+        }
+        if (isStudentCalendarViewVisible) {
+          renderStudentCalendar();
+        }
       });
 
       window.srsLevelUp = (mode = null) => {
@@ -5583,6 +6820,7 @@
         userRole = "tutor";
         activeHomework = null;
         isTutorViewVisible = true;
+        isStudentCalendarViewVisible = false;
         setSchoolStatus("Tutor-Modus simuliert.", "success");
         applyTutorSimulation();
         return { userRole, activeHomework };
@@ -5592,6 +6830,7 @@
         userRole = "student";
         activeHomework = homework;
         isTutorViewVisible = false;
+        isStudentCalendarViewVisible = true;
         setSchoolStatus(
           homework
             ? `Student-Hausaufgabe simuliert. ${homeworkSummaryText(homework)}`
@@ -5629,6 +6868,7 @@
         userRole = null;
         activeHomework = null;
         isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
         resetLocalProgressState();
         setSchoolStatus("Tutor-Simulation zurückgesetzt.", "");
         updateTutorUi();
@@ -5639,6 +6879,352 @@
         return { userRole, activeHomework };
       };
 
+      async function copyCalendarSubscriptionUrl(successMessage = "Kalender-Link in die Zwischenablage kopiert.") {
+        if (!calendarSubscriptionUrl) {
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(calendarSubscriptionUrl);
+          setAuthStatus(successMessage, "success");
+        } catch (error) {
+          console.error("[CalendarFeed] Kopieren fehlgeschlagen", error);
+          setAuthStatus("Kalender-Link konnte nicht kopiert werden.", "error");
+        }
+      }
+
+      function openCalendarSubscription(kind) {
+        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
+        openCalendarSubscriptionLink(links[kind] || "");
+      }
+
+      function normalizeStudentRef(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function profileUserName(profile) {
+        return normalizeStudentRef(profile?.userName || profile?.username || profile?.user_name);
+      }
+
+      function profileStudentRef(profile) {
+        return profileUserName(profile) || normalizeStudentRef(profile?.email);
+      }
+
+      function lessonStudentRef(lesson) {
+        return normalizeStudentRef(
+          lesson?.student_username ||
+          lesson?.student_user_name ||
+          lesson?.student_email
+        );
+      }
+
+      function currentStudentRef() {
+        return profileStudentRef(currentUserProfile) || normalizeStudentRef(authUser?.email);
+      }
+
+      function profileForLesson(lesson) {
+        if (!lesson) {
+          return null;
+        }
+        if (userRole === "student") {
+          return currentUserProfile;
+        }
+        return tutorStudentProfiles.get(lessonStudentRef(lesson)) || null;
+      }
+
+      function profileForLessonDisplay(lesson) {
+        const lessonProfile = profileForLesson(lesson);
+        if (profileHasLessonMeta(lessonProfile)) {
+          return lessonProfile;
+        }
+        if (profileHasLessonMeta(currentUserProfile)) {
+          return currentUserProfile;
+        }
+        return lessonProfile || currentUserProfile || null;
+      }
+
+      function customerTypeLabel(value) {
+        if (value === "subscription") return "Abo / 10er";
+        if (value === "single") return "Einzel";
+        return "";
+      }
+
+      function profileLessonPassTotal(profile) {
+        const total = Number(profile?.lesson_pass_total_lessons || 0);
+        return Number.isFinite(total) && total > 0 ? Math.round(total) : 10;
+      }
+
+      function profileLessonPassRemaining(profile) {
+        const remaining = Number(profile?.lesson_pass_remaining_lessons);
+        if (Number.isFinite(remaining) && remaining >= 0) {
+          return Math.round(remaining);
+        }
+        return profileLessonPassTotal(profile);
+      }
+
+      function profileUsesLessonPass(profile) {
+        return String(profile?.customer_type || "").trim() === "subscription";
+      }
+
+      function profileHasLessonMeta(profile) {
+        if (!profile) {
+          return false;
+        }
+
+        const paymentMethod = String(profile.payment_method || "").trim();
+        const customerType = String(profile.customer_type || "").trim();
+        const duration = Number(profile.standard_lesson_duration_minutes || 0);
+        return Boolean(paymentMethod || customerType || duration > 0 || profileUsesLessonPass(profile));
+      }
+
+      function lessonMetaChipsHtml(profile) {
+        if (!profile) {
+          return "";
+        }
+
+        const chips = [];
+        const paymentMethod = String(profile.payment_method || "").trim();
+        const customerType = customerTypeLabel(String(profile.customer_type || "").trim());
+        const duration = Number(profile.standard_lesson_duration_minutes || 0);
+
+        if (paymentMethod) {
+          chips.push(`<span class="lesson-meta-chip"><i data-lucide="wallet"></i>${paymentMethod}</span>`);
+        }
+        if (customerType) {
+          chips.push(`<span class="lesson-meta-chip"><i data-lucide="badge-euro"></i>${customerType}</span>`);
+        }
+        if (duration > 0) {
+          chips.push(`<span class="lesson-meta-chip"><i data-lucide="timer"></i>${duration} Min</span>`);
+        }
+        if (profileUsesLessonPass(profile)) {
+          const remaining = profileLessonPassRemaining(profile);
+          chips.push(`<span class="lesson-meta-chip${remaining <= 0 ? " is-alert" : ""}"><i data-lucide="tickets"></i>${remaining} offen</span>`);
+        }
+
+        if (!chips.length) {
+          return "";
+        }
+
+        return `<div class="lesson-meta-chips">${chips.join("")}</div>`;
+      }
+
+      async function applyLessonPassDelta(studentRef, delta) {
+        const normalized = normalizeStudentRef(studentRef);
+        const profile = profileForStudentRef(normalized);
+        if (!normalized || !profileUsesLessonPass(profile)) {
+          return;
+        }
+
+        const currentRemaining = profileLessonPassRemaining(profile);
+        const nextRemaining = currentRemaining + delta;
+        if (delta < 0 && currentRemaining <= 0) {
+          throw new Error("Keine Termine mehr auf der 10er Karte verfuegbar.");
+        }
+        if (nextRemaining < 0) {
+          throw new Error("10er Karte kann nicht unter 0 fallen.");
+        }
+
+        const { data, error } = await supabaseClient
+          .from("user_profiles")
+          .update({
+            lesson_pass_remaining_lessons: nextRemaining
+          })
+          .eq("user_id", profile.user_id)
+          .select("*")
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        tutorStudentProfiles.set(normalized, data);
+        syncLessonPassPanel();
+      }
+
+      async function verifyCurrentUserPassword(password) {
+        if (!supabaseClient || !authUser?.email) {
+          throw new Error("Bitte erneut anmelden.");
+        }
+
+        const secret = String(password || "").trim();
+        if (!secret) {
+          throw new Error("Bitte Passwort eingeben.");
+        }
+
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email: authUser.email,
+          password: secret
+        });
+
+        if (error) {
+          throw error;
+        }
+      }
+
+      function syncLessonPassPanel() {
+        const studentRef = normalizeStudentRef(lessonStudentEmailInput.value || lessonStudentSelect.value);
+        const profile = profileForStudentRef(studentRef);
+        const usesPass = profileUsesLessonPass(profile);
+
+        lessonPassPanel?.classList.toggle("is-hidden", !usesPass);
+        if (!usesPass || !lessonPassChips || !lessonPassCopy || !lessonPassResetButton) {
+          if (lessonPassChips) lessonPassChips.innerHTML = "";
+          if (lessonPassCopy) lessonPassCopy.textContent = "";
+          return;
+        }
+
+        const remaining = profileLessonPassRemaining(profile);
+        const total = profileLessonPassTotal(profile);
+        lessonPassChips.innerHTML = `
+          <span class="lesson-meta-chip${remaining <= 0 ? " is-alert" : ""}"><i data-lucide="tickets"></i>${remaining} / ${total}</span>
+          ${remaining <= 0 ? '<span class="lesson-meta-chip"><i data-lucide="triangle-alert"></i>Keine Termine frei</span>' : ""}
+        `;
+        lessonPassCopy.textContent = remaining <= 0
+          ? "Die 10er Karte ist aufgebraucht. Du kannst sie hier direkt wieder auffuellen."
+          : `Noch ${remaining} Termin${remaining === 1 ? "" : "e"} auf der Karte verfuegbar.`;
+        lessonPassResetButton.textContent = total === 10 ? "Karte auffüllen" : `Karte auf ${total} setzen`;
+        lessonPassResetButton.disabled = schoolBusy;
+        lessonPassPasswordInput.type = isLessonPassResetConfirmOpen ? "password" : "hidden";
+        lessonPassPasswordInput.value = isLessonPassResetConfirmOpen ? lessonPassPasswordInput.value : "";
+        lessonPassPasswordInput.disabled = schoolBusy || !isLessonPassResetConfirmOpen;
+        lessonPassConfirmButton.classList.toggle("is-hidden", !isLessonPassResetConfirmOpen);
+        lessonPassConfirmButton.disabled = schoolBusy || !isLessonPassResetConfirmOpen;
+        lessonFormMain?.classList.toggle("is-disabled", isLessonPassResetConfirmOpen);
+        lucide.createIcons();
+      }
+
+      async function resetLessonPassBalance() {
+        const studentRef = normalizeStudentRef(lessonStudentEmailInput.value || lessonStudentSelect.value);
+        const profile = profileForStudentRef(studentRef);
+        if (!supabaseClient || !profileUsesLessonPass(profile) || schoolBusy) {
+          return;
+        }
+
+        await verifyCurrentUserPassword(lessonPassPasswordInput.value);
+
+        const total = profileLessonPassTotal(profile);
+        const { data, error } = await supabaseClient
+          .from("user_profiles")
+          .update({
+            lesson_pass_remaining_lessons: total
+          })
+          .eq("user_id", profile.user_id)
+          .select("*")
+          .single();
+
+        if (error) {
+          console.error("[LessonPass] Reset fehlgeschlagen", error);
+          setSchoolStatus(error.message || "Karte konnte nicht aufgefuellt werden.", "error");
+          return;
+        }
+
+        tutorStudentProfiles.set(studentRef, data);
+        isLessonPassResetConfirmOpen = false;
+        lessonPassPasswordInput.value = "";
+        syncLessonPassPanel();
+        renderTutorDetailPanel();
+        setSchoolStatus(`10er Karte fuer ${studentRef} auf ${total} gesetzt.`, "success");
+      }
+
+      function detailMetaRowHtml(icon, label, value) {
+        return `
+          <div class="tutor-detail-row" title="${label}">
+            <i data-lucide="${icon}" aria-hidden="true"></i>
+            <div>
+              <strong>${value}</strong>
+            </div>
+          </div>
+        `;
+      }
+
+      function detailContentCardHtml(icon, label, content) {
+        return `
+          <div class="tutor-detail-row is-copy" title="${label}">
+            <i data-lucide="${icon}" aria-hidden="true"></i>
+            <div>${content}</div>
+          </div>
+        `;
+      }
+
+      function syncProfilePanel() {
+        const visible = Boolean(authUser && currentUserProfile);
+        authProfilePanel.classList.toggle("is-hidden", !visible);
+        if (!visible) {
+          profilePaymentMethodInput.value = "";
+          profileCustomerTypeSelect.value = "";
+          profileStandardDurationInput.value = "";
+          return;
+        }
+
+        profilePaymentMethodInput.value = currentUserProfile?.payment_method || "";
+        profileCustomerTypeSelect.value = currentUserProfile?.customer_type || "";
+        profileStandardDurationInput.value = currentUserProfile?.standard_lesson_duration_minutes || "";
+      }
+
+      async function saveCurrentProfileMeta() {
+        if (!supabaseClient || !authUser || !currentUserProfile) {
+          return;
+        }
+
+        const paymentMethod = profilePaymentMethodInput.value.trim();
+        const customerType = String(profileCustomerTypeSelect.value || "").trim();
+        const durationRaw = String(profileStandardDurationInput.value || "").trim();
+        const duration = durationRaw ? Number(durationRaw) : null;
+
+        if (duration !== null && (!Number.isFinite(duration) || duration < 15 || duration > 180)) {
+          setAuthStatus("Standarddauer muss zwischen 15 und 180 Minuten liegen.", "error");
+          return;
+        }
+
+        const { data, error } = await supabaseClient
+          .from("user_profiles")
+          .update({
+            payment_method: paymentMethod || null,
+            customer_type: customerType || null,
+            standard_lesson_duration_minutes: duration ? Math.round(duration) : null
+          })
+          .eq("user_id", authUser.id)
+          .select("*")
+          .single();
+
+        if (error) {
+          console.error("[Profile] Profil speichern fehlgeschlagen", error);
+          setAuthStatus(error.message || "Profil konnte nicht gespeichert werden.", "error");
+          return;
+        }
+
+        currentUserProfile = data;
+        syncProfilePanel();
+        setAuthStatus("Unterrichtsprofil gespeichert.", "success");
+        if (userRole === "student") {
+          renderStudentNextLessonPanel();
+        }
+      }
+
+      async function startSmartCalendarSubscription() {
+        if (!authUser || !userRole) {
+          setAuthStatus("Bitte zuerst anmelden.", "error");
+          return;
+        }
+
+        if (!calendarSubscriptionUrl) {
+          await refreshCalendarSubscriptionUi();
+        }
+
+        if (!calendarSubscriptionUrl) {
+          setAuthStatus("Kalender-Link konnte nicht erzeugt werden.", "error");
+          return;
+        }
+
+        const method = detectCalendarSubscriptionMethod();
+        if (method === "copy") {
+          await copyCalendarSubscriptionUrl("Kalender-Link kopiert. Im Kalender als Abo-Link einfuegen.");
+          return;
+        }
+
+        openCalendarSubscription(method);
+      }
+
       authForm.addEventListener("submit", (event) => {
         event.preventDefault();
         void handleAuthAction("sign-in");
@@ -5646,31 +7232,19 @@
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
-      authSubscriptionCopyButton.addEventListener("click", async () => {
-        if (!calendarSubscriptionUrl) {
-          return;
-        }
-
-        try {
-          await navigator.clipboard.writeText(calendarSubscriptionUrl);
-          setAuthStatus("Kalender-Link in die Zwischenablage kopiert.", "success");
-        } catch (error) {
-          console.error("[CalendarFeed] Kopieren fehlgeschlagen", error);
-          setAuthStatus("Kalender-Link konnte nicht kopiert werden.", "error");
-        }
+      profileSaveButton.addEventListener("click", () => {
+        void saveCurrentProfileMeta();
       });
-      authSubscriptionAppleButton.addEventListener("click", () => {
-        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
-        openCalendarSubscriptionLink(links.apple);
+      tutorCalendarSubscribeButton.addEventListener("click", () => {
+        void startSmartCalendarSubscription();
       });
-      authSubscriptionGoogleButton.addEventListener("click", () => {
-        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
-        openCalendarSubscriptionLink(links.google);
+      studentCalendarSubscribeButton.addEventListener("click", () => {
+        void startSmartCalendarSubscription();
       });
-      authSubscriptionOutlookButton.addEventListener("click", () => {
-        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
-        openCalendarSubscriptionLink(links.outlook);
-      });
+      authSubscriptionCopyButton.addEventListener("click", async () => copyCalendarSubscriptionUrl());
+      authSubscriptionAppleButton.addEventListener("click", () => openCalendarSubscription("apple"));
+      authSubscriptionGoogleButton.addEventListener("click", () => openCalendarSubscription("google"));
+      authSubscriptionOutlookButton.addEventListener("click", () => openCalendarSubscription("outlook"));
       authBackButton.addEventListener("click", () => {
         isAuthPanelVisible = false;
         updateAuthUi();
@@ -5681,32 +7255,86 @@
         isTutorViewVisible = false;
         isTutorModalOpen = false;
         isHomeViewVisible = true;
+        isStudentCalendarViewVisible = false;
+        updateModeUi();
+      });
+      studentCalendarBackButton.addEventListener("click", () => {
+        isStudentCalendarViewVisible = false;
+        isHomeViewVisible = true;
         updateModeUi();
       });
       lessonStudentSelect.addEventListener("change", () => {
         lessonStudentEmailInput.value = lessonStudentSelect.value;
+        isLessonPassResetConfirmOpen = false;
+        lessonPassPasswordInput.value = "";
+        syncTutorLessonDerivedFields({ forceEnd: true });
+        renderStudentEmailOptions();
+        syncLessonPassPanel();
+      });
+      lessonStudentEmailInput.addEventListener("input", () => {
+        const normalized = normalizeStudentRef(lessonStudentEmailInput.value);
+        lessonStudentSelect.value = tutorStudentProfiles.has(normalized) ? normalized : "";
+        isLessonPassResetConfirmOpen = false;
+        lessonPassPasswordInput.value = "";
+        syncTutorLessonDerivedFields({ forceEnd: true });
+        syncLessonPassPanel();
       });
       lessonStudentEmailInput.addEventListener("input", () => {
         renderStudentEmailOptions();
       });
+      lessonStartsAtInput.addEventListener("input", () => {
+        syncTutorLessonDerivedFields();
+      });
+      lessonEndsAtInput.addEventListener("input", () => {
+        delete lessonEndsAtInput.dataset.autoManaged;
+      });
+      lessonAdvancedToggleButton.addEventListener("click", () => {
+        isLessonAdvancedOpen = !isLessonAdvancedOpen;
+        syncTutorLessonFormUi();
+      });
+      lessonCreateHomeworkSelect.addEventListener("change", () => {
+        syncTutorLessonFormUi();
+        updateSchoolModeFields();
+      });
+      lessonPassResetButton.addEventListener("click", () => {
+        isLessonPassResetConfirmOpen = true;
+        syncLessonPassPanel();
+        lessonPassPasswordInput.focus();
+      });
+      lessonPassConfirmButton.addEventListener("click", () => {
+        void resetLessonPassBalance();
+      });
       tutorCalendarPrevButton.addEventListener("click", () => {
-        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth() - 1, 1);
+        const dayCount = visibleCalendarDayCount(tutorCalendarGrid);
+        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth(), tutorCalendarMonth.getDate() - dayCount);
         renderTutorCalendar();
       });
       tutorCalendarNextButton.addEventListener("click", () => {
-        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth() + 1, 1);
+        const dayCount = visibleCalendarDayCount(tutorCalendarGrid);
+        tutorCalendarMonth = new Date(tutorCalendarMonth.getFullYear(), tutorCalendarMonth.getMonth(), tutorCalendarMonth.getDate() + dayCount);
         renderTutorCalendar();
       });
+      studentCalendarPrevButton.addEventListener("click", () => {
+        const dayCount = visibleCalendarDayCount(studentCalendarGrid);
+        studentCalendarMonth = new Date(studentCalendarMonth.getFullYear(), studentCalendarMonth.getMonth(), studentCalendarMonth.getDate() - dayCount);
+        renderStudentCalendar();
+      });
+      studentCalendarNextButton.addEventListener("click", () => {
+        const dayCount = visibleCalendarDayCount(studentCalendarGrid);
+        studentCalendarMonth = new Date(studentCalendarMonth.getFullYear(), studentCalendarMonth.getMonth(), studentCalendarMonth.getDate() + dayCount);
+        renderStudentCalendar();
+      });
       tutorAddButton.addEventListener("click", () => {
-        isTutorModalOpen = true;
-        updateTutorUi();
+        startCreateTutorLesson();
       });
       tutorModalCloseButton.addEventListener("click", () => {
+        editingTutorLessonId = null;
         isTutorModalOpen = false;
         updateTutorUi();
       });
       tutorModal.addEventListener("click", (event) => {
         if (event.target === tutorModal) {
+          editingTutorLessonId = null;
           isTutorModalOpen = false;
           updateTutorUi();
         }
@@ -5716,6 +7344,7 @@
       homeModuleNotes.addEventListener("click", () => {
         isHomeViewVisible = false;
         isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
         updateModeUi();
         generateRound();
       });
@@ -5735,6 +7364,17 @@
         }
         isHomeViewVisible = false;
         isTutorViewVisible = true;
+        isStudentCalendarViewVisible = false;
+        await loadTutorContext();
+        updateModeUi();
+      });
+      homeModuleCalendar.addEventListener("click", async () => {
+        if (userRole !== "student") {
+          return;
+        }
+        isHomeViewVisible = false;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = true;
         await loadTutorContext();
         updateModeUi();
       });
@@ -5768,6 +7408,10 @@
       populateSchoolRangeSelect(schoolTrebleEndSelect, "treble", levelRangesByMode.treble[0][1]);
       populateSchoolRangeSelect(schoolBassStartSelect, "bass", levelRangesByMode.bass[0][0]);
       populateSchoolRangeSelect(schoolBassEndSelect, "bass", levelRangesByMode.bass[0][1]);
+      applyTutorLessonDefaults();
+      syncTutorLessonDerivedFields({ forceEnd: true });
+      syncTutorLessonFormUi();
+      updateSchoolModeFields();
       renderLibraryPanel();
       renderDebugConsole();
       keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
