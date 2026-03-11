@@ -82,6 +82,10 @@
         min-height: 46px;
       }
 
+      .toolbar.is-hidden {
+        display: none;
+      }
+
       .auth-panel {
         width: min(92vw, 520px);
         padding: 28px 28px 24px;
@@ -205,6 +209,20 @@
 
       .auth-submit.is-hidden {
         display: none;
+      }
+
+      .auth-back {
+        width: fit-content;
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        justify-self: start;
       }
 
       .level-indicator {
@@ -343,10 +361,22 @@
         line-height: 1;
       }
 
+      .toolbar-button[data-badge-icon]::after {
+        content: "";
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+        background-size: 12px 12px;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
       .toolbar-button.is-active[data-badge]::after {
         border-color: var(--text);
         background: var(--bg);
         color: var(--text);
+      }
+
+      .toolbar-button.is-active[data-badge-icon]::after {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
       }
 
       .library-panel {
@@ -403,41 +433,19 @@
         color: #9a9a9a;
       }
 
+      .library-note-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .library-note.is-unknown .library-note-name {
+        color: #8b8b8b;
+      }
+
       .library-note-score {
         font-size: 13px;
         font-weight: 600;
-      }
-
-      .library-note-preview {
-        position: relative;
-        height: 76px;
-        border-radius: 10px;
-        overflow: hidden;
-      }
-
-      .library-note-stage {
-        position: absolute;
-        inset: 0;
-      }
-
-      .library-note-preview .staff-line,
-      .library-note-preview .ledger-line {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 28px;
-        height: 2px;
-        background: var(--staff-ink);
-        transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
-      }
-
-      .library-note-preview .note {
-        top: 50%;
-        left: 50%;
-        width: 18px;
-        height: 54px;
-        background-color: var(--staff-ink);
-        transform: translate(-50%, calc(-50% + var(--offset) + var(--focus-offset, 0em)));
       }
 
       .sheet-music {
@@ -1177,6 +1185,7 @@
           </div>
         </div>
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
+          <button class="auth-back" id="auth-back-button" type="button">Zurueck</button>
           <div class="auth-heading">
             <p class="auth-kicker">Klaviertrainer</p>
             <h1 class="auth-title">Fortschritt laden</h1>
@@ -1272,6 +1281,7 @@
       const toggleSrsBassButton = document.getElementById("toggle-srs-bass-button");
       const toggleAuthButton = document.getElementById("toggle-auth-button");
       const authPanel = document.getElementById("auth-panel");
+      const authBackButton = document.getElementById("auth-back-button");
       const authEmailInput = document.getElementById("auth-email");
       const authPasswordInput = document.getElementById("auth-password");
       const authSignInButton = document.getElementById("auth-sign-in-button");
@@ -1421,6 +1431,24 @@
         treble: []
       };
       let doublePairState = [];
+
+      function defaultDoubleSelectedRanges() {
+        return {
+          bass: [...levelRangesByMode.bass[0]],
+          treble: [...levelRangesByMode.treble[0]]
+        };
+      }
+
+      function defaultPersistedState() {
+        return {
+          srs_states: { treble: null, bass: null },
+          note_stats: { treble: {}, bass: {} },
+          selected_range: ["C4", "C8"],
+          manual_selected_range: ["C4", "C8"],
+          double_selected_ranges: defaultDoubleSelectedRanges(),
+          active_srs_mode: null
+        };
+      }
 
       function updateInfoUi() {
         toggleInfoButton.classList.toggle("is-active", isInfoVisible);
@@ -1579,9 +1607,11 @@
       function updateAuthUi() {
         toggleAuthButton.classList.toggle("is-active", isAuthPanelVisible);
         if (authUser) {
-          toggleAuthButton.setAttribute("data-badge", "✓");
+          toggleAuthButton.setAttribute("data-badge", "");
+          toggleAuthButton.setAttribute("data-badge-icon", "badge-check");
         } else {
           toggleAuthButton.removeAttribute("data-badge");
+          toggleAuthButton.removeAttribute("data-badge-icon");
         }
         authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
@@ -1621,6 +1651,13 @@
         };
       }
 
+      function resetLocalProgressState() {
+        applyPersistedState(defaultPersistedState());
+        correctMidiNotes = new Set();
+        lastPlayedMidi = null;
+        currentClef = "treble";
+      }
+
       function applyPersistedState(record) {
         if (!record) {
           return;
@@ -1631,10 +1668,7 @@
         noteStats = record.note_stats || { treble: {}, bass: {} };
         selectedRange = Array.isArray(record.selected_range) ? record.selected_range : ["C4", "C8"];
         manualSelectedRange = Array.isArray(record.manual_selected_range) ? record.manual_selected_range : [...selectedRange];
-        doubleSelectedRanges = record.double_selected_ranges || {
-          bass: [...levelRangesByMode.bass[0]],
-          treble: [...levelRangesByMode.treble[0]]
-        };
+        doubleSelectedRanges = record.double_selected_ranges || defaultDoubleSelectedRanges();
         activeSrsMode = record.active_srs_mode === "treble" || record.active_srs_mode === "bass"
           ? record.active_srs_mode
           : null;
@@ -1703,8 +1737,8 @@
         }
 
         if (!data) {
-          setAuthStatus(`Angemeldet als ${authUser.email}. Noch kein gespeicherter Fortschritt.`, "success");
-          await saveRemoteProgress("initial");
+          resetLocalProgressState();
+          setAuthStatus(`Angemeldet als ${authUser.email}. Noch kein gespeicherter Fortschritt gefunden.`, "success");
           return;
         }
 
@@ -1772,8 +1806,10 @@
         }
 
         authUser = null;
+        window.clearTimeout(remoteSaveTimer);
         authEmailInput.value = "";
         authPasswordInput.value = "";
+        resetLocalProgressState();
         updateAuthUi();
       }
 
@@ -1811,6 +1847,7 @@
       function updateModeUi() {
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null;
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", isAuthPanelVisible || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", isAuthPanelVisible || !isDoubleModeEnabled || isLibraryVisible);
         trainerInfo.classList.toggle("is-hidden", isAuthPanelVisible || !isInfoVisible);
@@ -1837,40 +1874,6 @@
         queueRemoteSave("note-stats");
       }
 
-      function createLibraryNotePreview(note, mode) {
-        const preview = document.createElement("div");
-        preview.className = "library-note-preview";
-        preview.setAttribute("aria-hidden", "true");
-
-        const decoratedNote = decorateNote(note, mode);
-        const stage = document.createElement("div");
-        stage.className = "library-note-stage";
-        stage.style.setProperty("--focus-offset", `${decoratedNote.step}em`);
-
-        for (const step of [-4, -2, 0, 2, 4]) {
-          const staffLine = document.createElement("div");
-          staffLine.className = "staff-line";
-          staffLine.style.setProperty("--offset", noteOffset(step));
-          stage.appendChild(staffLine);
-        }
-
-        for (const step of ledgerSteps(decoratedNote.step)) {
-          const ledgerLine = document.createElement("div");
-          ledgerLine.className = "ledger-line";
-          ledgerLine.style.setProperty("--offset", noteOffset(step));
-          stage.appendChild(ledgerLine);
-        }
-
-        const noteElement = document.createElement("div");
-        noteElement.className = `note ${stemDirection(decoratedNote.step)}`;
-        noteElement.style.setProperty("--offset", noteOffset(decoratedNote.step));
-        stage.appendChild(noteElement);
-
-        preview.appendChild(stage);
-
-        return preview;
-      }
-
       function createLibraryGroup(mode) {
         const group = document.createElement("section");
         group.className = "library-group";
@@ -1892,7 +1895,10 @@
             item.classList.add("is-unknown");
           }
 
-          item.appendChild(createLibraryNotePreview(note, mode));
+          const name = document.createElement("span");
+          name.className = "library-note-name";
+          name.textContent = displayNoteName(note.name);
+          item.appendChild(name);
 
           const score = document.createElement("span");
           score.className = "library-note-score";
@@ -1965,6 +1971,7 @@
 
       function renderKeyboardLevels() {
         const progress = levelProgressForMode(activeSrsMode);
+        updateKeyboardViewport();
 
         if (!isKeyboardVisible || !activeSrsMode || !progress) {
           keyboardLevels.classList.add("is-hidden");
@@ -2008,6 +2015,32 @@
 
         keyboardLevels.replaceChildren(fragment);
         keyboardLevels.classList.remove("is-hidden");
+      }
+
+      function currentVisibleKeyboardRange() {
+        if (isDoubleModeEnabled) {
+          const bassRange = activeDoubleRange("bass");
+          const trebleRange = activeDoubleRange("treble");
+          const start = semitoneValue(bassRange[0]) <= semitoneValue(trebleRange[0]) ? bassRange[0] : trebleRange[0];
+          const end = semitoneValue(bassRange[1]) >= semitoneValue(trebleRange[1]) ? bassRange[1] : trebleRange[1];
+          return [start, end];
+        }
+
+        return selectedRange;
+      }
+
+      function updateKeyboardViewport() {
+        const [startNote, endNote] = currentVisibleKeyboardRange();
+        const startMidi = semitoneValue(startNote);
+        const endMidi = semitoneValue(endNote);
+        const totalSpan = keyboardRange.end - keyboardRange.start;
+        const visibleSpan = Math.max(1, endMidi - startMidi);
+        const leftRatio = (startMidi - keyboardRange.start) / totalSpan;
+        const widthRatio = visibleSpan / totalSpan;
+
+        keyboardKeys.style.left = `${-leftRatio * 100}%`;
+        keyboardKeys.style.width = `${100 / widthRatio}%`;
+        keyboardKeys.style.right = "auto";
       }
 
       function currentLevelRange(mode) {
@@ -2268,13 +2301,62 @@
 
       function randomNote() {
         const availableNotes = activeNoteRange();
-        const randomIndex = Math.floor(Math.random() * availableNotes.length);
-        const note = decorateNote(availableNotes[randomIndex], activeSrsMode);
+        const pickedNote = pickWeightedNote(availableNotes, activeSrsMode);
+        const note = decorateNote(pickedNote, activeSrsMode);
         const state = activeSrsState();
         return {
           ...note,
           isNew: Boolean(state?.newNotes?.includes(note.name))
         };
+      }
+
+      function noteSelectionWeight(mode, noteName, isNew = false) {
+        if (!authUser || !mode) {
+          return 1;
+        }
+
+        const stat = noteStatFor(mode, noteName);
+
+        if (!stat || stat.attempts === 0) {
+          return isNew ? 8 : 5;
+        }
+
+        const accuracy = stat.correct / stat.attempts;
+        const masteryPenalty = 1 + Math.max(0, 0.98 - accuracy) * 8;
+        const freshnessBoost = Math.max(0.7, 1.7 - Math.min(stat.attempts, 36) / 36);
+        const newNoteBoost = isNew ? 1.8 : 1;
+        return Math.max(0.35, masteryPenalty * freshnessBoost * newNoteBoost);
+      }
+
+      function pickWeightedNote(availableNotes, mode = null) {
+        if (!availableNotes.length) {
+          return null;
+        }
+
+        if (!authUser || !mode) {
+          return availableNotes[Math.floor(Math.random() * availableNotes.length)];
+        }
+
+        const state = srsStates[mode];
+        const weights = availableNotes.map((note) =>
+          noteSelectionWeight(mode, note.name, Boolean(state?.newNotes?.includes(note.name)))
+        );
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+
+        if (!(totalWeight > 0)) {
+          return availableNotes[Math.floor(Math.random() * availableNotes.length)];
+        }
+
+        let threshold = Math.random() * totalWeight;
+
+        for (let index = 0; index < availableNotes.length; index += 1) {
+          threshold -= weights[index];
+          if (threshold <= 0) {
+            return availableNotes[index];
+          }
+        }
+
+        return availableNotes[availableNotes.length - 1];
       }
 
       function rangeOptionsForMode(mode) {
@@ -2547,7 +2629,7 @@
       }
 
       function stemDirection(step) {
-        return step >= 5 ? "note-down" : "note-up";
+        return step >= 0 ? "note-down" : "note-up";
       }
 
       function ledgerSteps(step) {
@@ -2662,6 +2744,7 @@
 
       function renderKeyboardState() {
         clearKeyboardStates();
+        updateKeyboardViewport();
 
         const [rangeStart, rangeEnd] = selectedRange;
         const startMidi = semitoneValue(rangeStart);
@@ -3329,6 +3412,12 @@
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
+      authBackButton.addEventListener("click", () => {
+        isAuthPanelVisible = false;
+        updateAuthUi();
+        updateModeUi();
+        updateInfoUi();
+      });
       midiIndicatorButton.addEventListener("click", () => initMidi());
       midiTooltip.addEventListener("click", () => setDebugConsoleOpen(true));
       debugConsoleCloseButton.addEventListener("click", () => setDebugConsoleOpen(false));
