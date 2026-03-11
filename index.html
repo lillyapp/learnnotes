@@ -24,6 +24,11 @@
         --tooltip-bg: #111111;
         --tooltip-text: #ffffff;
         --keyboard-bg: #f3f3f3;
+        --module-max-width: 1440px;
+        --module-gap: 22px;
+        --module-card-gap: 14px;
+        --module-card-padding-y: 18px;
+        --module-card-padding-x: 20px;
       }
 
       @media (prefers-color-scheme: dark) {
@@ -91,9 +96,9 @@
       }
 
       .home-view {
-        width: min(97vw, 1380px);
+        width: min(97vw, var(--module-max-width));
         display: grid;
-        gap: 26px;
+        gap: var(--module-gap);
         align-content: start;
         justify-items: stretch;
       }
@@ -104,7 +109,6 @@
 
       .home-heading {
         margin: 0;
-        padding-left: 14px;
         font-size: clamp(42px, 6vw, 72px);
         font-weight: 800;
         letter-spacing: -0.04em;
@@ -136,7 +140,7 @@
       .home-modules {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
-        gap: 22px;
+        gap: var(--module-gap);
         justify-content: start;
       }
 
@@ -302,9 +306,9 @@
       }
 
       .tutor-view {
-        width: min(97vw, 1480px);
+        width: min(97vw, var(--module-max-width));
         display: grid;
-        gap: 22px;
+        gap: var(--module-gap);
         align-content: start;
       }
 
@@ -315,7 +319,7 @@
       .management-dashboard {
         display: grid;
         grid-template-columns: minmax(320px, 0.75fr) minmax(0, 1.25fr);
-        gap: 14px;
+        gap: var(--module-card-gap);
         align-items: start;
         max-height: calc(100svh - 104px);
         min-height: 0;
@@ -350,12 +354,12 @@
       }
 
       .management-user-card {
-        padding: 14px;
+        padding: 12px 14px;
         border: 1px solid var(--border);
         border-radius: 18px;
         background: var(--surface);
         display: grid;
-        gap: 10px;
+        gap: 8px;
         text-align: left;
         cursor: pointer;
       }
@@ -378,14 +382,14 @@
 
       .management-user-name {
         margin: 0;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 800;
         color: var(--text);
       }
 
       .management-user-email {
         margin: 2px 0 0;
-        font-size: 13px;
+        font-size: 12px;
         color: var(--text-soft);
         word-break: break-word;
       }
@@ -410,30 +414,6 @@
         color: #ffffff;
       }
 
-      .management-user-metrics {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .management-user-metric {
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: var(--surface-soft);
-        display: grid;
-        gap: 2px;
-      }
-
-      .management-user-metric strong {
-        font-size: 15px;
-        color: var(--text);
-      }
-
-      .management-user-metric span {
-        font-size: 12px;
-        color: var(--text-soft);
-      }
-
       .management-panel-empty {
         min-height: 320px;
         border: 1px dashed var(--border);
@@ -455,6 +435,94 @@
         grid-template-columns: auto minmax(0, 1fr);
         gap: 16px;
         align-items: center;
+      }
+
+      .management-analytics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .management-analytics-card {
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        display: grid;
+        gap: 12px;
+      }
+
+      .management-analytics-title {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .management-activity-chart {
+        height: 164px;
+        display: grid;
+        grid-template-columns: repeat(14, minmax(0, 1fr));
+        align-items: end;
+        gap: 6px;
+      }
+
+      .management-activity-bar {
+        min-height: 18px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.08);
+        overflow: hidden;
+        display: flex;
+        align-items: end;
+      }
+
+      .management-activity-bar span {
+        width: 100%;
+        border-radius: inherit;
+        background: linear-gradient(180deg, #6f8fd9, #111111);
+      }
+
+      .management-activity-labels {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .management-radar {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+      }
+
+      .management-radar text {
+        fill: var(--text-soft);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .management-radar-grid {
+        fill: none;
+        stroke: rgba(17, 17, 17, 0.08);
+        stroke-width: 1;
+      }
+
+      .management-radar-axis {
+        stroke: rgba(17, 17, 17, 0.1);
+        stroke-width: 1;
+      }
+
+      .management-radar-shape {
+        fill: rgba(111, 143, 217, 0.18);
+        stroke: #111111;
+        stroke-width: 2;
+      }
+
+      .management-radar-point {
+        fill: #111111;
       }
 
       .management-bars {
@@ -534,12 +602,16 @@
         .management-list {
           max-height: 360px;
         }
+
+        .management-analytics {
+          grid-template-columns: 1fr;
+        }
       }
 
       .library-view {
-        width: min(97vw, 1480px);
+        width: min(97vw, var(--module-max-width));
         display: grid;
-        gap: 22px;
+        gap: var(--module-gap);
         align-content: start;
       }
 
@@ -598,14 +670,14 @@
       .tutor-dashboard {
         display: grid;
         grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.55fr);
-        gap: 14px;
+        gap: var(--module-card-gap);
         align-items: start;
         max-height: calc(100svh - 104px);
         min-height: 0;
       }
 
       .tutor-card {
-        padding: 18px 20px;
+        padding: var(--module-card-padding-y) var(--module-card-padding-x);
         border: 1px solid var(--border);
         border-radius: 24px;
         background: var(--surface-soft);
@@ -1808,7 +1880,7 @@
 
       .library-panel {
         width: min(100%, 920px);
-        padding: 18px 20px;
+        padding: var(--module-card-padding-y) var(--module-card-padding-x);
         border: 1px solid var(--border);
         border-radius: 20px;
         background: var(--surface-soft);
@@ -2645,8 +2717,8 @@
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
           <div class="auth-heading">
             <p class="auth-kicker">Klaviertrainer</p>
-            <h1 class="auth-title">Anmeldung</h1>
-            <p class="auth-copy">E-Mail und Passwort eingeben.</p>
+            <h1 class="auth-title" id="auth-title">Anmeldung</h1>
+            <p class="auth-copy" id="auth-copy">E-Mail und Passwort eingeben.</p>
           </div>
           <form id="auth-form">
             <div class="auth-row">
@@ -2891,10 +2963,10 @@
                   <button class="school-submit is-secondary" id="lesson-pass-reset-button" type="button">Karte auffüllen</button>
                 </div>
                 <p class="lesson-pass-copy" id="lesson-pass-copy"></p>
-                <div class="lesson-pass-confirm">
+                <form class="lesson-pass-confirm" id="lesson-pass-form">
                   <input class="school-field" id="lesson-pass-password" type="password" placeholder="Passwort zur Bestätigung">
-                  <button class="school-submit is-secondary" id="lesson-pass-confirm-button" type="button">Bestätigen</button>
-                </div>
+                  <button class="school-submit is-secondary" id="lesson-pass-confirm-button" type="submit">Bestätigen</button>
+                </form>
               </div>
               <input id="lesson-student-email" type="hidden">
               <datalist id="lesson-student-suggestions"></datalist>
@@ -3050,31 +3122,49 @@
               </div>
               <button class="tutor-back" id="management-modal-close-button" type="button">Schließen</button>
             </div>
-            <div class="management-form-grid">
-              <label>
-                E-Mail
-                <input class="auth-field" id="management-create-email" type="email" placeholder="name@example.com">
-              </label>
-              <label>
-                Passwort
-                <input class="auth-field" id="management-create-password" type="password" placeholder="Mindestens 8 Zeichen">
-              </label>
+            <form id="management-create-form">
+              <div class="management-form-grid">
+                <label>
+                  E-Mail
+                  <input class="auth-field" id="management-create-email" type="email" placeholder="name@example.com">
+                </label>
               <label>
                 Username
                 <input class="auth-field" id="management-create-username" type="text" placeholder="username">
               </label>
-              <label>
-                Rolle
-                <select class="auth-field" id="management-create-role">
-                  <option value="student">Student</option>
-                  <option value="tutor">Tutor</option>
-                </select>
-              </label>
-            </div>
-            <p class="management-status" id="management-create-status"></p>
-            <div class="school-actions">
-              <button class="school-submit" id="management-create-submit-button" type="button">User erstellen</button>
-            </div>
+                <label>
+                  Rolle
+                  <select class="auth-field" id="management-create-role">
+                    <option value="student">Student</option>
+                    <option value="tutor">Tutor</option>
+                  </select>
+                </label>
+                <label>
+                  Zahlungsart
+                  <input class="auth-field" id="management-create-payment-method" type="text" placeholder="Bar, PayPal, Überweisung">
+                </label>
+                <label>
+                  Kundenart
+                  <select class="auth-field" id="management-create-customer-type">
+                    <option value="">Bitte wählen</option>
+                    <option value="single">Einzelabrechnung</option>
+                    <option value="subscription">Abo / 10er Karte</option>
+                  </select>
+                </label>
+                <label>
+                  Standarddauer
+                  <input class="auth-field" id="management-create-standard-duration" type="number" min="15" max="180" step="5" placeholder="45">
+                </label>
+                <label>
+                  Kartenwert
+                  <input class="auth-field" id="management-create-lesson-pass-total" type="number" min="1" max="1000" step="1" placeholder="10">
+                </label>
+              </div>
+              <p class="management-status" id="management-create-status"></p>
+              <div class="school-actions">
+                <button class="school-submit" id="management-create-submit-button" type="submit">Einladung senden</button>
+              </div>
+            </form>
           </div>
         </div>
         <div class="keyboard is-hidden" id="keyboard" aria-label="Virtuelles Klavier">
@@ -3134,6 +3224,8 @@
       const toolbar = document.querySelector(".toolbar");
       const authPanel = document.getElementById("auth-panel");
       const authForm = document.getElementById("auth-form");
+      const authTitle = document.getElementById("auth-title");
+      const authCopy = document.getElementById("auth-copy");
       const authEmailInput = document.getElementById("auth-email");
       const authPasswordInput = document.getElementById("auth-password");
       const authSignInButton = document.getElementById("auth-sign-in-button");
@@ -3179,6 +3271,7 @@
       const lessonStudentEmailInput = document.getElementById("lesson-student-email");
       const lessonStudentSuggestions = document.getElementById("lesson-student-suggestions");
       const lessonFormMain = document.getElementById("lesson-form-main");
+      const lessonPassForm = document.getElementById("lesson-pass-form");
       const lessonStartsAtInput = document.getElementById("lesson-starts-at");
       const lessonEndsAtInput = document.getElementById("lesson-ends-at");
       const lessonTitleInput = document.getElementById("lesson-title");
@@ -3245,10 +3338,14 @@
       const managementStatus = document.getElementById("management-status");
       const managementModal = document.getElementById("management-modal");
       const managementModalCloseButton = document.getElementById("management-modal-close-button");
+      const managementCreateForm = document.getElementById("management-create-form");
       const managementCreateEmailInput = document.getElementById("management-create-email");
-      const managementCreatePasswordInput = document.getElementById("management-create-password");
       const managementCreateUsernameInput = document.getElementById("management-create-username");
       const managementCreateRoleSelect = document.getElementById("management-create-role");
+      const managementCreatePaymentMethodInput = document.getElementById("management-create-payment-method");
+      const managementCreateCustomerTypeSelect = document.getElementById("management-create-customer-type");
+      const managementCreateStandardDurationInput = document.getElementById("management-create-standard-duration");
+      const managementCreateLessonPassTotalInput = document.getElementById("management-create-lesson-pass-total");
       const managementCreateStatus = document.getElementById("management-create-status");
       const managementCreateSubmitButton = document.getElementById("management-create-submit-button");
       const targetDescription = document.getElementById("target-description");
@@ -3372,6 +3469,7 @@
       let authBusy = false;
       let authStatusMessage = "";
       let authStatusState = "";
+      let authFlowMode = "sign-in";
       let calendarSubscriptionBusy = false;
       let calendarSubscriptionUrl = "";
       let schoolBusy = false;
@@ -3405,6 +3503,14 @@
         treble: {},
         bass: {}
       };
+      let activityLog = {};
+      let timingStats = {
+        attempts: 0,
+        total_ms: 0,
+        fastest_ms: null,
+        slowest_ms: null
+      };
+      let currentPromptStartedAt = 0;
       let doubleRound = {
         bass: [],
         treble: []
@@ -3479,6 +3585,13 @@
         return {
           srs_states: { treble: null, bass: null },
           note_stats: { treble: {}, bass: {} },
+          activity_log: {},
+          timing_stats: {
+            attempts: 0,
+            total_ms: 0,
+            fastest_ms: null,
+            slowest_ms: null
+          },
           selected_range: ["C4", "C8"],
           manual_selected_range: ["C4", "C8"],
           double_selected_ranges: defaultDoubleSelectedRanges(),
@@ -3640,6 +3753,26 @@
         authPanel.classList.toggle("has-error", state === "error" && !authUser);
       }
 
+      function currentAuthLinkType() {
+        const fromHash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const fromSearch = new URLSearchParams(window.location.search);
+        return String(fromHash.get("type") || fromSearch.get("type") || "").trim().toLowerCase();
+      }
+
+      function shouldSetPasswordMode(eventName = "") {
+        const linkType = currentAuthLinkType();
+        return eventName === "PASSWORD_RECOVERY" || linkType === "invite" || linkType === "recovery";
+      }
+
+      function applyAuthFlowMode(nextMode = "sign-in") {
+        authFlowMode = nextMode === "set-password" ? "set-password" : "sign-in";
+      }
+
+      function clearAuthUrlArtifacts() {
+        const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+
       function isSupabaseConfigured() {
         return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       }
@@ -3684,13 +3817,21 @@
       }
 
       function updateAuthUi() {
+        const isPasswordSetup = authFlowMode === "set-password";
         authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
-        authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
-        authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
-        authSignInButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
+        authTitle.textContent = isPasswordSetup ? "Passwort festlegen" : "Anmeldung";
+        authCopy.textContent = isPasswordSetup ? "Lege jetzt dein eigenes Passwort für diesen Zugang fest." : "E-Mail und Passwort eingeben.";
+        authEmailInput.placeholder = isPasswordSetup ? "E-Mail" : "E-Mail";
+        authPasswordInput.placeholder = isPasswordSetup ? "Neues Passwort" : "Passwort";
+        authPasswordInput.autocomplete = isPasswordSetup ? "new-password" : "current-password";
+        authEmailInput.disabled = authBusy || !isSupabaseConfigured() || (Boolean(authUser) && !isPasswordSetup);
+        authEmailInput.readOnly = isPasswordSetup;
+        authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || (Boolean(authUser) && !isPasswordSetup);
+        authSignInButton.disabled = authBusy || !isSupabaseConfigured() || (Boolean(authUser) && !isPasswordSetup);
+        authSignInButton.textContent = isPasswordSetup ? "Passwort speichern" : "Anmelden";
         authSignOutButton.disabled = authBusy || !authUser;
-        authSignOutButton.classList.toggle("is-hidden", !authUser);
+        authSignOutButton.classList.toggle("is-hidden", !authUser || isPasswordSetup);
         authSubscriptionPanel.classList.toggle("is-hidden", !authUser || userRole === "tutor");
         authSubscriptionCopyButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
         authSubscriptionAppleButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
@@ -3715,6 +3856,12 @@
           return;
         }
 
+        if (isPasswordSetup && authUser) {
+          authEmailInput.value = authUser.email || authEmailInput.value;
+          setAuthStatus("Bitte jetzt ein neues Passwort festlegen.", "");
+          return;
+        }
+
         if (authUser) {
           setAuthStatus(`Angemeldet als ${authUser.email}. Fortschritt wird automatisch gespeichert.`, "success");
           return;
@@ -3727,6 +3874,8 @@
         return {
           srs_states: srsStates,
           note_stats: noteStats,
+          activity_log: activityLog,
+          timing_stats: timingStats,
           selected_range: selectedRange,
           manual_selected_range: manualSelectedRange,
           double_selected_ranges: doubleSelectedRanges,
@@ -3748,6 +3897,36 @@
         } else {
           delete schoolStatus.dataset.state;
         }
+      }
+
+      function todayActivityKey() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function markPromptStart() {
+        currentPromptStartedAt = performance.now();
+      }
+
+      function recordLearningActivity() {
+        const key = todayActivityKey();
+        activityLog = {
+          ...activityLog,
+          [key]: Number(activityLog[key] || 0) + 1
+        };
+      }
+
+      function recordResponseTiming() {
+        if (!currentPromptStartedAt) {
+          return;
+        }
+        const elapsed = Math.max(120, Math.round(performance.now() - currentPromptStartedAt));
+        timingStats = {
+          attempts: Number(timingStats.attempts || 0) + 1,
+          total_ms: Number(timingStats.total_ms || 0) + elapsed,
+          fastest_ms: timingStats.fastest_ms === null ? elapsed : Math.min(Number(timingStats.fastest_ms || elapsed), elapsed),
+          slowest_ms: timingStats.slowest_ms === null ? elapsed : Math.max(Number(timingStats.slowest_ms || elapsed), elapsed)
+        };
+        recordLearningActivity();
       }
 
       function isHomeworkModeActive() {
@@ -5219,6 +5398,13 @@
         isRemoteStateApplying = true;
         srsStates = record.srs_states || { treble: null, bass: null };
         noteStats = record.note_stats || { treble: {}, bass: {} };
+        activityLog = record.activity_log || {};
+        timingStats = record.timing_stats || {
+          attempts: 0,
+          total_ms: 0,
+          fastest_ms: null,
+          slowest_ms: null
+        };
         selectedRange = Array.isArray(record.selected_range) ? record.selected_range : ["C4", "C8"];
         manualSelectedRange = Array.isArray(record.manual_selected_range) ? record.manual_selected_range : [...selectedRange];
         doubleSelectedRanges = record.double_selected_ranges || defaultDoubleSelectedRanges();
@@ -5342,14 +5528,31 @@
         generateRound();
       }
 
-      async function syncAuthState(nextUser) {
+      async function syncAuthState(nextUser, eventName = "") {
         if (!nextUser) {
+          applyAuthFlowMode("sign-in");
           applySignedOutState();
+          return;
+        }
+
+        if (shouldSetPasswordMode(eventName)) {
+          authUser = nextUser;
+          authEmailInput.value = nextUser.email || authEmailInput.value;
+          applyAuthFlowMode("set-password");
+          isAuthPanelVisible = true;
+          isHomeViewVisible = false;
+          isTutorViewVisible = false;
+          isStudentCalendarViewVisible = false;
+          isManagementViewVisible = false;
+          isLibraryVisible = false;
+          updateAuthUi();
+          updateModeUi();
           return;
         }
 
         authUser = nextUser;
         authPasswordInput.value = "";
+        applyAuthFlowMode("sign-in");
         isAuthPanelVisible = false;
         isHomeViewVisible = true;
         isTutorViewVisible = false;
@@ -5368,6 +5571,40 @@
 
         const email = authEmailInput.value.trim();
         const password = authPasswordInput.value;
+
+        if (action === "set-password") {
+          if (!authUser) {
+            setAuthStatus("Einladungslink fehlt oder ist abgelaufen.", "error");
+            return;
+          }
+          if (!password || password.length < 8) {
+            setAuthStatus("Bitte ein Passwort mit mindestens 8 Zeichen eingeben.", "error");
+            return;
+          }
+
+          authBusy = true;
+          updateAuthUi();
+          try {
+            const { data, error } = await supabaseClient.auth.updateUser({ password });
+            if (error) {
+              setAuthStatus(error.message, "error");
+              return;
+            }
+
+            authPasswordInput.value = "";
+            clearAuthUrlArtifacts();
+            applyAuthFlowMode("sign-in");
+            setAuthStatus("Passwort gespeichert. Anmeldung wird abgeschlossen...", "success");
+            await syncAuthState(data.user || authUser, "");
+          } catch (error) {
+            console.error("[Auth] Passwort setzen fehlgeschlagen", error);
+            setAuthStatus(error?.message || "Passwort konnte nicht gesetzt werden.", "error");
+          } finally {
+            authBusy = false;
+            updateAuthUi();
+          }
+          return;
+        }
 
         if (!email || !password) {
           setAuthStatus("Bitte E-Mail und Passwort eingeben.", "error");
@@ -5434,8 +5671,9 @@
         }
 
         supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        authSubscription = supabaseClient.auth.onAuthStateChange((_event, session) => {
-          void syncAuthState(session?.user || null);
+        applyAuthFlowMode(shouldSetPasswordMode("") ? "set-password" : "sign-in");
+        authSubscription = supabaseClient.auth.onAuthStateChange((event, session) => {
+          void syncAuthState(session?.user || null, event);
         });
 
         const { data, error } = await supabaseClient.auth.getSession();
@@ -5445,7 +5683,7 @@
           return;
         }
 
-        await syncAuthState(data.session?.user || null);
+        await syncAuthState(data.session?.user || null, "");
       }
 
       function updateModeUi() {
@@ -5669,7 +5907,6 @@
         const fragment = document.createDocumentFragment();
 
         for (const user of managementUsers) {
-          const progress = progressStatsSummary(user.progress);
           const button = document.createElement("button");
           button.type = "button";
           button.className = `management-user-card${selectedManagementUserId === user.user_id ? " is-active" : ""}${user.is_blocked ? " is-blocked" : ""}`;
@@ -5680,16 +5917,6 @@
                 <p class="management-user-email">${user.email || "Keine E-Mail"}</p>
               </div>
               <span class="management-role-badge${user.is_blocked ? " is-alert" : ""}">${user.is_blocked ? "Gesperrt" : managementRoleLabel(user.role)}</span>
-            </div>
-            <div class="management-user-metrics">
-              <div class="management-user-metric">
-                <strong>${progress.overallAccuracy}%</strong>
-                <span>Sicherheit</span>
-              </div>
-              <div class="management-user-metric">
-                <strong>${progress.totalAttempts}</strong>
-                <span>Versuche</span>
-              </div>
             </div>
           `;
           button.addEventListener("click", () => {
@@ -5719,6 +5946,7 @@
         }
 
         const progress = progressStatsSummary(user.progress);
+        const billingChips = lessonMetaChipsHtml(user);
         const wrapper = document.createElement("div");
         wrapper.className = "management-detail";
         wrapper.innerHTML = `
@@ -5729,6 +5957,7 @@
               <span class="lesson-meta-chip${user.is_blocked ? " is-alert" : ""}"><i data-lucide="${user.is_blocked ? "shield-x" : "shield-check"}"></i>${user.is_blocked ? "Gesperrt" : "Aktiv"}</span>
             </div>
           </div>
+          ${billingChips || '<div class="lesson-meta-chips"><span class="lesson-meta-chip"><i data-lucide="wallet"></i>Keine Abrechnungsdaten</span></div>'}
           <div class="management-progress-grid">
             <div class="school-progress-ring" style="--progress:${progress.overallAccuracy};">
               <span class="school-progress-value">${progress.overallAccuracy}%</span>
@@ -5760,6 +5989,7 @@
           <div class="management-actions">
             <button class="auth-submit" id="management-save-button" type="button">Speichern</button>
             <button class="auth-submit is-secondary" id="management-block-button" type="button">${user.is_blocked ? "Entsperren" : "Sperren"}</button>
+            <button class="auth-submit is-secondary" id="management-delete-button" type="button">Löschen</button>
           </div>
         `;
         managementDetailPanel.appendChild(wrapper);
@@ -5801,6 +6031,26 @@
             managementBusy = false;
           }
         });
+        wrapper.querySelector("#management-delete-button")?.addEventListener("click", async () => {
+          const userLabel = user.userName || user.email || "diesen User";
+          if (!window.confirm(`Willst du ${userLabel} wirklich löschen?`)) {
+            return;
+          }
+          try {
+            managementBusy = true;
+            setManagementStatus("User wird gelöscht...", "");
+            await callManagementApi("delete-user", {
+              userId: user.user_id
+            });
+            selectedManagementUserId = "";
+            await loadManagementUsers();
+            setManagementStatus("User gelöscht.", "success");
+          } catch (error) {
+            setManagementStatus(error?.message || "User konnte nicht gelöscht werden.", "error");
+          } finally {
+            managementBusy = false;
+          }
+        });
         lucide.createIcons();
       }
 
@@ -5813,8 +6063,28 @@
           return;
         }
 
-        const payload = await callManagementApi("list-users");
-        managementUsers = Array.isArray(payload?.users) ? payload.users : [];
+        const [{ data: profiles, error: profilesError }, { data: progressRows, error: progressError }] = await Promise.all([
+          supabaseClient
+            .from("user_profiles")
+            .select("user_id, email, userName, role, is_blocked, payment_method, customer_type, standard_lesson_duration_minutes, lesson_pass_total_lessons, lesson_pass_remaining_lessons, created_at, updated_at")
+            .order("created_at", { ascending: false }),
+          supabaseClient
+            .from("trainer_progress")
+            .select("user_id, note_stats, active_srs_mode, updated_at")
+        ]);
+
+        if (profilesError) {
+          throw profilesError;
+        }
+        if (progressError) {
+          throw progressError;
+        }
+
+        const progressByUserId = new Map((progressRows || []).map((entry) => [entry.user_id, entry]));
+        managementUsers = (profiles || []).map((profile) => ({
+          ...profile,
+          progress: progressByUserId.get(profile.user_id) || null
+        }));
         managementUsers.sort((left, right) => {
           if ((left.role === "tutor") !== (right.role === "tutor")) {
             return left.role === "tutor" ? -1 : 1;
@@ -7943,7 +8213,7 @@
 
       authForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        void handleAuthAction("sign-in");
+        void handleAuthAction(authFlowMode === "set-password" ? "set-password" : "sign-in");
       });
       authEmailInput.addEventListener("input", () => {
         authPanel.classList.remove("has-error");
@@ -7951,7 +8221,7 @@
       authPasswordInput.addEventListener("input", () => {
         authPanel.classList.remove("has-error");
       });
-      authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
+      authSignInButton.addEventListener("click", () => handleAuthAction(authFlowMode === "set-password" ? "set-password" : "sign-in"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
       homeSignOutButton.addEventListener("click", () => handleSignOut());
       profileSaveButton.addEventListener("click", () => {
@@ -8029,7 +8299,8 @@
         syncLessonPassPanel();
         lessonPassPasswordInput.focus();
       });
-      lessonPassConfirmButton.addEventListener("click", () => {
+      lessonPassForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
         void resetLessonPassBalance();
       });
       tutorCalendarPrevButton.addEventListener("click", () => {
@@ -8161,28 +8432,44 @@
       managementCreateButton.addEventListener("click", () => {
         isManagementModalOpen = true;
         managementCreateEmailInput.value = "";
-        managementCreatePasswordInput.value = "";
         managementCreateUsernameInput.value = "";
         managementCreateRoleSelect.value = "student";
+        managementCreatePaymentMethodInput.value = "";
+        managementCreateCustomerTypeSelect.value = "";
+        managementCreateStandardDurationInput.value = "";
+        managementCreateLessonPassTotalInput.value = "10";
         setManagementCreateStatus("", "");
         updateTutorUi();
       });
-      managementCreateSubmitButton.addEventListener("click", async () => {
+      managementCreateForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
         try {
           managementBusy = true;
           managementCreateSubmitButton.disabled = true;
-          setManagementCreateStatus("User wird erstellt...", "");
+          setManagementCreateStatus("Einladung wird gesendet...", "");
           const email = managementCreateEmailInput.value.trim();
-          const password = managementCreatePasswordInput.value;
           const userName = managementCreateUsernameInput.value.trim();
           const role = managementCreateRoleSelect.value;
-          await callManagementApi("create-user", { email, password, userName, role });
+          const paymentMethod = managementCreatePaymentMethodInput.value.trim();
+          const customerType = managementCreateCustomerTypeSelect.value;
+          const standardDuration = managementCreateStandardDurationInput.value.trim();
+          const lessonPassTotal = managementCreateLessonPassTotalInput.value.trim();
+          await callManagementApi("create-user", {
+            email,
+            userName,
+            role,
+            paymentMethod,
+            customerType,
+            standardDuration,
+            lessonPassTotal,
+            redirectTo: `${window.location.origin}${window.location.pathname}`
+          });
           await loadManagementUsers();
           isManagementModalOpen = false;
           updateTutorUi();
-          setManagementStatus("User erstellt.", "success");
+          setManagementStatus("Einladungslink gesendet.", "success");
         } catch (error) {
-          setManagementCreateStatus(error?.message || "User konnte nicht erstellt werden.", "error");
+          setManagementCreateStatus(error?.message || "Einladung konnte nicht gesendet werden.", "error");
         } finally {
           managementBusy = false;
           managementCreateSubmitButton.disabled = false;
