@@ -174,7 +174,15 @@
         background: transparent;
       }
 
-      .home-module.is-muted .home-module-art {
+      .home-module.is-muted .home-module-label {
+        opacity: 0.5;
+      }
+
+      .home-module.is-muted {
+        border-color: rgba(17, 17, 17, 0.12);
+      }
+
+      .home-module.is-muted .home-module-graphic {
         opacity: 0.5;
       }
 
@@ -302,6 +310,230 @@
 
       .tutor-view.is-hidden {
         display: none;
+      }
+
+      .management-dashboard {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.75fr) minmax(0, 1.25fr);
+        gap: 14px;
+        align-items: start;
+        max-height: calc(100svh - 104px);
+        min-height: 0;
+      }
+
+      .management-list-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .management-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .management-subtle {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .management-list {
+        display: grid;
+        gap: 10px;
+        max-height: calc(100svh - 196px);
+        overflow: auto;
+        padding-right: 4px;
+      }
+
+      .management-user-card {
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        display: grid;
+        gap: 10px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .management-user-card.is-active {
+        border-color: rgba(17, 17, 17, 0.34);
+        box-shadow: 0 12px 28px rgba(17, 17, 17, 0.08);
+      }
+
+      .management-user-card.is-blocked {
+        background: rgba(207, 62, 62, 0.04);
+      }
+
+      .management-user-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .management-user-name {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .management-user-email {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: var(--text-soft);
+        word-break: break-word;
+      }
+
+      .management-role-badge {
+        min-height: 28px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.08);
+        display: inline-flex;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text);
+        white-space: nowrap;
+      }
+
+      .management-role-badge.is-alert {
+        background: #c93535;
+        color: #ffffff;
+      }
+
+      .management-user-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .management-user-metric {
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: var(--surface-soft);
+        display: grid;
+        gap: 2px;
+      }
+
+      .management-user-metric strong {
+        font-size: 15px;
+        color: var(--text);
+      }
+
+      .management-user-metric span {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .management-panel-empty {
+        min-height: 320px;
+        border: 1px dashed var(--border);
+        border-radius: 20px;
+        display: grid;
+        place-items: center;
+        color: var(--text-soft);
+        text-align: center;
+        padding: 24px;
+      }
+
+      .management-detail {
+        display: grid;
+        gap: 16px;
+      }
+
+      .management-progress-grid {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 16px;
+        align-items: center;
+      }
+
+      .management-bars {
+        display: grid;
+        gap: 10px;
+      }
+
+      .management-bar-row {
+        display: grid;
+        gap: 6px;
+      }
+
+      .management-bar-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-soft);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .management-bar-track {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.08);
+        overflow: hidden;
+      }
+
+      .management-bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #111111, #6f8fd9);
+      }
+
+      .management-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .management-form-grid label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .management-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .management-status {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      .management-status[data-state="error"] {
+        color: #b22b2b;
+      }
+
+      .management-status[data-state="success"] {
+        color: #1d7a3c;
+      }
+
+      @media (max-width: 1024px) {
+        .management-dashboard {
+          grid-template-columns: 1fr;
+          max-height: none;
+        }
+
+        .management-list {
+          max-height: 360px;
+        }
       }
 
       .library-view {
@@ -2490,8 +2722,19 @@
                 </div>
               </div>
               <div class="home-module-label">
-                <h2 class="home-module-title">Tutoren</h2>
+                <h2 class="home-module-title">Unterrichtsplanung</h2>
                 <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
+              </div>
+            </button>
+            <button class="home-module is-hidden" id="home-module-management" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-woman-swinging-on-a-swing.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Verwaltung</h2>
+                <p class="home-module-copy">Verwalte User, Rollen, Sperrungen und Lernfortschritt in einer Übersicht.</p>
               </div>
             </button>
             <button class="home-module is-hidden" id="home-module-calendar" type="button" data-theme="notes">
@@ -2770,6 +3013,70 @@
           </div>
           <div class="library-panel" id="library-panel" aria-live="polite"></div>
         </section>
+        <section class="tutor-view is-hidden" id="management-view" aria-label="Verwaltung">
+          <div class="tutor-view-header">
+            <button class="tutor-back" id="management-back-button" type="button">Zurück</button>
+          </div>
+          <div class="management-dashboard">
+            <section class="tutor-card">
+              <div class="management-list-toolbar">
+                <div>
+                  <h2 class="management-title">User</h2>
+                  <p class="management-subtle">Accounts, Rollen und Status zentral verwalten.</p>
+                </div>
+                <div class="tutor-calendar-toolbar-actions">
+                  <button class="tutor-icon-button" id="management-refresh-button" type="button" aria-label="Neu laden" title="Neu laden">
+                    <i data-lucide="refresh-cw"></i>
+                  </button>
+                  <button class="tutor-icon-button" id="management-create-button" type="button" aria-label="Neuen User anlegen" title="Neuen User anlegen">
+                    <i data-lucide="user-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <p class="management-status" id="management-status"></p>
+              <div class="management-list" id="management-user-list"></div>
+            </section>
+            <section class="tutor-card" id="management-detail-card">
+              <div id="management-detail-panel"></div>
+            </section>
+          </div>
+        </section>
+        <div class="tutor-modal is-hidden" id="management-modal" aria-hidden="true">
+          <div class="tutor-modal-card">
+            <div class="tutor-card-header">
+              <div>
+                <h2 class="tutor-card-title">Neuen User anlegen</h2>
+                <p class="tutor-card-copy">Erstellt einen Auth-Account und das passende Profil.</p>
+              </div>
+              <button class="tutor-back" id="management-modal-close-button" type="button">Schließen</button>
+            </div>
+            <div class="management-form-grid">
+              <label>
+                E-Mail
+                <input class="auth-field" id="management-create-email" type="email" placeholder="name@example.com">
+              </label>
+              <label>
+                Passwort
+                <input class="auth-field" id="management-create-password" type="password" placeholder="Mindestens 8 Zeichen">
+              </label>
+              <label>
+                Username
+                <input class="auth-field" id="management-create-username" type="text" placeholder="username">
+              </label>
+              <label>
+                Rolle
+                <select class="auth-field" id="management-create-role">
+                  <option value="student">Student</option>
+                  <option value="tutor">Tutor</option>
+                </select>
+              </label>
+            </div>
+            <p class="management-status" id="management-create-status"></p>
+            <div class="school-actions">
+              <button class="school-submit" id="management-create-submit-button" type="button">User erstellen</button>
+            </div>
+          </div>
+        </div>
         <div class="keyboard is-hidden" id="keyboard" aria-label="Virtuelles Klavier">
           <div class="keyboard-levels is-hidden" id="keyboard-levels" aria-hidden="true"></div>
           <div class="keyboard-keys" id="keyboard-keys">
@@ -2904,6 +3211,7 @@
       const homeModuleNotes = document.getElementById("home-module-notes");
       const homeModuleIceCream = document.getElementById("home-module-ice-cream");
       const homeModuleTutor = document.getElementById("home-module-tutor");
+      const homeModuleManagement = document.getElementById("home-module-management");
       const homeModuleCalendar = document.getElementById("home-module-calendar");
       const homeModuleLibrary = document.getElementById("home-module-library");
       const homeModuleBookworm = document.getElementById("home-module-bookworm");
@@ -2928,6 +3236,21 @@
       const libraryView = document.getElementById("library-view");
       const libraryBackButton = document.getElementById("library-back-button");
       const libraryPanel = document.getElementById("library-panel");
+      const managementView = document.getElementById("management-view");
+      const managementBackButton = document.getElementById("management-back-button");
+      const managementRefreshButton = document.getElementById("management-refresh-button");
+      const managementCreateButton = document.getElementById("management-create-button");
+      const managementUserList = document.getElementById("management-user-list");
+      const managementDetailPanel = document.getElementById("management-detail-panel");
+      const managementStatus = document.getElementById("management-status");
+      const managementModal = document.getElementById("management-modal");
+      const managementModalCloseButton = document.getElementById("management-modal-close-button");
+      const managementCreateEmailInput = document.getElementById("management-create-email");
+      const managementCreatePasswordInput = document.getElementById("management-create-password");
+      const managementCreateUsernameInput = document.getElementById("management-create-username");
+      const managementCreateRoleSelect = document.getElementById("management-create-role");
+      const managementCreateStatus = document.getElementById("management-create-status");
+      const managementCreateSubmitButton = document.getElementById("management-create-submit-button");
       const targetDescription = document.getElementById("target-description");
       const doubleBassClef = document.getElementById("double-bass-clef");
       const doubleTrebleClef = document.getElementById("double-treble-clef");
@@ -3033,6 +3356,7 @@
       let isHomeViewVisible = false;
       let isTutorViewVisible = false;
       let isStudentCalendarViewVisible = false;
+      let isManagementViewVisible = false;
       let isDoubleModeEnabled = false;
       let midiAccessRef = null;
       let midiOutputsRef = [];
@@ -3051,6 +3375,10 @@
       let calendarSubscriptionBusy = false;
       let calendarSubscriptionUrl = "";
       let schoolBusy = false;
+      let managementBusy = false;
+      let isManagementModalOpen = false;
+      let managementUsers = [];
+      let selectedManagementUserId = "";
       let lessonBusy = false;
       let tutorStudentEmails = [];
       let tutorAssignments = [];
@@ -4146,22 +4474,29 @@
         if (!isTutor) {
           isTutorViewVisible = false;
           isTutorModalOpen = false;
+          isManagementViewVisible = false;
+          isManagementModalOpen = false;
         }
         if (!isStudent) {
           isStudentCalendarViewVisible = false;
         }
         homeModuleTutor.classList.toggle("is-hidden", !isTutor);
+        homeModuleManagement.classList.toggle("is-hidden", !isTutor);
         homeModuleCalendar.classList.toggle("is-hidden", !isStudent);
         schoolSaveButton.disabled = schoolBusy || !isTutor;
         schoolSaveButton.textContent = editingTutorLessonId ? "Termin aktualisieren" : "Termin speichern";
         lessonStudentSelect.disabled = lessonBusy || !isTutor;
         tutorModal.classList.toggle("is-hidden", !isTutorModalOpen || !isTutorViewVisible);
         tutorModal.setAttribute("aria-hidden", isTutorModalOpen && isTutorViewVisible ? "false" : "true");
+        managementModal.classList.toggle("is-hidden", !isManagementModalOpen || !isManagementViewVisible);
+        managementModal.setAttribute("aria-hidden", isManagementModalOpen && isManagementViewVisible ? "false" : "true");
         renderStudentEmailOptions();
         renderTutorCalendar();
         renderTutorDetailPanel();
         renderStudentCalendar();
         renderStudentNextLessonPanel();
+        renderManagementList();
+        renderManagementDetail();
         updateSchoolModeFields();
       }
 
@@ -4202,6 +4537,17 @@
         }
       }
 
+      async function enforceBlockedProfile(profile) {
+        if (!profile?.is_blocked) {
+          return false;
+        }
+        setAuthStatus("Dieser Account ist derzeit gesperrt.", "error");
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
+        return true;
+      }
+
       async function ensureUserProfile() {
         if (!supabaseClient || !authUser) {
           return null;
@@ -4221,6 +4567,9 @@
         }
 
         if (existingProfile) {
+          if (await enforceBlockedProfile(existingProfile)) {
+            return null;
+          }
           currentUserProfile = existingProfile;
           userRole = existingProfile.role || "student";
           return existingProfile;
@@ -4253,6 +4602,9 @@
           }
 
           if (retriedProfile) {
+            if (await enforceBlockedProfile(retriedProfile)) {
+              return null;
+            }
             currentUserProfile = retriedProfile;
             userRole = retriedProfile.role || "student";
             return retriedProfile;
@@ -4260,6 +4612,10 @@
 
           setAuthStatus(`Profil anlegen fehlgeschlagen: ${insertError.message}`, "error");
           userRole = "student";
+          return null;
+        }
+
+        if (await enforceBlockedProfile(insertedProfile)) {
           return null;
         }
 
@@ -4973,6 +5329,10 @@
         isAuthPanelVisible = true;
         isHomeViewVisible = false;
         isLibraryVisible = false;
+        isManagementViewVisible = false;
+        isManagementModalOpen = false;
+        managementUsers = [];
+        selectedManagementUserId = "";
         renderStudentEmailOptions();
         updateAuthUi();
         updateTutorUi();
@@ -4995,6 +5355,7 @@
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         isLibraryVisible = false;
+        isManagementViewVisible = false;
         updateAuthUi();
         await loadSignedInState();
         updateAuthUi();
@@ -5091,6 +5452,7 @@
         const isHomeworkMode = isHomeworkModeActive();
         const canSeeTutorView = Boolean(authUser) && userRole === "tutor";
         const canSeeStudentCalendar = Boolean(authUser) && userRole === "student";
+        const canSeeManagementView = Boolean(authUser) && userRole === "tutor";
         const canSeeLibrary = Boolean(authUser);
         if (!canSeeTutorView) {
           isTutorViewVisible = false;
@@ -5098,11 +5460,14 @@
         if (!canSeeStudentCalendar) {
           isStudentCalendarViewVisible = false;
         }
+        if (!canSeeManagementView) {
+          isManagementViewVisible = false;
+        }
         if (!canSeeLibrary) {
           isLibraryVisible = false;
         }
-        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible;
-        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible;
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
+        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
@@ -5111,10 +5476,11 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isLibraryVisible);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible);
         homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
         tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
         studentCalendarView.classList.toggle("is-hidden", !canSeeStudentCalendar || !isStudentCalendarViewVisible || isAuthPanelVisible);
+        managementView.classList.toggle("is-hidden", !canSeeManagementView || !isManagementViewVisible || isAuthPanelVisible);
         libraryView.classList.toggle("is-hidden", !canSeeLibrary || !isLibraryVisible || isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
@@ -5190,6 +5556,276 @@
 
       function updateLibraryUi() {
         updateModeUi();
+      }
+
+      function setManagementStatus(message, state = "") {
+        if (!managementStatus) {
+          return;
+        }
+        managementStatus.textContent = message;
+        if (state) {
+          managementStatus.dataset.state = state;
+        } else {
+          delete managementStatus.dataset.state;
+        }
+      }
+
+      function setManagementCreateStatus(message, state = "") {
+        if (!managementCreateStatus) {
+          return;
+        }
+        managementCreateStatus.textContent = message;
+        if (state) {
+          managementCreateStatus.dataset.state = state;
+        } else {
+          delete managementCreateStatus.dataset.state;
+        }
+      }
+
+      function managementFunctionUrl() {
+        return `${SUPABASE_URL}/functions/v1/admin-users`;
+      }
+
+      async function callManagementApi(action, payload = {}) {
+        if (!supabaseClient || !authUser) {
+          throw new Error("Bitte zuerst anmelden.");
+        }
+
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const accessToken = sessionData?.session?.access_token;
+        if (!accessToken) {
+          throw new Error("Session ist nicht mehr gueltig.");
+        }
+
+        const response = await fetch(managementFunctionUrl(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            apikey: SUPABASE_ANON_KEY
+          },
+          body: JSON.stringify({ action, ...payload })
+        });
+
+        const text = await response.text();
+        let data = null;
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch (_error) {
+          data = text;
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || data?.error || text || "Verwaltung fehlgeschlagen.");
+        }
+
+        return data;
+      }
+
+      function progressStatsSummary(progress) {
+        const noteStats = progress?.note_stats || {};
+        const summarize = (mode) => {
+          const entries = Object.values(noteStats?.[mode] || {});
+          let attempts = 0;
+          let correct = 0;
+          for (const entry of entries) {
+            attempts += Number(entry?.attempts || 0);
+            correct += Number(entry?.correct || 0);
+          }
+          return {
+            attempts,
+            accuracy: attempts ? Math.round((correct / attempts) * 100) : 0
+          };
+        };
+
+        const treble = summarize("treble");
+        const bass = summarize("bass");
+        const totalAttempts = treble.attempts + bass.attempts;
+        const weighted = totalAttempts
+          ? Math.round(((treble.accuracy * treble.attempts) + (bass.accuracy * bass.attempts)) / totalAttempts)
+          : 0;
+        return {
+          treble,
+          bass,
+          totalAttempts,
+          overallAccuracy: weighted
+        };
+      }
+
+      function managementRoleLabel(role) {
+        return role === "tutor" ? "Tutor" : "Student";
+      }
+
+      function selectedManagementUser() {
+        return managementUsers.find((entry) => entry.user_id === selectedManagementUserId) || null;
+      }
+
+      function renderManagementList() {
+        if (!managementUserList) {
+          return;
+        }
+
+        managementUserList.replaceChildren();
+        const fragment = document.createDocumentFragment();
+
+        for (const user of managementUsers) {
+          const progress = progressStatsSummary(user.progress);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `management-user-card${selectedManagementUserId === user.user_id ? " is-active" : ""}${user.is_blocked ? " is-blocked" : ""}`;
+          button.innerHTML = `
+            <div class="management-user-topline">
+              <div>
+                <p class="management-user-name">${user.userName || user.email || "Ohne Username"}</p>
+                <p class="management-user-email">${user.email || "Keine E-Mail"}</p>
+              </div>
+              <span class="management-role-badge${user.is_blocked ? " is-alert" : ""}">${user.is_blocked ? "Gesperrt" : managementRoleLabel(user.role)}</span>
+            </div>
+            <div class="management-user-metrics">
+              <div class="management-user-metric">
+                <strong>${progress.overallAccuracy}%</strong>
+                <span>Sicherheit</span>
+              </div>
+              <div class="management-user-metric">
+                <strong>${progress.totalAttempts}</strong>
+                <span>Versuche</span>
+              </div>
+            </div>
+          `;
+          button.addEventListener("click", () => {
+            selectedManagementUserId = user.user_id;
+            renderManagementList();
+            renderManagementDetail();
+          });
+          fragment.appendChild(button);
+        }
+
+        managementUserList.appendChild(fragment);
+      }
+
+      function renderManagementDetail() {
+        if (!managementDetailPanel) {
+          return;
+        }
+
+        managementDetailPanel.replaceChildren();
+        const user = selectedManagementUser();
+        if (!user) {
+          const empty = document.createElement("div");
+          empty.className = "management-panel-empty";
+          empty.textContent = "Wähle links einen User aus, um Rolle, Status und Fortschritt zu bearbeiten.";
+          managementDetailPanel.appendChild(empty);
+          return;
+        }
+
+        const progress = progressStatsSummary(user.progress);
+        const wrapper = document.createElement("div");
+        wrapper.className = "management-detail";
+        wrapper.innerHTML = `
+          <div class="tutor-entry-topline">
+            <h3 class="tutor-entry-title">${user.userName || user.email || "User"}</h3>
+            <div class="lesson-meta-chips">
+              <span class="lesson-meta-chip"><i data-lucide="mail"></i>${user.email || "Keine E-Mail"}</span>
+              <span class="lesson-meta-chip${user.is_blocked ? " is-alert" : ""}"><i data-lucide="${user.is_blocked ? "shield-x" : "shield-check"}"></i>${user.is_blocked ? "Gesperrt" : "Aktiv"}</span>
+            </div>
+          </div>
+          <div class="management-progress-grid">
+            <div class="school-progress-ring" style="--progress:${progress.overallAccuracy};">
+              <span class="school-progress-value">${progress.overallAccuracy}%</span>
+            </div>
+            <div class="management-bars">
+              <div class="management-bar-row">
+                <div class="management-bar-label"><span>Violine</span><span>${progress.treble.accuracy}% · ${progress.treble.attempts} Versuche</span></div>
+                <div class="management-bar-track"><div class="management-bar-fill" style="width:${progress.treble.accuracy}%;"></div></div>
+              </div>
+              <div class="management-bar-row">
+                <div class="management-bar-label"><span>Bass</span><span>${progress.bass.accuracy}% · ${progress.bass.attempts} Versuche</span></div>
+                <div class="management-bar-track"><div class="management-bar-fill" style="width:${progress.bass.accuracy}%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="management-form-grid">
+            <label>
+              Username
+              <input class="auth-field" id="management-edit-username" type="text" value="${String(user.userName || "").replace(/"/g, "&quot;")}">
+            </label>
+            <label>
+              Rolle
+              <select class="auth-field" id="management-edit-role">
+                <option value="student"${user.role === "student" ? " selected" : ""}>Student</option>
+                <option value="tutor"${user.role === "tutor" ? " selected" : ""}>Tutor</option>
+              </select>
+            </label>
+          </div>
+          <div class="management-actions">
+            <button class="auth-submit" id="management-save-button" type="button">Speichern</button>
+            <button class="auth-submit is-secondary" id="management-block-button" type="button">${user.is_blocked ? "Entsperren" : "Sperren"}</button>
+          </div>
+        `;
+        managementDetailPanel.appendChild(wrapper);
+        wrapper.querySelector("#management-save-button")?.addEventListener("click", async () => {
+          const nextUserName = wrapper.querySelector("#management-edit-username")?.value || "";
+          const nextRole = wrapper.querySelector("#management-edit-role")?.value || "student";
+          try {
+            managementBusy = true;
+            setManagementStatus("User wird gespeichert...", "");
+            await callManagementApi("update-user", {
+              userId: user.user_id,
+              userName: nextUserName,
+              role: nextRole,
+              isBlocked: user.is_blocked
+            });
+            await loadManagementUsers();
+            setManagementStatus("User gespeichert.", "success");
+          } catch (error) {
+            setManagementStatus(error?.message || "Speichern fehlgeschlagen.", "error");
+          } finally {
+            managementBusy = false;
+          }
+        });
+        wrapper.querySelector("#management-block-button")?.addEventListener("click", async () => {
+          try {
+            managementBusy = true;
+            setManagementStatus(user.is_blocked ? "User wird entsperrt..." : "User wird gesperrt...", "");
+            await callManagementApi("update-user", {
+              userId: user.user_id,
+              userName: user.userName,
+              role: user.role,
+              isBlocked: !user.is_blocked
+            });
+            await loadManagementUsers();
+            setManagementStatus(user.is_blocked ? "User entsperrt." : "User gesperrt.", "success");
+          } catch (error) {
+            setManagementStatus(error?.message || "Status konnte nicht geändert werden.", "error");
+          } finally {
+            managementBusy = false;
+          }
+        });
+        lucide.createIcons();
+      }
+
+      async function loadManagementUsers() {
+        if (!supabaseClient || !authUser || userRole !== "tutor") {
+          managementUsers = [];
+          selectedManagementUserId = "";
+          renderManagementList();
+          renderManagementDetail();
+          return;
+        }
+
+        const payload = await callManagementApi("list-users");
+        managementUsers = Array.isArray(payload?.users) ? payload.users : [];
+        managementUsers.sort((left, right) => {
+          if ((left.role === "tutor") !== (right.role === "tutor")) {
+            return left.role === "tutor" ? -1 : 1;
+          }
+          return String(left.userName || left.email || "").localeCompare(String(right.userName || right.email || ""), "de");
+        });
+        if (!managementUsers.some((entry) => entry.user_id === selectedManagementUserId)) {
+          selectedManagementUserId = managementUsers[0]?.user_id || "";
+        }
+        renderManagementList();
+        renderManagementDetail();
       }
 
       function levelProgressForMode(mode) {
@@ -6714,6 +7350,7 @@
           isHomeViewVisible = false;
           isTutorViewVisible = false;
           isStudentCalendarViewVisible = false;
+          isManagementViewVisible = false;
           isLibraryVisible = false;
           updateAuthUi();
           updateModeUi();
@@ -6724,6 +7361,7 @@
         if (isHomeViewVisible) {
           isTutorViewVisible = false;
           isStudentCalendarViewVisible = false;
+          isManagementViewVisible = false;
           isLibraryVisible = false;
           isInfoVisible = false;
         }
@@ -7346,6 +7984,13 @@
         isHomeViewVisible = true;
         updateModeUi();
       });
+      managementBackButton.addEventListener("click", () => {
+        isManagementViewVisible = false;
+        isManagementModalOpen = false;
+        isHomeViewVisible = true;
+        updateTutorUi();
+        updateModeUi();
+      });
       lessonStudentSelect.addEventListener("change", () => {
         lessonStudentEmailInput.value = lessonStudentSelect.value;
         isLessonPassResetConfirmOpen = false;
@@ -7422,12 +8067,23 @@
           updateTutorUi();
         }
       });
+      managementModalCloseButton.addEventListener("click", () => {
+        isManagementModalOpen = false;
+        updateTutorUi();
+      });
+      managementModal.addEventListener("click", (event) => {
+        if (event.target === managementModal) {
+          isManagementModalOpen = false;
+          updateTutorUi();
+        }
+      });
       schoolSaveButton.addEventListener("click", () => saveTutorLesson());
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
       homeModuleNotes.addEventListener("click", () => {
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
+        isManagementViewVisible = false;
         isLibraryVisible = false;
         updateModeUi();
         generateRound();
@@ -7449,9 +8105,28 @@
         isHomeViewVisible = false;
         isTutorViewVisible = true;
         isStudentCalendarViewVisible = false;
+        isManagementViewVisible = false;
         isLibraryVisible = false;
         await loadTutorContext();
         updateModeUi();
+      });
+      homeModuleManagement.addEventListener("click", async () => {
+        if (userRole !== "tutor") {
+          return;
+        }
+        isHomeViewVisible = false;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
+        isManagementViewVisible = true;
+        isLibraryVisible = false;
+        setManagementStatus("User werden geladen...", "");
+        updateModeUi();
+        try {
+          await loadManagementUsers();
+          setManagementStatus("", "");
+        } catch (error) {
+          setManagementStatus(error?.message || "Verwaltung konnte nicht geladen werden.", "error");
+        }
       });
       homeModuleCalendar.addEventListener("click", async () => {
         if (userRole !== "student") {
@@ -7460,6 +8135,7 @@
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = true;
+        isManagementViewVisible = false;
         isLibraryVisible = false;
         await loadTutorContext();
         updateModeUi();
@@ -7468,9 +8144,49 @@
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
+        isManagementViewVisible = false;
         isLibraryVisible = true;
         renderLibraryPanel();
         updateLibraryUi();
+      });
+      managementRefreshButton.addEventListener("click", async () => {
+        try {
+          setManagementStatus("User werden geladen...", "");
+          await loadManagementUsers();
+          setManagementStatus("", "");
+        } catch (error) {
+          setManagementStatus(error?.message || "Neu laden fehlgeschlagen.", "error");
+        }
+      });
+      managementCreateButton.addEventListener("click", () => {
+        isManagementModalOpen = true;
+        managementCreateEmailInput.value = "";
+        managementCreatePasswordInput.value = "";
+        managementCreateUsernameInput.value = "";
+        managementCreateRoleSelect.value = "student";
+        setManagementCreateStatus("", "");
+        updateTutorUi();
+      });
+      managementCreateSubmitButton.addEventListener("click", async () => {
+        try {
+          managementBusy = true;
+          managementCreateSubmitButton.disabled = true;
+          setManagementCreateStatus("User wird erstellt...", "");
+          const email = managementCreateEmailInput.value.trim();
+          const password = managementCreatePasswordInput.value;
+          const userName = managementCreateUsernameInput.value.trim();
+          const role = managementCreateRoleSelect.value;
+          await callManagementApi("create-user", { email, password, userName, role });
+          await loadManagementUsers();
+          isManagementModalOpen = false;
+          updateTutorUi();
+          setManagementStatus("User erstellt.", "success");
+        } catch (error) {
+          setManagementCreateStatus(error?.message || "User konnte nicht erstellt werden.", "error");
+        } finally {
+          managementBusy = false;
+          managementCreateSubmitButton.disabled = false;
+        }
       });
       midiIndicatorButton.addEventListener("click", () => initMidi());
       midiTooltip.addEventListener("click", () => setDebugConsoleOpen(true));
