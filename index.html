@@ -739,6 +739,58 @@
         color: #1d7a3c;
       }
 
+      .auth-subscription {
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        display: grid;
+        gap: 10px;
+      }
+
+      .auth-subscription.is-hidden {
+        display: none;
+      }
+
+      .auth-subscription-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .auth-subscription-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--text-soft);
+      }
+
+      .auth-subscription-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .auth-subscription-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .auth-subscription-hint {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--text-soft);
+      }
+
+      @media (max-width: 640px) {
+        .auth-subscription-actions {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
       .auth-submit {
         width: 100%;
         min-height: 48px;
@@ -1994,6 +2046,20 @@
             </div>
           </form>
           <button class="auth-submit is-secondary" id="auth-sign-out-button" type="button">Abmelden</button>
+          <div class="auth-subscription is-hidden" id="auth-subscription">
+            <p class="auth-subscription-title" id="auth-subscription-title">Kalender-Abo</p>
+            <p class="auth-subscription-copy" id="auth-subscription-copy">Abonniere deinen Kalender-Feed in Apple Kalender, Google Kalender oder Outlook.</p>
+            <div class="auth-subscription-row">
+              <input class="auth-field" id="auth-subscription-url" type="text" readonly>
+              <button class="auth-submit is-secondary" id="auth-subscription-copy-button" type="button">Kopieren</button>
+            </div>
+            <div class="auth-subscription-actions">
+              <button class="auth-submit is-secondary" id="auth-subscription-apple-button" type="button">Apple Kalender</button>
+              <button class="auth-submit is-secondary" id="auth-subscription-google-button" type="button">Google Kalender</button>
+              <button class="auth-submit is-secondary" id="auth-subscription-outlook-button" type="button">Outlook</button>
+            </div>
+            <p class="auth-subscription-hint" id="auth-subscription-hint">Der Link ist privat. Nicht weitergeben.</p>
+          </div>
           <p class="auth-status" id="auth-status">Supabase nicht verbunden</p>
         </div>
         <section class="home-view" id="home-view" aria-label="Startseite">
@@ -2283,6 +2349,15 @@
       const authSignInButton = document.getElementById("auth-sign-in-button");
       const authSignUpButton = document.getElementById("auth-sign-up-button");
       const authSignOutButton = document.getElementById("auth-sign-out-button");
+      const authSubscriptionPanel = document.getElementById("auth-subscription");
+      const authSubscriptionTitle = document.getElementById("auth-subscription-title");
+      const authSubscriptionCopy = document.getElementById("auth-subscription-copy");
+      const authSubscriptionUrlField = document.getElementById("auth-subscription-url");
+      const authSubscriptionCopyButton = document.getElementById("auth-subscription-copy-button");
+      const authSubscriptionAppleButton = document.getElementById("auth-subscription-apple-button");
+      const authSubscriptionGoogleButton = document.getElementById("auth-subscription-google-button");
+      const authSubscriptionOutlookButton = document.getElementById("auth-subscription-outlook-button");
+      const authSubscriptionHint = document.getElementById("auth-subscription-hint");
       const authStatus = document.getElementById("auth-status");
       const tutorView = document.getElementById("tutor-view");
       const tutorBackButton = document.getElementById("tutor-back-button");
@@ -2453,6 +2528,8 @@
       let remoteSaveTimer = null;
       let isRemoteStateApplying = false;
       let authBusy = false;
+      let calendarSubscriptionBusy = false;
+      let calendarSubscriptionUrl = "";
       let schoolBusy = false;
       let lessonBusy = false;
       let tutorStudentEmails = [];
@@ -2479,6 +2556,38 @@
         treble: []
       };
       let doublePairState = [];
+
+      function buildCalendarSubscriptionLinks(feedUrl) {
+        if (!feedUrl) {
+          return { apple: "", google: "", outlook: "" };
+        }
+
+        let appleUrl = feedUrl;
+        try {
+          const parsed = new URL(feedUrl);
+          if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+            parsed.protocol = "webcal:";
+            appleUrl = parsed.toString();
+          }
+        } catch (error) {
+          console.error("[CalendarFeed] Ungueltige Feed-URL", error);
+        }
+
+        return {
+          apple: appleUrl,
+          google: `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?url=${encodeURIComponent(feedUrl)}`,
+          outlook: `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(feedUrl)}&name=${encodeURIComponent("Learnnotes Kalender")}`
+        };
+      }
+
+      function openCalendarSubscriptionLink(target) {
+        if (!target) {
+          setAuthStatus("Kalender-Link ist noch nicht bereit.", "error");
+          return;
+        }
+
+        window.open(target, "_blank", "noopener,noreferrer");
+      }
 
       function defaultDoubleSelectedRanges() {
         return {
@@ -2652,6 +2761,42 @@
         return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       }
 
+      async function refreshCalendarSubscriptionUi() {
+        if (!supabaseClient || !authUser || !userRole) {
+          calendarSubscriptionUrl = "";
+          authSubscriptionPanel.classList.add("is-hidden");
+          authSubscriptionUrlField.value = "";
+          return;
+        }
+
+        const feedRole = userRole === "tutor" ? "tutor" : "student";
+        calendarSubscriptionBusy = true;
+        authSubscriptionPanel.classList.remove("is-hidden");
+        authSubscriptionTitle.textContent = feedRole === "tutor" ? "Tutor-Kalender abonnieren" : "Mein Kalender abonnieren";
+        authSubscriptionCopy.textContent = feedRole === "tutor"
+          ? "Dieser Feed zeigt deine Unterrichte und verknüpfte Hausaufgaben für den Kalender."
+          : "Dieser Feed zeigt deine Termine und Hausaufgaben mit allen Aktualisierungen.";
+        authSubscriptionHint.textContent = "Der Link ist privat. Nicht weitergeben.";
+        authSubscriptionUrlField.value = "Kalender-Link wird erzeugt...";
+
+        const { data, error } = await supabaseClient.rpc("ensure_calendar_feed_token", {
+          p_feed_role: feedRole
+        });
+
+        calendarSubscriptionBusy = false;
+
+        if (error || !data) {
+          calendarSubscriptionUrl = "";
+          authSubscriptionUrlField.value = "";
+          authSubscriptionCopy.textContent = error?.message || "Kalender-Link konnte nicht erzeugt werden.";
+          authSubscriptionHint.textContent = "Pruefe RPC, `calendar_feed_tokens` und die Edge Function `calendar-feed`.";
+          return;
+        }
+
+        calendarSubscriptionUrl = `${SUPABASE_URL}/functions/v1/calendar-feed?token=${encodeURIComponent(data)}`;
+        authSubscriptionUrlField.value = calendarSubscriptionUrl;
+      }
+
       function updateAuthUi() {
         toggleAuthButton.classList.toggle("is-active", isAuthPanelVisible);
         if (authUser) {
@@ -2669,6 +2814,11 @@
         authSignUpButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authSignOutButton.disabled = authBusy || !authUser;
         authSignOutButton.classList.toggle("is-hidden", !authUser);
+        authSubscriptionPanel.classList.toggle("is-hidden", !authUser);
+        authSubscriptionCopyButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
+        authSubscriptionAppleButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
+        authSubscriptionGoogleButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
+        authSubscriptionOutlookButton.disabled = !calendarSubscriptionUrl || calendarSubscriptionBusy;
 
         if (!isSupabaseConfigured()) {
           setAuthStatus("Supabase Anon Key fehlt. Setze window.SUPABASE_ANON_KEY im HTML.", "error");
@@ -3294,6 +3444,7 @@
           setSchoolStatus("Keine aktive Hausaufgabe.", "");
         }
         updateTutorUi();
+        await refreshCalendarSubscriptionUi();
       }
 
       async function saveTutorLesson() {
@@ -3527,6 +3678,7 @@
         tutorStudentEmails = [];
         tutorAssignments = [];
         tutorLessons = [];
+        calendarSubscriptionUrl = "";
         renderStudentEmailOptions();
         updateAuthUi();
         updateTutorUi();
@@ -5494,6 +5646,31 @@
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
       authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
+      authSubscriptionCopyButton.addEventListener("click", async () => {
+        if (!calendarSubscriptionUrl) {
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(calendarSubscriptionUrl);
+          setAuthStatus("Kalender-Link in die Zwischenablage kopiert.", "success");
+        } catch (error) {
+          console.error("[CalendarFeed] Kopieren fehlgeschlagen", error);
+          setAuthStatus("Kalender-Link konnte nicht kopiert werden.", "error");
+        }
+      });
+      authSubscriptionAppleButton.addEventListener("click", () => {
+        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
+        openCalendarSubscriptionLink(links.apple);
+      });
+      authSubscriptionGoogleButton.addEventListener("click", () => {
+        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
+        openCalendarSubscriptionLink(links.google);
+      });
+      authSubscriptionOutlookButton.addEventListener("click", () => {
+        const links = buildCalendarSubscriptionLinks(calendarSubscriptionUrl);
+        openCalendarSubscriptionLink(links.outlook);
+      });
       authBackButton.addEventListener("click", () => {
         isAuthPanelVisible = false;
         updateAuthUi();
