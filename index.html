@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Beethoven's Ode to Joy</title>
+    <title>KISUM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -110,6 +110,27 @@
         letter-spacing: -0.04em;
         color: var(--text);
         text-align: left;
+      }
+
+      .home-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .home-sign-out-button {
+        width: auto;
+        height: auto;
+        padding: 4px 0 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .home-sign-out-button:hover {
+        box-shadow: none;
       }
 
       .home-modules {
@@ -907,12 +928,23 @@
         gap: 18px;
       }
 
+      #auth-form {
+        display: grid;
+        gap: 12px;
+      }
+
       .auth-panel.is-hidden {
         display: none;
       }
 
       .auth-panel.is-disabled {
         opacity: 0.72;
+      }
+
+      .auth-panel.has-error {
+        background:
+          radial-gradient(circle at top, rgba(231, 104, 104, 0.32), transparent 48%),
+          linear-gradient(180deg, var(--surface-soft), var(--surface));
       }
 
       .auth-heading {
@@ -945,17 +977,15 @@
       }
 
       .auth-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 10px;
       }
 
       .auth-actions {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
       }
 
       .auth-field {
@@ -980,6 +1010,10 @@
         text-align: center;
         font-size: 14px;
         color: var(--text-soft);
+      }
+
+      .auth-status.is-hidden {
+        display: none;
       }
 
       .auth-status[data-state="error"] {
@@ -1126,20 +1160,6 @@
 
       .auth-submit.is-hidden {
         display: none;
-      }
-
-      .auth-back {
-        width: fit-content;
-        min-height: 40px;
-        padding: 0 14px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: var(--surface);
-        color: var(--text);
-        font: inherit;
-        font-weight: 600;
-        cursor: pointer;
-        justify-self: start;
       }
 
       .school-panel {
@@ -2391,11 +2411,10 @@
           </div>
         </div>
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
-          <button class="auth-back" id="auth-back-button" type="button">Zurück</button>
           <div class="auth-heading">
             <p class="auth-kicker">Klaviertrainer</p>
-            <h1 class="auth-title">Fortschritt laden</h1>
-            <p class="auth-copy">Melde dich an, damit dein SRS-Stand, deine Notensicherheit und deine Lernbereiche dauerhaft gespeichert bleiben.</p>
+            <h1 class="auth-title">Anmeldung</h1>
+            <p class="auth-copy">E-Mail und Passwort eingeben.</p>
           </div>
           <form id="auth-form">
             <div class="auth-row">
@@ -2404,7 +2423,6 @@
             </div>
             <div class="auth-actions">
               <button class="auth-submit" id="auth-sign-in-button" type="submit">Anmelden</button>
-              <button class="auth-submit is-secondary" id="auth-sign-up-button" type="button">Registrieren</button>
             </div>
           </form>
           <button class="auth-submit is-secondary" id="auth-sign-out-button" type="button">Abmelden</button>
@@ -2444,10 +2462,15 @@
             </div>
             <button class="auth-submit is-secondary" id="profile-save-button" type="button">Profil speichern</button>
           </div>
-          <p class="auth-status" id="auth-status">Supabase nicht verbunden</p>
+          <p class="auth-status is-hidden" id="auth-status">Supabase nicht verbunden</p>
         </div>
         <section class="home-view" id="home-view" aria-label="Startseite">
-          <h1 class="home-heading">Start</h1>
+          <div class="home-header">
+            <h1 class="home-heading">Start</h1>
+            <button class="tutor-icon-button home-sign-out-button" id="home-sign-out-button" type="button" aria-label="Logout" title="Logout">
+              <i data-lucide="log-out"></i>
+            </button>
+          </div>
           <div class="home-modules">
             <button class="home-module" id="home-module-notes" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
@@ -2458,18 +2481,6 @@
               <div class="home-module-label">
                 <h2 class="home-module-title">Noten lernen</h2>
                 <p class="home-module-copy">Direkt in den Trainer mit Notensystem, SRS und Aufgabenmodus.</p>
-              </div>
-            </button>
-            <button class="home-module is-muted" id="home-module-ice-cream" type="button" data-theme="notes">
-              <div class="home-module-art" aria-hidden="true">
-                <span class="home-module-badge">DEMNÄCHST</span>
-                <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-ice-cream.svg" alt="">
-                </div>
-              </div>
-              <div class="home-module-label">
-                <h2 class="home-module-title">Taktgefühl</h2>
-                <p class="home-module-copy">Beübe immer im Takt zu bleiben.</p>
               </div>
             </button>
             <button class="home-module is-hidden" id="home-module-tutor" type="button" data-theme="notes">
@@ -2503,6 +2514,18 @@
               <div class="home-module-label">
                 <h2 class="home-module-title">Bibliothek</h2>
                 <p class="home-module-copy">Behalte gelernte Noten und deinen aktuellen Sicherheitsstand im Blick.</p>
+              </div>
+            </button>
+            <button class="home-module is-muted" id="home-module-ice-cream" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <span class="home-module-badge">DEMNÄCHST</span>
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-ice-cream.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Taktgefühl</h2>
+                <p class="home-module-copy">Beübe immer im Takt zu bleiben.</p>
               </div>
             </button>
             <button class="home-module is-muted" id="home-module-bookworm" type="button" data-theme="notes">
@@ -2804,11 +2827,9 @@
       const toolbar = document.querySelector(".toolbar");
       const authPanel = document.getElementById("auth-panel");
       const authForm = document.getElementById("auth-form");
-      const authBackButton = document.getElementById("auth-back-button");
       const authEmailInput = document.getElementById("auth-email");
       const authPasswordInput = document.getElementById("auth-password");
       const authSignInButton = document.getElementById("auth-sign-in-button");
-      const authSignUpButton = document.getElementById("auth-sign-up-button");
       const authSignOutButton = document.getElementById("auth-sign-out-button");
       const authSubscriptionPanel = document.getElementById("auth-subscription");
       const authSubscriptionTitle = document.getElementById("auth-subscription-title");
@@ -2826,6 +2847,7 @@
       const profileSaveButton = document.getElementById("profile-save-button");
       const authStatus = document.getElementById("auth-status");
       const tutorView = document.getElementById("tutor-view");
+      const homeSignOutButton = document.getElementById("home-sign-out-button");
       const tutorBackButton = document.getElementById("tutor-back-button");
       const tutorCalendarMonthLabel = document.getElementById("tutor-calendar-month-label");
       const tutorCalendarPrevButton = document.getElementById("tutor-calendar-prev-button");
@@ -3024,6 +3046,8 @@
       let remoteSaveTimer = null;
       let isRemoteStateApplying = false;
       let authBusy = false;
+      let authStatusMessage = "";
+      let authStatusState = "";
       let calendarSubscriptionBusy = false;
       let calendarSubscriptionUrl = "";
       let schoolBusy = false;
@@ -3276,12 +3300,16 @@
       };
 
       function setAuthStatus(message, state = "") {
+        authStatusMessage = message;
+        authStatusState = state;
         authStatus.textContent = message;
         if (state) {
           authStatus.dataset.state = state;
         } else {
           delete authStatus.dataset.state;
         }
+        authStatus.classList.toggle("is-hidden", !message);
+        authPanel.classList.toggle("has-error", state === "error" && !authUser);
       }
 
       function isSupabaseConfigured() {
@@ -3330,11 +3358,9 @@
       function updateAuthUi() {
         authPanel.classList.toggle("is-hidden", !isAuthPanelVisible);
         authPanel.classList.toggle("is-disabled", !isSupabaseConfigured());
-        authBackButton.classList.toggle("is-hidden", !authUser);
         authEmailInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authPasswordInput.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authSignInButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
-        authSignUpButton.disabled = authBusy || !isSupabaseConfigured() || Boolean(authUser);
         authSignOutButton.disabled = authBusy || !authUser;
         authSignOutButton.classList.toggle("is-hidden", !authUser);
         authSubscriptionPanel.classList.toggle("is-hidden", !authUser || userRole === "tutor");
@@ -3356,12 +3382,17 @@
           return;
         }
 
+        if (!authUser && authStatusState === "error" && authStatusMessage) {
+          setAuthStatus(authStatusMessage, "error");
+          return;
+        }
+
         if (authUser) {
           setAuthStatus(`Angemeldet als ${authUser.email}. Fortschritt wird automatisch gespeichert.`, "success");
           return;
         }
 
-        setAuthStatus("Noch nicht angemeldet. Login oder Registrierung mit E-Mail und Passwort.", "");
+        setAuthStatus("Noch nicht angemeldet. Bitte mit E-Mail und Passwort anmelden.", "");
       }
 
       function collectPersistedState() {
@@ -7276,9 +7307,15 @@
         event.preventDefault();
         void handleAuthAction("sign-in");
       });
+      authEmailInput.addEventListener("input", () => {
+        authPanel.classList.remove("has-error");
+      });
+      authPasswordInput.addEventListener("input", () => {
+        authPanel.classList.remove("has-error");
+      });
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
-      authSignUpButton.addEventListener("click", () => handleAuthAction("sign-up"));
       authSignOutButton.addEventListener("click", () => handleSignOut());
+      homeSignOutButton.addEventListener("click", () => handleSignOut());
       profileSaveButton.addEventListener("click", () => {
         void saveCurrentProfileMeta();
       });
@@ -7292,15 +7329,6 @@
       authSubscriptionAppleButton.addEventListener("click", () => openCalendarSubscription("apple"));
       authSubscriptionGoogleButton.addEventListener("click", () => openCalendarSubscription("google"));
       authSubscriptionOutlookButton.addEventListener("click", () => openCalendarSubscription("outlook"));
-      authBackButton.addEventListener("click", () => {
-        if (!authUser) {
-          return;
-        }
-        isAuthPanelVisible = false;
-        updateAuthUi();
-        updateModeUi();
-        updateInfoUi();
-      });
       tutorBackButton.addEventListener("click", () => {
         isTutorViewVisible = false;
         isTutorModalOpen = false;
