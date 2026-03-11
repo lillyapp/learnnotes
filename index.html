@@ -1990,8 +1990,7 @@
 
         const profilePayload = {
           user_id: authUser.id,
-          email: authUser.email,
-          role: "student"
+          email: authUser.email
         };
 
         const { data, error } = await supabaseClient
@@ -4106,6 +4105,77 @@
         };
         console.log("[SRS]", status);
         return status;
+      };
+
+      function applyTutorSimulation() {
+        if (isHomeworkModeActive()) {
+          applyHomeworkConfiguration();
+        }
+        updateSchoolUi();
+        updateModeUi();
+        updateSrsUi();
+        updateInfoUi();
+        generateRound();
+      }
+
+      window.simulateTutorRole = () => {
+        userRole = "tutor";
+        activeHomework = null;
+        isSchoolPanelVisible = true;
+        setSchoolStatus("Tutor-Modus simuliert.", "success");
+        applyTutorSimulation();
+        return { userRole, activeHomework };
+      };
+
+      window.simulateStudentRole = (homework = null) => {
+        userRole = "student";
+        activeHomework = homework;
+        isSchoolPanelVisible = Boolean(homework);
+        setSchoolStatus(
+          homework
+            ? `Student-Hausaufgabe simuliert. ${homeworkSummaryText(homework)}`
+            : "Student ohne Hausaufgabe simuliert.",
+          homework ? "success" : ""
+        );
+        applyTutorSimulation();
+        return { userRole, activeHomework };
+      };
+
+      window.simulateHomework = (mode = "treble", rangeStart = null, rangeEnd = null, targetAccuracy = 90) => {
+        const normalizedMode = mode === "double" ? "double" : (mode === "bass" ? "bass" : "treble");
+        const trebleFallback = levelRangesByMode.treble[0];
+        const bassFallback = levelRangesByMode.bass[0];
+        const homework = {
+          mode: normalizedMode,
+          treble_range_start: normalizedMode === "bass" ? trebleFallback[0] : (rangeStart || trebleFallback[0]),
+          treble_range_end: normalizedMode === "bass" ? trebleFallback[1] : (rangeEnd || trebleFallback[1]),
+          bass_range_start: normalizedMode === "treble" ? bassFallback[0] : (rangeStart || bassFallback[0]),
+          bass_range_end: normalizedMode === "treble" ? bassFallback[1] : (rangeEnd || bassFallback[1]),
+          target_accuracy: Math.max(50, Math.min(100, Number(targetAccuracy) || 90))
+        };
+
+        if (normalizedMode === "double") {
+          homework.treble_range_start = rangeStart || trebleFallback[0];
+          homework.treble_range_end = rangeEnd || trebleFallback[1];
+          homework.bass_range_start = bassFallback[0];
+          homework.bass_range_end = bassFallback[1];
+        }
+
+        return window.simulateStudentRole(homework);
+      };
+
+      window.clearTutorSimulation = () => {
+        userRole = authUser ? "student" : null;
+        activeHomework = null;
+        isSchoolPanelVisible = false;
+        resetLocalProgressState();
+        setSchoolStatus("Tutor-Simulation zurueckgesetzt.", "");
+        updateSchoolUi();
+        updateModeUi();
+        updateSrsUi();
+        updateInfoUi();
+        generateRound();
+        return { userRole, activeHomework };
       };
 
       authSignInButton.addEventListener("click", () => handleAuthAction("sign-in"));
