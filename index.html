@@ -4293,6 +4293,10 @@
           ["F3", "C4"]
         ]
       };
+      function raiseNotesOneOctave(noteNames = []) {
+        return noteNames.map((noteName) => midiNumberToName(semitoneValue(noteName) + 12));
+      }
+
       const foundationLoopTimerDurationMs = 5 * 60 * 1000;
       function createTriadFamilyChapters({ handLabel, mode, familyId, familyLabel, shapes }) {
         const chapters = [];
@@ -4330,32 +4334,41 @@
           });
         });
 
+        const closingRootShape = raiseNotesOneOctave(shapes[0].notes.slice(0, 3));
+        const loopNotes = [...shapes.flatMap((shape) => shape.notes.slice(0, 3)), ...closingRootShape];
+        const orderedLoopNotes = [...loopNotes].sort((left, right) => semitoneValue(left) - semitoneValue(right));
         chapters.push({
           id: `${familyId}-loop`,
           title: `${handLabel} · ${familyLabel} Loop`,
           mode,
           phase: "loop",
           familyLabel,
-          loopLabels: shapes.map((shape) => `${familyLabel} ${shape.label}`),
-          notes: shapes.flatMap((shape) => shape.notes.slice(0, 3)),
+          loopLabels: [...shapes.map((shape) => `${familyLabel} ${shape.label}`), `${familyLabel} Grundstellung`],
+          notes: loopNotes,
           targetText: shapes.map((shape) => shape.shapeText).join(" · "),
-          visibleRange: [shapes[0].notes[0], shapes[shapes.length - 1].notes[2]],
+          visibleRange: [orderedLoopNotes[0], orderedLoopNotes[orderedLoopNotes.length - 1]],
           anchor: `Jetzt laufen alle drei Formen von ${familyLabel} hintereinander.`,
-          map: "Grundstellung, 1. Umkehrung, 2. Umkehrung in einem Zug.",
+          map: "Grundstellung, 1. Umkehrung, 2. Umkehrung, Grundstellung in einem Zug.",
           route: "Erst wenn der komplette Loop sitzt, geht es zur nächsten Folge."
         });
         return chapters;
       }
 
       function createSpiralLoopChapter({ handLabel, mode, handId, families }) {
-        const loopNotes = families.flatMap((family) => family.shapes.flatMap((shape) => shape.notes.slice(0, 3)));
+        const loopNotes = families.flatMap((family) => [
+          ...family.shapes.flatMap((shape) => shape.notes.slice(0, 3)),
+          ...raiseNotesOneOctave(family.shapes[0].notes.slice(0, 3))
+        ]);
         const orderedNotes = [...loopNotes].sort((left, right) => semitoneValue(left) - semitoneValue(right));
         return {
           id: `${handId}-${families.map((family) => family.id).join("-")}-spiral-loop`,
           title: `${handLabel} · ${families.map((family) => family.label.replace("-Dur", "")).join(" + ")} Spiral-Loop`,
           mode,
           phase: "spiral-loop",
-          loopLabels: families.flatMap((family) => family.shapes.map((shape) => `${family.label} ${shape.label}`)),
+          loopLabels: families.flatMap((family) => [
+            ...family.shapes.map((shape) => `${family.label} ${shape.label}`),
+            `${family.label} Grundstellung`
+          ]),
           notes: loopNotes,
           targetText: families.map((family) => family.label).join(" + "),
           visibleRange: [orderedNotes[0], orderedNotes[orderedNotes.length - 1]],
