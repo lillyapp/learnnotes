@@ -79,6 +79,49 @@
         justify-items: center;
       }
 
+      .trainer.is-foundation-mode {
+        width: min(97vw, 1420px);
+        grid-template-columns: minmax(0, 1.45fr) minmax(320px, 380px);
+        align-content: start;
+        justify-items: stretch;
+        gap: 18px;
+        padding-left: clamp(28px, 4vw, 72px);
+      }
+
+      @media (max-width: 1380px) {
+        .trainer.is-foundation-mode {
+          grid-template-columns: minmax(0, 1.2fr) minmax(300px, 340px);
+          gap: 14px;
+          padding-left: clamp(20px, 3vw, 44px);
+        }
+
+        .trainer.is-foundation-mode .sheet-music {
+          padding-left: 7.75em;
+        }
+      }
+
+      .trainer.is-foundation-mode .foundation-panel {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        margin: 0;
+        align-self: start;
+      }
+
+      .trainer.is-foundation-mode .sheet-music {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        margin: 0;
+        padding-left: 8.5em;
+        justify-self: stretch;
+      }
+
+      .trainer.is-foundation-mode .keyboard {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
       .toolbar {
         display: flex;
         justify-content: center;
@@ -2219,6 +2262,352 @@
         color: #1d7a3c;
       }
 
+      .foundation-panel {
+        width: min(100%, 980px);
+        margin: 0 auto 8px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.92);
+        display: grid;
+        gap: 8px;
+        position: relative;
+        isolation: isolate;
+      }
+
+      .foundation-panel.is-hidden {
+        display: none;
+      }
+
+      .foundation-panel.is-chapter-shift {
+        animation: foundationChapterPulse 0.42s ease-in-out 3;
+      }
+
+      .foundation-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .foundation-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .foundation-nav-group {
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+      }
+
+      .foundation-loop-timer {
+        min-height: 18px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-soft);
+      }
+
+      .foundation-nav-button.is-active {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+      }
+
+      .foundation-nav-button.is-pulse {
+        animation: foundationNextPulse 1.4s ease-in-out infinite;
+      }
+
+      @keyframes foundationNextPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(17, 17, 17, 0);
+        }
+
+        50% {
+          transform: scale(1.06);
+          box-shadow: 0 0 0 8px rgba(17, 17, 17, 0.08);
+        }
+      }
+
+      .foundation-title {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .foundation-copy {
+        margin: 6px 0 0;
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: rgba(47, 107, 255, 0.08);
+        border: 1px solid rgba(47, 107, 255, 0.18);
+        color: #2f6bff;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1;
+        width: fit-content;
+      }
+
+      .foundation-hint,
+      .foundation-progress-copy {
+        margin: 0;
+        color: var(--text-soft);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .foundation-progress-copy {
+        font-size: 12px;
+      }
+
+      .foundation-hint:empty {
+        display: none;
+      }
+
+      .foundation-square {
+        min-height: min(42vh, 340px);
+        display: grid;
+        align-content: start;
+        gap: 8px;
+      }
+
+      .foundation-played-note-card {
+        display: none;
+      }
+
+      .foundation-played-note-question {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .foundation-played-note-value {
+        margin: 0;
+        min-height: 44px;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        display: grid;
+        align-items: center;
+      }
+
+      @keyframes foundationChapterPulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(47, 107, 255, 0);
+          border-color: var(--border);
+          transform: scale(1);
+        }
+
+        50% {
+          box-shadow: 0 0 0 7px rgba(47, 107, 255, 0.18);
+          border-color: #2f6bff;
+          transform: scale(1.01);
+        }
+      }
+
+      .foundation-chapters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .foundation-chapters.is-hidden {
+        display: none;
+      }
+
+      .foundation-chip {
+        min-height: 30px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .foundation-chip.is-active {
+        border-color: var(--text);
+        background: var(--text);
+        color: var(--bg);
+      }
+
+      .foundation-chip.is-complete {
+        border-color: rgba(29, 122, 60, 0.45);
+        color: #1d7a3c;
+      }
+
+      .foundation-chip:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .foundation-map-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .foundation-map-card {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        display: grid;
+        gap: 4px;
+      }
+
+      .foundation-map-label {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        color: var(--text-soft);
+      }
+
+      .foundation-map-label i {
+        width: 14px;
+        height: 14px;
+      }
+
+      .foundation-map-value {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      @media (max-height: 860px) {
+        .foundation-panel {
+          padding: 10px 12px;
+          gap: 6px;
+        }
+
+        .foundation-square {
+          min-height: min(34vh, 250px);
+        }
+
+        .foundation-copy,
+        .foundation-hint,
+        .foundation-progress-copy,
+        .foundation-map-value {
+          font-size: 11px;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1220px), (min-width: 1025px) and (max-height: 900px) {
+        .trainer.is-foundation-mode {
+          width: min(98vw, 1280px);
+          grid-template-columns: minmax(0, 1.22fr) minmax(280px, 330px);
+          gap: 12px;
+          padding-left: clamp(14px, 2vw, 28px);
+        }
+
+        .trainer.is-foundation-mode .sheet-music {
+          padding-left: 5.5em;
+          font-size: min(2.05vw, 1.22vh);
+        }
+
+        .trainer.is-foundation-mode .foundation-panel {
+          padding: 10px 11px;
+          gap: 6px;
+        }
+
+        .foundation-topline {
+          gap: 8px;
+        }
+
+        .foundation-title {
+          font-size: 15px;
+        }
+
+        .foundation-copy {
+          min-height: 22px;
+          padding: 0 8px;
+          font-size: 11px;
+        }
+
+        .foundation-nav {
+          gap: 4px;
+        }
+
+        .foundation-nav-button {
+          width: 44px;
+          height: 44px;
+        }
+
+        .foundation-square {
+          min-height: min(28vh, 205px);
+          gap: 6px;
+        }
+
+        .foundation-played-note-question,
+        .foundation-hint,
+        .foundation-progress-copy,
+        .foundation-map-value,
+        .foundation-loop-timer {
+          font-size: 10px;
+        }
+
+        .foundation-played-note-value {
+          min-height: 38px;
+          padding: 8px 10px;
+          font-size: 20px;
+        }
+
+        .foundation-map-grid {
+          gap: 6px;
+        }
+
+        .foundation-map-card {
+          padding: 7px 8px;
+          border-radius: 14px;
+        }
+
+        .trainer.is-foundation-mode .keyboard {
+          height: min(17vh, 150px);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .foundation-map-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .trainer.is-foundation-mode {
+          grid-template-columns: 1fr;
+        }
+
+        .trainer.is-foundation-mode .foundation-panel,
+        .trainer.is-foundation-mode .sheet-music,
+        .trainer.is-foundation-mode .keyboard {
+          grid-column: 1;
+        }
+
+        .trainer.is-foundation-mode .foundation-panel {
+          grid-row: 1;
+        }
+
+        .trainer.is-foundation-mode .sheet-music {
+          grid-row: 2;
+          padding-left: 8.5em;
+        }
+
+        .trainer.is-foundation-mode .keyboard {
+          grid-row: 3;
+        }
+      }
+
       .sheet-music-double {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2433,6 +2822,51 @@
         mask-image: var(--svg-quarter-up);
         mask-repeat: no-repeat;
         mask-size: auto 100%;
+      }
+
+      .note-accidental {
+        position: absolute;
+        top: 50%;
+        left: calc(50% - 1.45em);
+        transform: translate(-50%, calc(-50% + var(--offset)));
+        font-size: 2.8em;
+        font-weight: 500;
+        line-height: 1;
+        color: var(--staff-ink);
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .white-key.is-foundation-mark,
+      .white-key.is-foundation-mark.is-in-range,
+      .white-key.is-foundation-mark.is-range-start,
+      .white-key.is-foundation-mark.is-range-end {
+        background: #cfe3ff;
+        box-shadow: inset 0 0 0 2px rgba(42, 120, 255, 0.35);
+      }
+
+      .black-key.is-foundation-mark,
+      .black-key.is-foundation-mark.is-in-range,
+      .black-key.is-foundation-mark.is-range-start,
+      .black-key.is-foundation-mark.is-range-end {
+        background: #3d6fd1;
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+      }
+
+      .white-key.is-foundation-guide,
+      .black-key.is-foundation-guide {
+        animation: foundationGuidePulse 1.4s ease-in-out infinite;
+      }
+
+      @keyframes foundationGuidePulse {
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+
+        50% {
+          filter: brightness(1.14);
+        }
       }
 
       .ledger-line {
@@ -2817,15 +3251,21 @@
         color: #222222;
       }
 
+      .white-key.is-target[data-label]::after,
+      .white-key.is-foundation-guide[data-label]::after {
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 4px 14px rgba(17, 17, 17, 0.12);
+      }
+
       .white-key.is-in-range {
         background: #ffffff;
-        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.55);
       }
 
       .white-key.is-range-start,
       .white-key.is-range-end {
         background: #ffffff;
-        box-shadow: inset 0 0 0 3px #000000;
       }
 
       .white-key.is-target {
@@ -2867,15 +3307,21 @@
         color: #ffffff;
       }
 
+      .black-key.is-target[data-label]::after,
+      .black-key.is-foundation-guide[data-label]::after {
+        padding: 2px 5px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.88);
+        box-shadow: 0 4px 14px rgba(17, 17, 17, 0.18);
+      }
+
       .black-key.is-in-range {
         background: #111111;
-        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75);
       }
 
       .black-key.is-range-start,
       .black-key.is-range-end {
         background: #111111;
-        box-shadow: inset 0 0 0 3px #ffffff;
       }
 
       .black-key.is-target {
@@ -3131,16 +3577,15 @@
                 <p class="home-module-copy">Beübe immer im Takt zu bleiben.</p>
               </div>
             </button>
-            <button class="home-module is-muted" id="home-module-bookworm" type="button" data-theme="notes">
+            <button class="home-module" id="home-module-bookworm" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
-                <span class="home-module-badge">DEMNÄCHST</span>
                 <div class="home-module-graphic">
                   <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/bookworm-immersed-in-book-leisure-or-self-education.svg" alt="">
                 </div>
               </div>
               <div class="home-module-label">
                 <h2 class="home-module-title">Lerne die Grundlagen</h2>
-                <p class="home-module-copy">Lerne die Grundlagen des Notenlesens Schritt für Schritt.</p>
+                <p class="home-module-copy">Baue eine blinde Tastaturkarte fuer alle 88 Klaviertasten auf.</p>
               </div>
             </button>
           </div>
@@ -3371,6 +3816,55 @@
             </div>
           </div>
         </div>
+        <section class="foundation-panel is-hidden" id="foundation-panel" aria-live="polite">
+          <div class="foundation-topline">
+            <div>
+              <h2 class="foundation-title" id="foundation-title">Lerne die Grundlagen</h2>
+              <p class="foundation-copy" id="foundation-copy"></p>
+            </div>
+            <div class="foundation-nav-group">
+              <div class="foundation-nav">
+                <button class="tutor-icon-button foundation-nav-button" id="foundation-prev-button" type="button" aria-label="Vorherige Lektion" title="Vorherige Lektion">
+                  <i data-lucide="arrow-left"></i>
+                </button>
+                <button class="tutor-icon-button foundation-nav-button" id="foundation-autopilot-button" type="button" aria-label="Autopilot" title="Autopilot">
+                  <i data-lucide="sparkles"></i>
+                </button>
+                <button class="tutor-icon-button foundation-nav-button" id="foundation-next-button" type="button" aria-label="Nächste Lektion" title="Nächste Lektion">
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+              <p class="foundation-loop-timer" id="foundation-loop-timer"></p>
+            </div>
+          </div>
+          <div class="foundation-square">
+            <div class="foundation-map-card">
+              <p class="foundation-map-label" title="Ziel"><i data-lucide="piano"></i></p>
+              <p class="foundation-map-value" id="foundation-current-target"></p>
+            </div>
+            <div class="foundation-played-note-card">
+              <p class="foundation-played-note-question">Stimmt die Note mit dem, was du vorgelesen hast?</p>
+              <p class="foundation-played-note-value" id="foundation-played-note">Noch nichts gespielt</p>
+            </div>
+            <div class="foundation-map-grid">
+              <div class="foundation-map-card">
+                <p class="foundation-map-label" title="Anker"><i data-lucide="locate-fixed"></i></p>
+                <p class="foundation-map-value" id="foundation-anchor"></p>
+              </div>
+              <div class="foundation-map-card">
+                <p class="foundation-map-label" title="Karte"><i data-lucide="map"></i></p>
+                <p class="foundation-map-value" id="foundation-map"></p>
+              </div>
+              <div class="foundation-map-card">
+                <p class="foundation-map-label" title="Route"><i data-lucide="route"></i></p>
+                <p class="foundation-map-value" id="foundation-route"></p>
+              </div>
+            </div>
+            <p class="foundation-progress-copy" id="foundation-progress-copy"></p>
+            <p class="foundation-hint" id="foundation-hint"></p>
+          </div>
+          <div class="foundation-chapters is-hidden" id="foundation-chapters"></div>
+        </section>
         <div class="sheet-music">
           <div class="bar">
             <div class="stave-header"></div>
@@ -3654,6 +4148,23 @@
       const homeModuleCalendar = document.getElementById("home-module-calendar");
       const homeModuleLibrary = document.getElementById("home-module-library");
       const homeModuleBookworm = document.getElementById("home-module-bookworm");
+      const foundationPanel = document.getElementById("foundation-panel");
+      const foundationTitle = document.getElementById("foundation-title");
+      const foundationCopy = document.getElementById("foundation-copy");
+      const foundationCurrentTarget = document.getElementById("foundation-current-target");
+      const foundationPlayedNote = document.getElementById("foundation-played-note");
+      const foundationSquare = document.querySelector(".foundation-square");
+      const foundationChapters = document.getElementById("foundation-chapters");
+      const foundationAnchor = document.getElementById("foundation-anchor");
+      const foundationMap = document.getElementById("foundation-map");
+      const foundationRoute = document.getElementById("foundation-route");
+      const foundationProgressCopy = document.getElementById("foundation-progress-copy");
+      const foundationHint = document.getElementById("foundation-hint");
+      const foundationPrevButton = document.getElementById("foundation-prev-button");
+      const foundationAutopilotButton = document.getElementById("foundation-autopilot-button");
+      const foundationNextButton = document.getElementById("foundation-next-button");
+      const foundationLoopTimer = document.getElementById("foundation-loop-timer");
+      const trainer = document.querySelector(".trainer");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
       const practiceHomeworkPanel = document.getElementById("practice-homework-panel");
@@ -3782,6 +4293,288 @@
           ["F3", "C4"]
         ]
       };
+      const foundationLoopTimerDurationMs = 5 * 60 * 1000;
+      function createTriadFamilyChapters({ handLabel, mode, familyId, familyLabel, shapes }) {
+        const chapters = [];
+        shapes.forEach((shape) => {
+          const titleBase = `${handLabel} · ${familyLabel} ${shape.label}`;
+          chapters.push({
+            id: `${familyId}-${shape.id}-single`,
+            title: `${titleBase} einzeln`,
+            mode,
+            phase: "single",
+            familyLabel,
+            shapeLabel: shape.label,
+            playedLabel: `${familyLabel} ${shape.label}`,
+            notes: shape.notes,
+            targetText: shape.shapeText,
+            visibleRange: [shape.notes[0], shape.notes[shape.notes.length - 1]],
+            anchor: `${shape.shapeText} ist das aktuelle Griffbild.`,
+            map: "Drei Töne nacheinander lesen und greifen.",
+            route: "So lange einzeln spielen, bis die Folge flüssig sitzt."
+          });
+          chapters.push({
+            id: `${familyId}-${shape.id}-combined`,
+            title: `${titleBase} kombiniert`,
+            mode,
+            phase: "combined",
+            familyLabel,
+            shapeLabel: shape.label,
+            playedLabel: `${familyLabel} ${shape.label}`,
+            notes: shape.notes,
+            targetText: shape.shapeText,
+            visibleRange: [shape.notes[0], shape.notes[shape.notes.length - 1]],
+            anchor: `${shape.shapeText} bleibt gleich, jetzt als ein Bild.`,
+            map: "Die Form zusammen sehen und als Block begreifen.",
+            route: "Wenn du willst, spiele den ganzen Griff schon direkt."
+          });
+        });
+
+        chapters.push({
+          id: `${familyId}-loop`,
+          title: `${handLabel} · ${familyLabel} Loop`,
+          mode,
+          phase: "loop",
+          familyLabel,
+          loopLabels: shapes.map((shape) => `${familyLabel} ${shape.label}`),
+          notes: shapes.flatMap((shape) => shape.notes.slice(0, 3)),
+          targetText: shapes.map((shape) => shape.shapeText).join(" · "),
+          visibleRange: [shapes[0].notes[0], shapes[shapes.length - 1].notes[2]],
+          anchor: `Jetzt laufen alle drei Formen von ${familyLabel} hintereinander.`,
+          map: "Grundstellung, 1. Umkehrung, 2. Umkehrung in einem Zug.",
+          route: "Erst wenn der komplette Loop sitzt, geht es zur nächsten Folge."
+        });
+        return chapters;
+      }
+
+      function createSpiralLoopChapter({ handLabel, mode, handId, families }) {
+        const loopNotes = families.flatMap((family) => family.shapes.flatMap((shape) => shape.notes.slice(0, 3)));
+        const orderedNotes = [...loopNotes].sort((left, right) => semitoneValue(left) - semitoneValue(right));
+        return {
+          id: `${handId}-${families.map((family) => family.id).join("-")}-spiral-loop`,
+          title: `${handLabel} · ${families.map((family) => family.label.replace("-Dur", "")).join(" + ")} Spiral-Loop`,
+          mode,
+          phase: "spiral-loop",
+          loopLabels: families.flatMap((family) => family.shapes.map((shape) => `${family.label} ${shape.label}`)),
+          notes: loopNotes,
+          targetText: families.map((family) => family.label).join(" + "),
+          visibleRange: [orderedNotes[0], orderedNotes[orderedNotes.length - 1]],
+          anchor: `${families.length} Akkordbereiche laufen jetzt ohne Bruch hintereinander.`,
+          map: "Die bisherigen Folgen bleiben aktiv und bauen sich spiralförmig auf.",
+          route: "Erst C, dann C+G, dann C+G+D und immer weiter."
+        };
+      }
+
+      function buildFoundationHandChapters({ handLabel, mode, handId, families, whiteMapChapter, chromaticMapChapter }) {
+        const chapters = [];
+        const accumulatedFamilies = [];
+
+        families.forEach((family) => {
+          accumulatedFamilies.push(family);
+          chapters.push(...createTriadFamilyChapters({
+            handLabel,
+            mode,
+            familyId: `${handId}-${family.id}`,
+            familyLabel: family.label,
+            shapes: family.shapes
+          }));
+
+          if (accumulatedFamilies.length > 1) {
+            chapters.push(createSpiralLoopChapter({
+              handLabel,
+              mode,
+              handId,
+              families: accumulatedFamilies
+            }));
+          }
+        });
+
+        chapters.push(whiteMapChapter, chromaticMapChapter);
+        return chapters;
+      }
+
+      const rightHandFamilies = [
+        {
+          id: "c",
+          label: "C-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["C4", "E4", "G4"], shapeText: "C-E-G" },
+            { id: "first", label: "1. Umkehrung", notes: ["E4", "G4", "C5"], shapeText: "E-G-C" },
+            { id: "second", label: "2. Umkehrung", notes: ["G4", "C5", "E5"], shapeText: "G-C-E" }
+          ]
+        },
+        {
+          id: "g",
+          label: "G-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["G4", "B4", "D5"], shapeText: "G-H-D" },
+            { id: "first", label: "1. Umkehrung", notes: ["B4", "D5", "G5"], shapeText: "H-D-G" },
+            { id: "second", label: "2. Umkehrung", notes: ["D5", "G5", "B5"], shapeText: "D-G-H" }
+          ]
+        },
+        {
+          id: "d",
+          label: "D-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["D5", "F#5", "A5"], shapeText: "D-F#-A" },
+            { id: "first", label: "1. Umkehrung", notes: ["F#5", "A5", "D6"], shapeText: "F#-A-D" },
+            { id: "second", label: "2. Umkehrung", notes: ["A5", "D6", "F#6"], shapeText: "A-D-F#" }
+          ]
+        },
+        {
+          id: "a",
+          label: "A-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["A4", "C#5", "E5"], shapeText: "A-C#-E" },
+            { id: "first", label: "1. Umkehrung", notes: ["C#5", "E5", "A5"], shapeText: "C#-E-A" },
+            { id: "second", label: "2. Umkehrung", notes: ["E5", "A5", "C#6"], shapeText: "E-A-C#" }
+          ]
+        },
+        {
+          id: "e",
+          label: "E-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["E5", "G#5", "B5"], shapeText: "E-G#-H" },
+            { id: "first", label: "1. Umkehrung", notes: ["G#5", "B5", "E6"], shapeText: "G#-H-E" },
+            { id: "second", label: "2. Umkehrung", notes: ["B5", "E6", "G#6"], shapeText: "H-E-G#" }
+          ]
+        },
+        {
+          id: "h",
+          label: "H-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["B4", "D#5", "F#5"], shapeText: "H-D#-F#" },
+            { id: "first", label: "1. Umkehrung", notes: ["D#5", "F#5", "B5"], shapeText: "D#-F#-H" },
+            { id: "second", label: "2. Umkehrung", notes: ["F#5", "B5", "D#6"], shapeText: "F#-H-D#" }
+          ]
+        },
+        {
+          id: "fis",
+          label: "Fis-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["F#4", "A#4", "C#5"], shapeText: "F#-A#-C#" },
+            { id: "first", label: "1. Umkehrung", notes: ["A#4", "C#5", "F#5"], shapeText: "A#-C#-F#" },
+            { id: "second", label: "2. Umkehrung", notes: ["C#5", "F#5", "A#5"], shapeText: "C#-F#-A#" }
+          ]
+        }
+      ];
+      const leftHandFamilies = [
+        {
+          id: "c",
+          label: "C-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["C2", "E2", "G2"], shapeText: "C-E-G" },
+            { id: "first", label: "1. Umkehrung", notes: ["E2", "G2", "C3"], shapeText: "E-G-C" },
+            { id: "second", label: "2. Umkehrung", notes: ["G2", "C3", "E3"], shapeText: "G-C-E" }
+          ]
+        },
+        {
+          id: "g",
+          label: "G-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["G2", "B2", "D3"], shapeText: "G-H-D" },
+            { id: "first", label: "1. Umkehrung", notes: ["B2", "D3", "G3"], shapeText: "H-D-G" },
+            { id: "second", label: "2. Umkehrung", notes: ["D3", "G3", "B3"], shapeText: "D-G-H" }
+          ]
+        },
+        {
+          id: "d",
+          label: "D-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["D2", "F#2", "A2"], shapeText: "D-F#-A" },
+            { id: "first", label: "1. Umkehrung", notes: ["F#2", "A2", "D3"], shapeText: "F#-A-D" },
+            { id: "second", label: "2. Umkehrung", notes: ["A2", "D3", "F#3"], shapeText: "A-D-F#" }
+          ]
+        },
+        {
+          id: "a",
+          label: "A-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["A1", "C#2", "E2"], shapeText: "A-C#-E" },
+            { id: "first", label: "1. Umkehrung", notes: ["C#2", "E2", "A2"], shapeText: "C#-E-A" },
+            { id: "second", label: "2. Umkehrung", notes: ["E2", "A2", "C#3"], shapeText: "E-A-C#" }
+          ]
+        },
+        {
+          id: "e",
+          label: "E-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["E2", "G#2", "B2"], shapeText: "E-G#-H" },
+            { id: "first", label: "1. Umkehrung", notes: ["G#2", "B2", "E3"], shapeText: "G#-H-E" },
+            { id: "second", label: "2. Umkehrung", notes: ["B2", "E3", "G#3"], shapeText: "H-E-G#" }
+          ]
+        },
+        {
+          id: "h",
+          label: "H-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["B1", "D#2", "F#2"], shapeText: "H-D#-F#" },
+            { id: "first", label: "1. Umkehrung", notes: ["D#2", "F#2", "B2"], shapeText: "D#-F#-H" },
+            { id: "second", label: "2. Umkehrung", notes: ["F#2", "B2", "D#3"], shapeText: "F#-H-D#" }
+          ]
+        },
+        {
+          id: "fis",
+          label: "Fis-Dur",
+          shapes: [
+            { id: "root", label: "Grundstellung", notes: ["F#1", "A#1", "C#2"], shapeText: "F#-A#-C#" },
+            { id: "first", label: "1. Umkehrung", notes: ["A#1", "C#2", "F#2"], shapeText: "A#-C#-F#" },
+            { id: "second", label: "2. Umkehrung", notes: ["C#2", "F#2", "A#2"], shapeText: "C#-F#-A#" }
+          ]
+        }
+      ];
+      const foundationChaptersConfig = [
+        ...buildFoundationHandChapters({
+          handLabel: "Rechte Hand",
+          mode: "treble",
+          handId: "right",
+          families: rightHandFamilies,
+          whiteMapChapter: {
+            id: "right-white-map",
+            title: "Rechte Hand · Weiße Karte",
+            mode: "treble",
+            range: ["C4", "C8"],
+            anchor: "Jetzt wird aus den Akkordfolgen eine durchgehende weiße Karte.",
+            map: "Die Hauptakkorde tragen die Orientierung durch den ganzen Diskant.",
+            route: "Wenn die Folgen sitzen, darf die Hand auf alle weißen Tasten ausweiten."
+          },
+          chromaticMapChapter: {
+            id: "right-chromatic-map",
+            title: "Rechte Hand · Chromatische Karte",
+            mode: "treble",
+            range: ["C4", "C8"],
+            includeBlack: true,
+            anchor: "Jetzt wird die rechte Hand vom Akkordraum zur Vollkarte.",
+            map: "Die schwarzen Tasten liegen zwischen den bekannten Akkordankern.",
+            route: "So schließt sich der ganze Diskant bis C8."
+          }
+        }),
+        ...buildFoundationHandChapters({
+          handLabel: "Linke Hand",
+          mode: "bass",
+          handId: "left",
+          families: leftHandFamilies,
+          whiteMapChapter: {
+            id: "left-white-map",
+            title: "Linke Hand · Weiße Karte",
+            mode: "bass",
+            range: ["A0", "B4"],
+            anchor: "Jetzt wird aus den Akkordfolgen eine durchgehende weiße Karte.",
+            map: "Die Hauptakkorde tragen die Orientierung durch den ganzen Bassraum.",
+            route: "Erst die weißen Räume stabilisieren, dann chromatisch erweitern."
+          },
+          chromaticMapChapter: {
+            id: "left-chromatic-map",
+            title: "Linke Hand · Chromatische Karte",
+            mode: "bass",
+            range: ["A0", "B4"],
+            includeBlack: true,
+            anchor: "Jetzt wird die linke Hand vom Akkordraum zur Vollkarte.",
+            map: "Die schwarzen Tasten liegen zwischen den bekannten Akkordankern.",
+            route: "So schließt sich der ganze Bassraum bis A0."
+          }
+        })
+      ];
       const selectableRange = ["A0", "C8"];
       let currentNotes = [];
       let activeIndex = 0;
@@ -3865,6 +4658,16 @@
       let currentPromptStartedAt = 0;
       let homeworkRangePickerTarget = "treble:start";
       let activeHomeworkRangeDrag = null;
+      let isFoundationModeActive = false;
+      let foundationChapterIndex = 0;
+      let foundationGroupIndex = 0;
+      let foundationAutopilotEnabled = true;
+      let foundationLastPlayedPitch = "";
+      let foundationChapterCompletions = {};
+      let foundationLoopTimerDeadline = 0;
+      let foundationLoopTimerHandle = null;
+      let foundationLastRenderedChapterId = "";
+      let foundationChapterShiftAnimationHandle = null;
       let doubleRound = {
         bass: [],
         treble: []
@@ -3939,6 +4742,7 @@
         return {
           srs_states: { treble: null, bass: null },
           note_stats: { treble: {}, bass: {} },
+          foundation_progress: {},
           activity_log: {},
           timing_stats: {
             attempts: 0,
@@ -4229,6 +5033,7 @@
         return {
           srs_states: srsStates,
           note_stats: noteStats,
+          foundation_progress: foundationChapterCompletions,
           activity_log: activityLog,
           timing_stats: timingStats,
           selected_range: selectedRange,
@@ -4287,6 +5092,7 @@
           ...activityLog,
           [key]: Number(activityLog[key] || 0) + 1
         };
+        syncLiveProgressUi();
       }
 
       function recordResponseTiming() {
@@ -4346,6 +5152,463 @@
       function homeworkAllowsFreePractice(homework) {
         return String(homework?.allow_free_practice_after_complete || "") === "true"
           || homework?.allow_free_practice_after_complete === true;
+      }
+
+      function currentFoundationChapter() {
+        return foundationChaptersConfig[Math.max(0, Math.min(foundationChaptersConfig.length - 1, foundationChapterIndex))] || foundationChaptersConfig[0];
+      }
+
+      function foundationChapterRange(chapter = currentFoundationChapter()) {
+        if (Array.isArray(chapter.visibleRange) && chapter.visibleRange.length === 2) {
+          return chapter.visibleRange;
+        }
+        if (Array.isArray(chapter.range) && chapter.range.length === 2) {
+          return chapter.range;
+        }
+        if (Array.isArray(chapter.notes) && chapter.notes.length) {
+          const sorted = [...chapter.notes].sort((left, right) => semitoneValue(left) - semitoneValue(right));
+          return [sorted[0], sorted[sorted.length - 1]];
+        }
+        return ["C4", "C5"];
+      }
+
+      function foundationChapterEntries(chapter = currentFoundationChapter()) {
+        let entries = [];
+        if (Array.isArray(chapter.notes) && chapter.notes.length) {
+          entries = chapter.notes.map((name) => ({
+            name,
+            midi: semitoneValue(name),
+            step: diatonicValue(name) - diatonicValue(clefConfigs[chapter.mode].reference)
+          }));
+        } else {
+          const [rangeStart, rangeEnd] = foundationChapterRange(chapter);
+          entries = buildRange(rangeStart, rangeEnd, clefConfigs[chapter.mode].reference, {
+            includeBlack: Boolean(chapter.includeBlack)
+          });
+        }
+        if (chapter.onlyBlack) {
+          entries = entries.filter((note) => isBlackKey(note.midi));
+        }
+        return entries.map((note) => decorateNote(note, chapter.mode));
+      }
+
+      function foundationUniqueEntries() {
+        const unique = new Map();
+        foundationChaptersConfig.forEach((chapter) => {
+          foundationChapterEntries(chapter).forEach((entry) => {
+            unique.set(`${entry.name}`, entry);
+          });
+        });
+        return Array.from(unique.values()).sort((left, right) => left.midi - right.midi);
+      }
+
+      function foundationOverallProgress() {
+        const entries = foundationUniqueEntries();
+        const touched = entries.filter((entry) => Number(noteStatFor(entry.clef, entry.name)?.attempts || 0) > 0).length;
+        const secure = entries.filter((entry) => {
+          const stat = noteStatFor(entry.clef, entry.name);
+          return stat && stat.attempts > 0 && (stat.correct / stat.attempts) >= 0.85;
+        }).length;
+        return {
+          total: entries.length,
+          touched,
+          secure
+        };
+      }
+
+      function foundationCurriculumProgress() {
+        const total = foundationChaptersConfig.length;
+        const completed = foundationChaptersConfig.filter((chapter) => foundationChapterMastered(chapter)).length;
+        const rightHandChapters = foundationChaptersConfig.filter((chapter) => chapter.mode === "treble");
+        const leftHandChapters = foundationChaptersConfig.filter((chapter) => chapter.mode === "bass");
+        return {
+          total,
+          completed,
+          rightCompleted: rightHandChapters.filter((chapter) => foundationChapterMastered(chapter)).length,
+          rightTotal: rightHandChapters.length,
+          leftCompleted: leftHandChapters.filter((chapter) => foundationChapterMastered(chapter)).length,
+          leftTotal: leftHandChapters.length
+        };
+      }
+
+      function foundationShapeText(chapter = currentFoundationChapter()) {
+        if (chapter?.targetText) {
+          return chapter.targetText;
+        }
+        if (!Array.isArray(chapter.notes) || !chapter.notes.length) {
+          return "";
+        }
+        const shape = Array.from(new Set(chapter.notes.map((noteName) => noteName.replace(/\d/g, ""))));
+        return shape.join("-");
+      }
+
+      function isFoundationLoopPhase(chapter = currentFoundationChapter()) {
+        const phase = String(chapter?.phase || "");
+        return phase === "loop" || phase === "spiral-loop";
+      }
+
+      function isFoundationChordPhase(chapter = currentFoundationChapter()) {
+        const phase = String(chapter?.phase || "");
+        return phase === "combined" || phase === "loop" || phase === "spiral-loop";
+      }
+
+      function foundationChordGroups(chapter = currentFoundationChapter()) {
+        if (!Array.isArray(chapter.notes) || !chapter.notes.length) {
+          return [];
+        }
+        if (isFoundationLoopPhase(chapter)) {
+          const groups = [];
+          for (let index = 0; index < chapter.notes.length; index += 3) {
+            groups.push(chapter.notes.slice(index, index + 3));
+          }
+          return groups;
+        }
+        return [chapter.notes];
+      }
+
+      function foundationRoundNotes() {
+        const chapter = currentFoundationChapter();
+        const sourceNotes = isFoundationChordPhase(chapter)
+          ? foundationChordGroups(chapter)[Math.max(0, Math.min(foundationChordGroups(chapter).length - 1, foundationGroupIndex))] || []
+          : null;
+        const entries = sourceNotes && sourceNotes.length
+          ? sourceNotes.map((name) => decorateNote({
+              name,
+              midi: semitoneValue(name),
+              step: diatonicValue(name) - diatonicValue(clefConfigs[chapter.mode].reference)
+            }, chapter.mode))
+          : foundationChapterEntries(chapter);
+        if (!entries.length) {
+          return Array.from({ length: noteCount }, () => ({
+            ...randomNote(),
+            state: "idle"
+          }));
+        }
+
+        if (Array.isArray(chapter.notes) && chapter.notes.length) {
+          return entries.map((entry) => ({
+            ...entry,
+            isNew: false,
+            state: "idle"
+          }));
+        }
+
+        return Array.from({ length: noteCount }, () => ({
+          ...randomNote(),
+          state: "idle"
+        }));
+      }
+
+      function foundationPitchLabel(noteNameOrMidi) {
+        if (typeof noteNameOrMidi === "number") {
+          return displayNoteName(midiNumberToName(noteNameOrMidi)).replace(/\d/g, "");
+        }
+        return displayNoteName(String(noteNameOrMidi || "")).replace(/\d/g, "");
+      }
+
+      function foundationPlayedSummary(chapter = currentFoundationChapter(), groupIndex = foundationGroupIndex) {
+        if (!chapter) {
+          return "";
+        }
+        if (isFoundationLoopPhase(chapter) && Array.isArray(chapter.loopLabels) && chapter.loopLabels.length) {
+          const boundedIndex = Math.max(0, Math.min(chapter.loopLabels.length - 1, groupIndex));
+          return chapter.loopLabels[boundedIndex];
+        }
+        return chapter.playedLabel || foundationShapeText(chapter);
+      }
+
+      function markFoundationChapterCompleted(chapter = currentFoundationChapter()) {
+        if (!chapter?.id || foundationChapterCompletions[chapter.id]) {
+          return;
+        }
+        foundationChapterCompletions = {
+          ...foundationChapterCompletions,
+          [chapter.id]: true
+        };
+        syncLiveProgressUi();
+        queueRemoteSave("foundation-progress");
+      }
+
+      function foundationChapterProgress(chapter = currentFoundationChapter()) {
+        if (foundationChapterCompletions[chapter?.id]) {
+          return { coverage: 100, mastery: 100 };
+        }
+
+        if (isFoundationModeActive && chapter?.id === currentFoundationChapter()?.id && currentNotes.length) {
+          const touched = currentNotes.filter((entry) => entry.state !== "idle").length;
+          const secure = currentNotes.filter((entry) => entry.state === "correct").length;
+          const coverage = Math.round((touched / currentNotes.length) * 100);
+          const mastery = Math.round((secure / currentNotes.length) * 100);
+          return { coverage, mastery };
+        }
+
+        const entries = foundationChapterEntries(chapter);
+        const touched = entries.filter((entry) => Number(noteStatFor(entry.clef, entry.name)?.attempts || 0) > 0).length;
+        const secure = entries.filter((entry) => {
+          const stat = noteStatFor(entry.clef, entry.name);
+          return stat && stat.attempts > 0 && (stat.correct / stat.attempts) >= 0.85;
+        }).length;
+        const coverage = entries.length ? Math.round((touched / entries.length) * 100) : 0;
+        const mastery = entries.length ? Math.round((secure / entries.length) * 100) : 0;
+        return { coverage, mastery };
+      }
+
+      function foundationChapterMastered(chapter = currentFoundationChapter()) {
+        return Boolean(foundationChapterCompletions[chapter?.id]);
+      }
+
+      function formatFoundationLoopTimer(milliseconds) {
+        const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function clearFoundationLoopTimer() {
+        if (foundationLoopTimerHandle) {
+          window.clearInterval(foundationLoopTimerHandle);
+          foundationLoopTimerHandle = null;
+        }
+        foundationLoopTimerDeadline = 0;
+        if (foundationLoopTimer) {
+          foundationLoopTimer.textContent = "";
+        }
+      }
+
+      function foundationLoopTimerShouldRun(chapter = currentFoundationChapter()) {
+        return isFoundationModeActive
+          && foundationAutopilotEnabled
+          && isFoundationLoopPhase(chapter)
+          && foundationChapterMastered(chapter);
+      }
+
+      function renderFoundationLoopTimer() {
+        if (!foundationLoopTimer) {
+          return;
+        }
+        if (!foundationLoopTimerShouldRun()) {
+          foundationLoopTimer.textContent = "";
+          return;
+        }
+        foundationLoopTimer.textContent = `Autowechsel in ${formatFoundationLoopTimer(foundationLoopTimerDeadline - Date.now())}`;
+      }
+
+      function syncFoundationLoopTimer() {
+        if (!foundationLoopTimerShouldRun()) {
+          clearFoundationLoopTimer();
+          return;
+        }
+
+        if (!foundationLoopTimerDeadline) {
+          foundationLoopTimerDeadline = Date.now() + foundationLoopTimerDurationMs;
+        }
+
+        renderFoundationLoopTimer();
+
+        if (foundationLoopTimerHandle) {
+          return;
+        }
+
+        foundationLoopTimerHandle = window.setInterval(() => {
+          if (!foundationLoopTimerShouldRun()) {
+            clearFoundationLoopTimer();
+            return;
+          }
+
+          if (Date.now() >= foundationLoopTimerDeadline) {
+            clearFoundationLoopTimer();
+            if (foundationChapterIndex < foundationChaptersConfig.length - 1) {
+              foundationGoToChapter(foundationChapterIndex + 1, {
+                manual: true,
+                preserveAutopilot: true
+              });
+              setSchoolStatus("5 Minuten Loop vorbei. Weiter zur nächsten Lektion.", "success");
+            }
+            return;
+          }
+
+          renderFoundationLoopTimer();
+        }, 1000);
+      }
+
+      function foundationRequiresManualAdvance(chapter = currentFoundationChapter()) {
+        return isFoundationLoopPhase(chapter) && foundationChapterMastered(chapter);
+      }
+
+      function foundationChapterUnlocked(index) {
+        if (index <= 0) {
+          return true;
+        }
+        return foundationChapterMastered(foundationChaptersConfig[index - 1]);
+      }
+
+      function foundationProgressChapterIndex() {
+        const firstOpenIndex = foundationChaptersConfig.findIndex((chapter) => !foundationChapterMastered(chapter));
+        if (firstOpenIndex === -1) {
+          return Math.max(0, foundationChaptersConfig.length - 1);
+        }
+        return firstOpenIndex;
+      }
+
+      function foundationDisplayHandLabel(chapter = currentFoundationChapter()) {
+        return String(chapter?.handLabel || (chapter?.mode === "bass" ? "linke Hand" : "rechte Hand"));
+      }
+
+      function foundationDisplayTitle(chapter = currentFoundationChapter()) {
+        const handLabel = foundationDisplayHandLabel(chapter);
+        const prefix = `${handLabel} · `;
+        const title = String(chapter?.title || "");
+        return title.toLowerCase().startsWith(prefix.toLowerCase())
+          ? title.slice(prefix.length)
+          : title;
+      }
+
+      function triggerFoundationChapterShiftFeedback(chapter = currentFoundationChapter()) {
+        if (!foundationPanel) {
+          return;
+        }
+        if (foundationLastRenderedChapterId === chapter?.id) {
+          return;
+        }
+        foundationLastRenderedChapterId = chapter?.id || "";
+        foundationPanel.classList.remove("is-chapter-shift");
+        void foundationPanel.offsetWidth;
+        foundationPanel.classList.add("is-chapter-shift");
+        if (foundationChapterShiftAnimationHandle) {
+          window.clearTimeout(foundationChapterShiftAnimationHandle);
+        }
+        foundationChapterShiftAnimationHandle = window.setTimeout(() => {
+          foundationPanel.classList.remove("is-chapter-shift");
+          foundationChapterShiftAnimationHandle = null;
+        }, 2300);
+      }
+
+      function foundationGoToChapter(nextIndex, { manual = false, preserveAutopilot = false } = {}) {
+        const boundedIndex = Math.max(0, Math.min(foundationChaptersConfig.length - 1, nextIndex));
+        if (!manual && boundedIndex > foundationChapterIndex && !foundationChapterUnlocked(boundedIndex)) {
+          setSchoolStatus("Diese Lektion ist noch gesperrt. Erst das aktuelle Kapitel sicher abschließen.", "error");
+          return false;
+        }
+
+        foundationChapterIndex = boundedIndex;
+        foundationGroupIndex = 0;
+        clearFoundationLoopTimer();
+        if (manual && !preserveAutopilot) {
+          foundationAutopilotEnabled = false;
+        }
+        renderFoundationPanel();
+        generateRound();
+        return true;
+      }
+
+      function maybeAdvanceFoundationChapter() {
+        if (!isFoundationModeActive) {
+          return;
+        }
+
+        if (!foundationAutopilotEnabled) {
+          return;
+        }
+
+        if (!foundationChapterMastered(currentFoundationChapter())) {
+          return;
+        }
+
+        if (isFoundationLoopPhase(currentFoundationChapter())) {
+          setSchoolStatus("Loop abgeschlossen. Du kannst weiterspielen oder mit Weiter wechseln.", "success");
+          renderFoundationPanel();
+          return;
+        }
+
+        if (foundationChapterIndex >= foundationChaptersConfig.length - 1) {
+          return;
+        }
+
+        if (!foundationChapterUnlocked(foundationChapterIndex + 1)) {
+          return;
+        }
+
+        foundationChapterIndex += 1;
+        foundationGroupIndex = 0;
+        setSchoolStatus(`Kapitel abgeschlossen. Weiter zu ${currentFoundationChapter().title}.`, "success");
+        renderFoundationPanel();
+        generateRound();
+      }
+
+      function foundationPromptHtml(promptHtml, activeNote = null) {
+        if (!isFoundationModeActive) {
+          return promptHtml;
+        }
+
+        const chapter = currentFoundationChapter();
+        const handLabel = chapter.mode === "treble" ? "rechte Hand" : "linke Hand";
+        const clefLabel = activeNote?.clef ? `${clefConfigs[activeNote.clef].label} · ${handLabel}` : `Aktive Lage · ${handLabel}`;
+        return `
+          <div class="target-description-homework">
+            <span class="target-description-task">${escapeHtml(`${chapter.title} · ${chapter.anchor}`)}</span>
+            <span class="target-description-meta">${escapeHtml(`${clefLabel} · ${chapter.map}`)}</span>
+          </div>
+          <div class="target-description-prompt">${promptHtml}</div>
+        `;
+      }
+
+      function renderFoundationPanel() {
+        if (!foundationPanel || !foundationChapters || !foundationTitle || !foundationCopy || !foundationCurrentTarget || !foundationPlayedNote || !foundationAnchor || !foundationMap || !foundationRoute || !foundationProgressCopy || !foundationHint || !foundationNextButton) {
+          return;
+        }
+
+        foundationPanel.classList.toggle("is-hidden", !isFoundationModeActive);
+        if (!isFoundationModeActive) {
+          foundationChapters.replaceChildren();
+          return;
+        }
+
+        const chapter = currentFoundationChapter();
+        const progress = foundationChapterProgress(chapter);
+        const curriculumProgress = foundationCurriculumProgress();
+        foundationTitle.textContent = foundationDisplayTitle(chapter);
+        foundationCopy.textContent = foundationDisplayHandLabel(chapter);
+        const shapeText = foundationShapeText(chapter);
+        foundationCurrentTarget.textContent = shapeText
+          ? `Form ${shapeText}`
+          : "Taste greifen: warte auf die nächste Note.";
+        foundationPlayedNote.textContent = foundationLastPlayedPitch || "Noch nichts gespielt";
+        foundationAnchor.textContent = chapter.anchor;
+        foundationMap.textContent = chapter.map;
+        foundationRoute.textContent = chapter.route;
+        foundationProgressCopy.textContent = `Lektion ${foundationChapterIndex + 1}/${foundationChaptersConfig.length} · ${curriculumProgress.completed}/${curriculumProgress.total} Kapitel fertig · Rechts ${curriculumProgress.rightCompleted}/${curriculumProgress.rightTotal} · Links ${curriculumProgress.leftCompleted}/${curriculumProgress.leftTotal} · ${progress.coverage}% bekannt · ${progress.mastery}% sicher`;
+        foundationHint.textContent = "";
+        if (foundationPrevButton) {
+          foundationPrevButton.disabled = foundationChapterIndex <= 0;
+        }
+        if (foundationAutopilotButton) {
+          foundationAutopilotButton.classList.toggle("is-active", foundationAutopilotEnabled);
+          foundationAutopilotButton.setAttribute("aria-pressed", foundationAutopilotEnabled ? "true" : "false");
+          foundationAutopilotButton.title = foundationAutopilotEnabled ? "Autopilot aktiv" : "Autopilot starten";
+        }
+        foundationNextButton.disabled = foundationChapterIndex >= foundationChaptersConfig.length - 1;
+        foundationNextButton.classList.toggle("is-pulse", foundationRequiresManualAdvance(chapter));
+        syncFoundationLoopTimer();
+        triggerFoundationChapterShiftFeedback(chapter);
+
+        const fragment = document.createDocumentFragment();
+        foundationChaptersConfig.forEach((entry, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          const chapterProgress = foundationChapterProgress(entry);
+          const unlocked = foundationChapterUnlocked(index);
+          button.className = `foundation-chip${index === foundationChapterIndex ? " is-active" : ""}${chapterProgress.mastery >= 80 ? " is-complete" : ""}`;
+          button.textContent = entry.title;
+          button.disabled = !unlocked;
+          button.addEventListener("click", () => {
+            if (!unlocked) {
+              return;
+            }
+            foundationGoToChapter(index, { manual: true });
+          });
+          fragment.appendChild(button);
+        });
+        foundationChapters.replaceChildren(fragment);
       }
 
       function syncPracticeHomeworkPanel() {
@@ -5934,6 +7197,7 @@
         isRemoteStateApplying = true;
         srsStates = record.srs_states || { treble: null, bass: null };
         noteStats = record.note_stats || { treble: {}, bass: {} };
+        foundationChapterCompletions = record.foundation_progress || {};
         activityLog = record.activity_log || {};
         timingStats = record.timing_stats || {
           attempts: 0,
@@ -5952,7 +7216,7 @@
           applySrsRange();
         }
 
-        renderLibraryPanel();
+        syncLiveProgressUi();
         updateModeUi();
         updateSrsUi();
         syncRangeBracketPositions();
@@ -6038,6 +7302,9 @@
         resetLocalProgressState();
         userRole = null;
         activeHomework = null;
+        isFoundationModeActive = false;
+        foundationChapterIndex = 0;
+        foundationAutopilotEnabled = true;
         syncHomeworkAttentionUi();
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
@@ -6226,6 +7493,7 @@
 
       function updateModeUi() {
         const isHomeworkMode = isHomeworkModeActive();
+        const isFoundationMode = isFoundationModeActive;
         const canSeeTutorView = Boolean(authUser) && userRole === "tutor";
         const canSeeStudentCalendar = Boolean(authUser) && userRole === "student";
         const canSeeManagementView = Boolean(authUser) && userRole === "tutor";
@@ -6252,17 +7520,23 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible || isFoundationMode);
+        trainer?.classList.toggle("is-foundation-mode", isFoundationMode);
         homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
         tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
         studentCalendarView.classList.toggle("is-hidden", !canSeeStudentCalendar || !isStudentCalendarViewVisible || isAuthPanelVisible);
         managementView.classList.toggle("is-hidden", !canSeeManagementView || !isManagementViewVisible || isAuthPanelVisible);
         libraryView.classList.toggle("is-hidden", !canSeeLibrary || !isLibraryVisible || isAuthPanelVisible);
         sheetMusic.classList.toggle("is-hidden", hidesTrainerContent || isDoubleModeEnabled || isLibraryVisible);
-        sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible);
+        sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible || isFoundationMode);
+        foundationPanel?.classList.toggle("is-hidden", hidesTrainerContent || !isFoundationModeActive);
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || (!isInfoVisible && !isHomeworkMode));
-        keyboard.classList.toggle("is-hidden", hidesTrainerContent || !isKeyboardVisible);
+        keyboard.classList.toggle("is-hidden", hidesTrainerContent || (!isKeyboardVisible && !isFoundationMode));
+        if (hidesTrainerContent || !isFoundationMode) {
+          clearFoundationLoopTimer();
+        }
         syncPracticeHomeworkPanel();
+        renderFoundationPanel();
       }
 
       function noteStatFor(mode, noteName) {
@@ -6280,7 +7554,7 @@
           stats.correct += 1;
         }
         noteStats[mode][noteName] = stats;
-        renderLibraryPanel();
+        syncLiveProgressUi();
         queueRemoteSave("note-stats");
       }
 
@@ -6710,6 +7984,41 @@
         return managementUsers.find((entry) => entry.user_id === selectedManagementUserId) || null;
       }
 
+      function syncLiveProgressUi() {
+        renderLibraryPanel();
+        if (isFoundationModeActive) {
+          renderFoundationPanel();
+        }
+
+        if (!authUser || !managementUsers.length) {
+          return;
+        }
+
+        managementUsers = managementUsers.map((entry) => {
+          if (entry.user_id !== authUser.id) {
+            return entry;
+          }
+
+          return {
+            ...entry,
+            progress: {
+              ...(entry.progress || {}),
+              user_id: authUser.id,
+              note_stats: noteStats,
+              activity_log: activityLog,
+              timing_stats: timingStats,
+              active_srs_mode: activeSrsMode,
+              updated_at: new Date().toISOString()
+            }
+          };
+        });
+
+        if (isManagementViewVisible) {
+          renderManagementList();
+          renderManagementDetail();
+        }
+      }
+
       function renderManagementList() {
         if (!managementUserList) {
           return;
@@ -7035,6 +8344,10 @@
       }
 
       function currentVisibleKeyboardRange() {
+        if (isFoundationModeActive) {
+          return [midiNumberToName(keyboardRange.start), midiNumberToName(keyboardRange.end)];
+        }
+
         if (isRangeSelectorVisible) {
           return [midiNumberToName(keyboardRange.start), midiNumberToName(keyboardRange.end)];
         }
@@ -7221,8 +8534,12 @@
       }
 
       function parseNoteName(name) {
-        const [, letter, octaveText] = name.match(/^([A-G])(\d)$/);
-        return { letter, octave: Number(octaveText) };
+        const match = name.match(/^([A-G])(#?)(\d)$/);
+        if (!match) {
+          throw new Error(`Ungueltiger Notenname: ${name}`);
+        }
+        const [, letter, accidental, octaveText] = match;
+        return { letter, accidental, octave: Number(octaveText) };
       }
 
       function diatonicValue(name) {
@@ -7232,18 +8549,18 @@
 
       function semitoneValue(name) {
         const midiMap = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        const { letter, octave } = parseNoteName(name);
-        return (octave + 1) * 12 + midiMap[letter];
+        const { letter, accidental, octave } = parseNoteName(name);
+        return (octave + 1) * 12 + midiMap[letter] + (accidental === "#" ? 1 : 0);
       }
 
-      function buildRange(start, end, reference) {
+      function buildRange(start, end, reference, { includeBlack = false } = {}) {
         const startMidi = semitoneValue(start);
         const endMidi = semitoneValue(end);
         const referenceValue = diatonicValue(reference);
         const notes = [];
 
         for (let midi = startMidi; midi <= endMidi; midi += 1) {
-          if (isBlackKey(midi)) {
+          if (!includeBlack && isBlackKey(midi)) {
             continue;
           }
 
@@ -7326,6 +8643,26 @@
       }
 
       function randomNote() {
+        if (isFoundationModeActive) {
+          const entries = foundationChapterEntries();
+          if (!entries.length) {
+            return decorateNote(rangeOptionsForMode("treble")[0], "treble");
+          }
+
+          const weights = entries.map((entry) => noteSelectionWeight(entry.clef, entry.name, false));
+          const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+          let threshold = Math.random() * (totalWeight || 1);
+
+          for (let index = 0; index < entries.length; index += 1) {
+            threshold -= weights[index];
+            if (threshold <= 0) {
+              return { ...entries[index], isNew: false };
+            }
+          }
+
+          return { ...entries[entries.length - 1], isNew: false };
+        }
+
         const availableNotes = activeNoteRange();
         const effectiveMode = isHomeworkModeActive() && activeHomework?.mode !== "double"
           ? activeHomework.mode
@@ -8073,7 +9410,7 @@
         const slot = document.createElement("div");
         slot.className = "note-slot";
 
-        if (index === activeIndex) {
+        if ((isFoundationModeActive && isFoundationChordPhase() && note.state !== "correct") || index === activeIndex) {
           slot.classList.add("is-current");
         }
 
@@ -8106,6 +9443,15 @@
 
         slot.appendChild(noteElement);
 
+        if (String(note.name || "").includes("#")) {
+          const accidentalElement = document.createElement("div");
+          accidentalElement.className = "note-accidental";
+          accidentalElement.style.setProperty("--offset", noteOffset(note.step));
+          accidentalElement.setAttribute("aria-hidden", "true");
+          accidentalElement.textContent = "#";
+          slot.appendChild(accidentalElement);
+        }
+
         if (note.isNew) {
           const badgeElement = document.createElement("div");
           badgeElement.className = "note-badge";
@@ -8120,6 +9466,7 @@
 
       function renderNotes() {
         const fragment = document.createDocumentFragment();
+        notesContainer.style.gridTemplateColumns = `repeat(${Math.max(1, currentNotes.length)}, minmax(0, 1fr))`;
 
         currentNotes.forEach((note, index) => {
           fragment.appendChild(createNoteSlot(note, index));
@@ -8148,7 +9495,7 @@
 
       function clearKeyboardStates() {
         for (const key of document.querySelectorAll(".white-key, .black-key")) {
-          key.classList.remove("is-target", "is-correct", "is-wrong", "is-in-range", "is-range-start", "is-range-end");
+          key.classList.remove("is-target", "is-correct", "is-wrong", "is-in-range", "is-range-start", "is-range-end", "is-foundation-guide", "is-foundation-mark");
           delete key.dataset.label;
         }
       }
@@ -8157,7 +9504,13 @@
         clearKeyboardStates();
         updateKeyboardViewport();
 
-        const [rangeStart, rangeEnd] = selectedRange;
+        const foundationRange = isFoundationModeActive
+          ? (() => {
+              const chapter = currentFoundationChapter();
+              return foundationChapterRange(chapter);
+            })()
+          : selectedRange;
+        const [rangeStart, rangeEnd] = foundationRange;
         const startMidi = semitoneValue(rangeStart);
         const endMidi = semitoneValue(rangeEnd);
 
@@ -8184,8 +9537,22 @@
         syncRangeBracketPositions();
         renderKeyboardLevels();
 
+        if (isFoundationModeActive) {
+          for (const entry of currentNotes) {
+            const guideKey = keyboard.querySelector(`[data-midi="${entry.midi}"]`);
+            if (!guideKey) {
+              continue;
+            }
+            guideKey.classList.add("is-foundation-mark");
+            if (foundationAutopilotEnabled) {
+              guideKey.classList.add("is-foundation-guide");
+            }
+            guideKey.dataset.label = displayNoteName(entry.name);
+          }
+        }
+
         for (const midi of correctMidiNotes) {
-          const correctKey = document.querySelector(`[data-midi="${midi}"]`);
+          const correctKey = keyboard.querySelector(`[data-midi="${midi}"]`);
           if (correctKey) {
             correctKey.classList.add("is-correct");
             correctKey.dataset.label = displayNoteName(correctKey.dataset.note);
@@ -8197,10 +9564,15 @@
               doubleRound.bass[activeIndex] && !doublePairState[activeIndex]?.bassDone ? doubleRound.bass[activeIndex] : null,
               doubleRound.treble[activeIndex] && !doublePairState[activeIndex]?.trebleDone ? doubleRound.treble[activeIndex] : null
             ].filter(Boolean)
+          : (isFoundationModeActive && isFoundationChordPhase())
+            ? currentNotes.filter((note) => note.state !== "correct")
           : currentNotes[activeIndex];
 
         if ((!isDoubleModeEnabled && !activeNote) || (isDoubleModeEnabled && activeNote.length === 0)) {
-          targetDescription.innerHTML = homeworkPracticeDescriptionHtml("Alle Noten geschafft.");
+          if (isFoundationModeActive && foundationCurrentTarget) {
+            foundationCurrentTarget.textContent = "Kapitel abgeschlossen. Weiter zum nächsten Bereich.";
+          }
+          targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml("Alle Noten geschafft."));
           return;
         }
 
@@ -8230,16 +9602,45 @@
             }
           });
 
-          targetDescription.innerHTML = homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" | ")}</strong>`);
+          targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" | ")}</strong>`));
+        } else if (Array.isArray(activeNote)) {
+          const descriptions = activeNote.map((note) => displayNoteName(note.name));
+          if (isFoundationModeActive && foundationCurrentTarget) {
+            const shapeText = foundationShapeText();
+            foundationCurrentTarget.textContent = shapeText
+              ? `Form ${shapeText} · ${descriptions.join(" · ")}`
+              : descriptions.join(" · ");
+          }
+          targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" · ")}</strong>`));
+
+          activeNote.forEach((note) => {
+            const targetKey = keyboard.querySelector(`[data-midi="${note.midi}"]`);
+            if (!targetKey) {
+              return;
+            }
+            targetKey.dataset.label = displayNoteName(note.name);
+            if (!targetKey.classList.contains("is-correct") && !targetKey.classList.contains("is-wrong")) {
+              targetKey.classList.add("is-target");
+            }
+          });
         } else {
           syncClefToActiveNote();
 
           const handLabel = clefConfigs[currentClef].handLabel ? `, ${clefConfigs[currentClef].handLabel}` : "";
-          targetDescription.innerHTML = homeworkPracticeDescriptionHtml(
-            `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`
+          if (isFoundationModeActive && foundationCurrentTarget) {
+            const shapeText = foundationShapeText();
+            foundationCurrentTarget.textContent = shapeText
+              ? `Form ${shapeText} · ${displayNoteName(activeNote.name)}`
+              : `Taste greifen: ${displayNoteName(activeNote.name)} · ${clefConfigs[currentClef].handLabel || clefConfigs[currentClef].label}`;
+          }
+          targetDescription.innerHTML = foundationPromptHtml(
+            homeworkPracticeDescriptionHtml(
+              `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`
+            ),
+            activeNote
           );
 
-          const targetKey = document.querySelector(`[data-midi="${activeNote.midi}"]`);
+          const targetKey = keyboard.querySelector(`[data-midi="${activeNote.midi}"]`);
           if (targetKey) {
             targetKey.dataset.label = displayNoteName(activeNote.name);
 
@@ -8259,8 +9660,12 @@
           }
         }
 
-        if (lastPlayedMidi !== null && lastPlayedMidi !== activeNote.midi) {
-          const wrongKey = document.querySelector(`[data-midi="${lastPlayedMidi}"]`);
+        const activeMidiSet = Array.isArray(activeNote)
+          ? new Set(activeNote.map((note) => note.midi))
+          : new Set(activeNote ? [activeNote.midi] : []);
+
+        if (lastPlayedMidi !== null && !activeMidiSet.has(lastPlayedMidi)) {
+          const wrongKey = keyboard.querySelector(`[data-midi="${lastPlayedMidi}"]`);
           if (wrongKey) {
             wrongKey.classList.add("is-wrong");
             wrongKey.dataset.label = displayNoteName(wrongKey.dataset.note);
@@ -8290,13 +9695,16 @@
           applySrsRange();
         }
 
-        currentNotes = Array.from({ length: noteCount }, () => ({
-          ...randomNote(),
-          state: "idle"
-        }));
+        currentNotes = isFoundationModeActive
+          ? foundationRoundNotes()
+          : Array.from({ length: noteCount }, () => ({
+              ...randomNote(),
+              state: "idle"
+            }));
         activeIndex = 0;
         currentClef = currentNotes[0]?.clef || "treble";
         lastPlayedMidi = null;
+        foundationLastPlayedPitch = "";
         correctMidiNotes = new Set();
         markPromptStart();
         updateClefUi();
@@ -8323,6 +9731,7 @@
         doublePairState = Array.from({ length: noteCount }, () => ({ bassDone: false, trebleDone: false }));
         activeIndex = 0;
         lastPlayedMidi = null;
+        foundationLastPlayedPitch = "";
         correctMidiNotes = new Set();
         currentClef = "treble";
         markPromptStart();
@@ -8355,8 +9764,68 @@
           return;
         }
 
+        foundationLastPlayedPitch = foundationPitchLabel(midiNote);
+        renderFoundationPanel();
         const activeNote = currentNotes[activeIndex];
         lastPlayedMidi = midiNote;
+
+        if (isFoundationModeActive && isFoundationChordPhase()) {
+          const matchingNote = currentNotes.find((note) => note.midi === midiNote && note.state !== "correct");
+
+          if (matchingNote) {
+            recordResponseTiming();
+            recordNoteStat(matchingNote.clef, matchingNote.name, true);
+            correctMidiNotes.add(midiNote);
+            matchingNote.state = "correct";
+            lastPlayedMidi = null;
+            renderNotes();
+            refreshCurrentMarker();
+            markPromptStart();
+
+            if (currentNotes.every((note) => note.state === "correct")) {
+              foundationLastPlayedPitch = foundationPlayedSummary(currentFoundationChapter(), foundationGroupIndex);
+              renderFoundationPanel();
+              const groups = foundationChordGroups();
+              if (isFoundationLoopPhase(currentFoundationChapter())) {
+                const isLastGroup = foundationGroupIndex >= groups.length - 1;
+                if (isLastGroup) {
+                  markFoundationChapterCompleted();
+                  foundationGroupIndex = 0;
+                  maybeAdvanceFoundationChapter();
+                } else {
+                  foundationGroupIndex += 1;
+                }
+                window.setTimeout(() => generateRound(), isLastGroup ? 650 : 450);
+                return;
+              }
+
+              markFoundationChapterCompleted();
+              maybeAdvanceFoundationChapter();
+              window.setTimeout(generateRound, 650);
+            }
+            return;
+          }
+
+          recordResponseTiming();
+          currentNotes.forEach((note) => {
+            if (note.state !== "correct") {
+              note.state = "wrong";
+              recordNoteStat(note.clef, note.name, false);
+            }
+          });
+          renderNotes();
+          window.setTimeout(() => {
+            lastPlayedMidi = null;
+            currentNotes.forEach((note) => {
+              if (note.state === "wrong") {
+                note.state = "idle";
+              }
+            });
+            renderNotes();
+            markPromptStart();
+          }, 350);
+          return;
+        }
 
         if (!activeNote) {
           return;
@@ -8367,6 +9836,7 @@
           const rangeChanged = recordSrsAttempt(true);
           const state = activeSrsState();
           recordNoteStat(activeNote.clef, activeNote.name, true);
+          maybeAdvanceFoundationChapter();
           void maybeUnlockHomeworkFreePractice();
           if (activeNote.isNew && state) {
             state.newNotes = state.newNotes.filter((noteName) => noteName !== activeNote.name);
@@ -8386,6 +9856,10 @@
           markPromptStart();
 
           if (activeIndex >= currentNotes.length) {
+            foundationLastPlayedPitch = foundationPlayedSummary(currentFoundationChapter());
+            renderFoundationPanel();
+            markFoundationChapterCompleted();
+            maybeAdvanceFoundationChapter();
             window.setTimeout(generateRound, 900);
           }
 
@@ -8412,6 +9886,8 @@
       }
 
       function handlePlayedMidiDouble(midiNote) {
+        foundationLastPlayedPitch = foundationPitchLabel(midiNote);
+        renderFoundationPanel();
         const bassNote = doubleRound.bass[activeIndex];
         const trebleNote = doubleRound.treble[activeIndex];
         const pairState = doublePairState[activeIndex];
@@ -8443,6 +9919,7 @@
 
         if (matched) {
           if (pairState.bassDone && pairState.trebleDone) {
+            maybeAdvanceFoundationChapter();
             void maybeUnlockHomeworkFreePractice();
           }
           lastPlayedMidi = null;
@@ -9569,6 +11046,7 @@
       schoolSaveButton.addEventListener("click", () => saveTutorLesson());
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
       homeModuleNotes.addEventListener("click", () => {
+        isFoundationModeActive = false;
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
@@ -9583,14 +11061,40 @@
         updateModeUi();
       });
       homeModuleBookworm.addEventListener("click", () => {
-        setSchoolStatus("Bookworm-Modul ist noch nicht belegt.", "");
-        isHomeViewVisible = true;
+        isFoundationModeActive = true;
+        foundationAutopilotEnabled = true;
+        isHomeViewVisible = false;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
+        isManagementViewVisible = false;
+        isLibraryVisible = false;
+        isKeyboardVisible = true;
+        isInfoVisible = false;
         updateModeUi();
+        generateRound();
+      });
+      foundationNextButton?.addEventListener("click", () => {
+        foundationGoToChapter(foundationChapterIndex + 1, {
+          manual: true,
+          preserveAutopilot: foundationRequiresManualAdvance()
+        });
+      });
+      foundationPrevButton?.addEventListener("click", () => {
+        foundationGoToChapter(foundationChapterIndex - 1, { manual: true });
+      });
+      foundationAutopilotButton?.addEventListener("click", () => {
+        foundationAutopilotEnabled = true;
+        foundationGoToChapter(foundationProgressChapterIndex(), {
+          manual: true,
+          preserveAutopilot: true
+        });
+        setSchoolStatus("Autopilot aktiv. Zur aktuellen Fortschrittslektion gewechselt.", "success");
       });
       homeModuleTutor.addEventListener("click", async () => {
         if (userRole !== "tutor") {
           return;
         }
+        isFoundationModeActive = false;
         isHomeViewVisible = false;
         isTutorViewVisible = true;
         isStudentCalendarViewVisible = false;
@@ -9603,6 +11107,7 @@
         if (userRole !== "tutor") {
           return;
         }
+        isFoundationModeActive = false;
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
@@ -9621,6 +11126,7 @@
         if (userRole !== "student") {
           return;
         }
+        isFoundationModeActive = false;
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = true;
@@ -9630,6 +11136,7 @@
         updateModeUi();
       });
       homeModuleLibrary.addEventListener("click", () => {
+        isFoundationModeActive = false;
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
