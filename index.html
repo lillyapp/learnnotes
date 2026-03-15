@@ -97,6 +97,7 @@
 
         .trainer.is-foundation-mode .sheet-music {
           padding-left: 14em;
+          font-size: clamp(16px, 2.15vh, 20px);
         }
       }
 
@@ -2212,7 +2213,7 @@
       }
 
       .sheet-music {
-        font-size: min(2.52vw, 1.6vh);
+        font-size: clamp(17px, 2.35vh, 22px);
         width: max-content;
         max-width: 100%;
         margin: 0 auto;
@@ -2454,7 +2455,7 @@
 
       .foundation-map-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
       }
 
@@ -2507,20 +2508,20 @@
 
       @media (min-width: 1025px) and (max-width: 1220px), (min-width: 1025px) and (max-height: 900px) {
         .trainer.is-foundation-mode {
-          width: min(98vw, 1280px);
-          grid-template-columns: minmax(0, 1.22fr) minmax(280px, 330px);
-          gap: 12px;
-          padding-left: clamp(14px, 2vw, 28px);
+          width: min(98vw, 1320px);
+          grid-template-columns: minmax(0, 1.28fr) minmax(310px, 356px);
+          gap: 16px;
+          padding-left: clamp(12px, 1.8vw, 24px);
         }
 
         .trainer.is-foundation-mode .sheet-music {
-          padding-left: 12em;
-          font-size: min(2.05vw, 1.22vh);
+          padding-left: 11em;
+          font-size: clamp(16px, 2.05vh, 20px);
         }
 
         .trainer.is-foundation-mode .foundation-panel {
-          padding: 10px 11px;
-          gap: 6px;
+          padding: 12px 12px;
+          gap: 8px;
         }
 
         .foundation-topline {
@@ -2528,13 +2529,13 @@
         }
 
         .foundation-title {
-          font-size: 15px;
+          font-size: 18px;
         }
 
         .foundation-copy {
-          min-height: 22px;
-          padding: 0 8px;
-          font-size: 11px;
+          min-height: 24px;
+          padding: 0 10px;
+          font-size: 12px;
         }
 
         .foundation-nav {
@@ -2547,8 +2548,8 @@
         }
 
         .foundation-square {
-          min-height: min(28vh, 205px);
-          gap: 6px;
+          min-height: min(32vh, 250px);
+          gap: 8px;
         }
 
         .foundation-played-note-question,
@@ -2556,7 +2557,7 @@
         .foundation-progress-copy,
         .foundation-map-value,
         .foundation-loop-timer {
-          font-size: 10px;
+          font-size: 12px;
         }
 
         .foundation-played-note-value {
@@ -2566,16 +2567,16 @@
         }
 
         .foundation-map-grid {
-          gap: 6px;
+          gap: 8px;
         }
 
         .foundation-map-card {
-          padding: 7px 8px;
+          padding: 9px 10px;
           border-radius: 14px;
         }
 
         .trainer.is-foundation-mode .keyboard {
-          height: min(17vh, 150px);
+          height: min(19vh, 170px);
         }
       }
 
@@ -2668,9 +2669,21 @@
       }
 
       .bar {
+        --staff-start: 9.05em;
+        --header-width: 5.9em;
         position: relative;
         width: 40em;
         height: 34em;
+        background-color: transparent;
+      }
+
+      .bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: var(--staff-start);
+        right: 0;
+        bottom: 0;
         background-color: transparent;
         background-image: var(--svg-stave);
         background-repeat: repeat-x;
@@ -2681,21 +2694,22 @@
       .stave-header {
         position: absolute;
         top: 0;
-        left: -16em;
-        width: 16em;
+        left: calc(var(--staff-start) - var(--header-width));
+        width: var(--header-width);
         height: 34em;
         background-color: transparent;
         background-image: var(--svg-stave-header);
         background-repeat: no-repeat;
-        background-position: center;
-        background-size: auto 16em;
+        background-position: right center;
+        background-size: 100% 16em;
         z-index: 0;
+        overflow: hidden;
       }
 
       .stave-header::before {
         content: "";
         position: absolute;
-        left: 0;
+        right: 0;
         top: 50%;
         width: 0.2em;
         height: 8em;
@@ -2705,7 +2719,7 @@
 
       .clef-symbol {
         position: absolute;
-        left: -13.3em;
+        left: calc(var(--staff-start) - 5.25em);
         top: 50%;
         width: 6.8em;
         height: 20em;
@@ -2721,7 +2735,7 @@
       }
 
       .clef-symbol[data-clef="bass"] {
-        left: -14.1em;
+        left: calc(var(--staff-start) - 5.95em);
         width: 6.8em;
         height: 20em;
         display: grid;
@@ -2758,7 +2772,7 @@
 
       .bar-notes {
         position: absolute;
-        inset: 0 1em 0 0;
+        inset: 0 1em 0 var(--staff-start);
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         z-index: 1;
@@ -3080,6 +3094,177 @@
         overflow: hidden;
       }
 
+      .mental-map-panel {
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at top left, rgba(47, 107, 255, 0.08), transparent 36%),
+          radial-gradient(circle at bottom right, rgba(47, 107, 255, 0.05), transparent 32%),
+          var(--surface);
+        display: grid;
+        gap: 8px;
+      }
+
+      .mental-map-panel.is-hidden {
+        display: none;
+      }
+
+      .mental-map-title {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .mental-map-copy {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .mental-map-svg {
+        width: 100%;
+        height: 160px;
+        overflow: visible;
+      }
+
+      .mental-map-brain {
+        fill: rgba(47, 107, 255, 0.04);
+        stroke: rgba(47, 107, 255, 0.16);
+        stroke-width: 1.5;
+      }
+
+      .mental-map-link {
+        stroke: rgba(47, 107, 255, 0.22);
+        stroke-linecap: round;
+        animation: mentalMapLinkPulse 2.8s ease-in-out infinite;
+      }
+
+      .mental-map-link.is-strong {
+        stroke: rgba(47, 107, 255, 0.52);
+      }
+
+      .mental-map-core,
+      .mental-map-node,
+      .mental-map-relay {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: mentalMapNodeFloat 4.6s ease-in-out infinite;
+      }
+
+      .mental-map-core {
+        fill: rgba(47, 107, 255, 0.16);
+        stroke: rgba(47, 107, 255, 0.92);
+        stroke-width: 2;
+      }
+
+      .mental-map-relay {
+        fill: rgba(47, 107, 255, 0.12);
+        stroke: rgba(47, 107, 255, 0.46);
+        stroke-width: 1.5;
+      }
+
+      .mental-map-sensory,
+      .mental-map-motor {
+        fill: rgba(47, 107, 255, 0.09);
+        stroke: rgba(47, 107, 255, 0.42);
+        stroke-width: 1.5;
+      }
+
+      .mental-map-node {
+        fill: rgba(47, 107, 255, 0.1);
+        stroke: rgba(47, 107, 255, 0.68);
+        stroke-width: 2;
+      }
+
+      .mental-map-node.is-strong {
+        fill: rgba(47, 107, 255, 0.18);
+        stroke: rgba(47, 107, 255, 0.96);
+      }
+
+      .mental-map-label {
+        font-size: 11px;
+        font-weight: 700;
+        fill: var(--text);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+
+      .mental-map-strength {
+        font-size: 10px;
+        font-weight: 700;
+        fill: var(--text-soft);
+        text-anchor: middle;
+      }
+
+      .mental-map-component {
+        fill: rgba(255, 255, 255, 0.82);
+        stroke: rgba(47, 107, 255, 0.26);
+        stroke-width: 1.5;
+      }
+
+      .mental-map-component.is-strong {
+        fill: rgba(47, 107, 255, 0.08);
+        stroke: rgba(47, 107, 255, 0.6);
+      }
+
+      .mental-map-component-label {
+        font-size: 10px;
+        font-weight: 800;
+        fill: var(--text);
+        text-anchor: start;
+      }
+
+      .mental-map-component-notes {
+        font-size: 10px;
+        font-weight: 700;
+        fill: var(--text-soft);
+        text-anchor: start;
+      }
+
+      .mental-map-impulse {
+        fill: rgba(47, 107, 255, 0.9);
+        filter: drop-shadow(0 0 6px rgba(47, 107, 255, 0.42));
+        animation: mentalMapImpulseTravel 2.4s ease-in-out infinite;
+      }
+
+      @keyframes mentalMapNodeFloat {
+        0%, 100% {
+          transform: translateY(0px) scale(1);
+        }
+
+        50% {
+          transform: translateY(-3px) scale(1.03);
+        }
+      }
+
+      @keyframes mentalMapLinkPulse {
+        0%, 100% {
+          opacity: 0.42;
+        }
+
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes mentalMapImpulseTravel {
+        0%, 100% {
+          opacity: 0.2;
+          transform: scale(0.72);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.22);
+        }
+      }
+
       .keyboard-levels {
         position: absolute;
         left: 10px;
@@ -3370,6 +3555,53 @@
         font-size: inherit;
       }
 
+      .target-description-cue {
+        font-size: clamp(13px, 0.92vw, 16px);
+        font-weight: 600;
+        color: var(--text-soft);
+      }
+
+      @media (min-width: 1025px) and (max-width: 1220px), (min-width: 1025px) and (max-height: 900px) {
+        .toolbar {
+          gap: 14px;
+          min-height: 54px;
+        }
+
+        .toolbar-button {
+          width: 52px;
+          height: 52px;
+        }
+
+        .toolbar-button i,
+        .toolbar-button svg {
+          width: 22px;
+          height: 22px;
+        }
+
+        .sheet-music {
+          font-size: clamp(15px, 2.05vh, 18px);
+          padding-left: 15em;
+        }
+
+        .keyboard {
+          height: min(20vh, 180px);
+        }
+
+        .target-description {
+          font-size: clamp(18px, 1.55vw, 24px);
+          gap: 10px;
+        }
+
+        .target-description-task {
+          font-size: clamp(15px, 1.18vw, 19px);
+        }
+
+        .target-description-meta,
+        .target-description-cue {
+          font-size: 14px;
+        }
+      }
+
       @media (prefers-color-scheme: dark) {
         .debug-console {
           background: rgba(0, 0, 0, 0.56);
@@ -3406,7 +3638,7 @@
 
       @media (max-aspect-ratio: 4 / 3) {
         .sheet-music {
-          font-size: min(2.4vw, 1.28vh);
+          font-size: clamp(16px, 2.1vh, 20px);
         }
 
         .keyboard {
@@ -3859,6 +4091,10 @@
                 <p class="foundation-map-label" title="Route"><i data-lucide="route"></i></p>
                 <p class="foundation-map-value" id="foundation-route"></p>
               </div>
+              <div class="foundation-map-card">
+                <p class="foundation-map-label" title="Merkhilfe"><i data-lucide="brain"></i></p>
+                <p class="foundation-map-value" id="foundation-memory"></p>
+              </div>
             </div>
             <p class="foundation-progress-copy" id="foundation-progress-copy"></p>
             <p class="foundation-hint" id="foundation-hint"></p>
@@ -4001,6 +4237,11 @@
           <div class="range-bracket range-bracket-end is-passive" data-range-role="treble" id="double-range-treble-end"></div>
         </div>
         </div>
+        <section class="mental-map-panel is-hidden" id="mental-map-panel" aria-live="polite">
+          <p class="mental-map-title">Mentale Map</p>
+          <p class="mental-map-copy" id="mental-map-copy"></p>
+          <svg class="mental-map-svg" id="mental-map-svg" viewBox="0 0 640 160" role="img" aria-label="Neuronale Verknüpfungsstruktur"></svg>
+        </section>
       </div>
     </main>
     <div class="midi-indicator" id="midi-indicator">
@@ -4158,6 +4399,7 @@
       const foundationAnchor = document.getElementById("foundation-anchor");
       const foundationMap = document.getElementById("foundation-map");
       const foundationRoute = document.getElementById("foundation-route");
+      const foundationMemory = document.getElementById("foundation-memory");
       const foundationProgressCopy = document.getElementById("foundation-progress-copy");
       const foundationHint = document.getElementById("foundation-hint");
       const foundationPrevButton = document.getElementById("foundation-prev-button");
@@ -4174,6 +4416,9 @@
       const keyboard = document.getElementById("keyboard");
       const keyboardLevels = document.getElementById("keyboard-levels");
       const keyboardKeys = document.getElementById("keyboard-keys");
+      const mentalMapPanel = document.getElementById("mental-map-panel");
+      const mentalMapCopy = document.getElementById("mental-map-copy");
+      const mentalMapSvg = document.getElementById("mental-map-svg");
       const rangeWindow = document.getElementById("range-window");
       const rangeBracketStart = document.getElementById("range-bracket-start");
       const rangeBracketEnd = document.getElementById("range-bracket-end");
@@ -5319,6 +5564,85 @@
         return displayNoteName(String(noteNameOrMidi || "")).replace(/\d/g, "");
       }
 
+      function foundationFocusEntries(chapter = currentFoundationChapter()) {
+        if (!chapter) {
+          return [];
+        }
+
+        if (chapter.phase === "single") {
+          const activeEntry = currentNotes[Math.max(0, Math.min(currentNotes.length - 1, activeIndex))] || currentNotes[0];
+          return activeEntry ? [activeEntry] : foundationChapterEntries(chapter).slice(0, 1);
+        }
+
+        if (isFoundationChordPhase(chapter) && currentNotes.length) {
+          return currentNotes;
+        }
+
+        return foundationChapterEntries(chapter).slice(0, 3);
+      }
+
+      function foundationKeyboardRegionLabel(noteName) {
+        const midi = semitoneValue(noteName);
+        if (midi < semitoneValue("C3")) return "weit links im Bass";
+        if (midi < semitoneValue("C4")) return "links der Mitte";
+        if (midi < semitoneValue("C5")) return "um mittleres C";
+        if (midi < semitoneValue("C6")) return "rechts der Mitte";
+        return "weit rechts im Diskant";
+      }
+
+      function foundationSpatialCueLabel(noteName) {
+        const pitch = foundationPitchLabel(noteName);
+        const midi = semitoneValue(noteName);
+        const semitone = midi % 12;
+        const cues = {
+          0: `${pitch} links von der 2er-Gruppe`,
+          1: `${pitch} schwarze Taste in der 2er-Gruppe`,
+          2: `${pitch} zwischen den 2 schwarzen`,
+          3: `${pitch} schwarze Taste rechts in der 2er-Gruppe`,
+          4: `${pitch} rechts von der 2er-Gruppe`,
+          5: `${pitch} links von der 3er-Gruppe`,
+          6: `${pitch} schwarze Taste links in der 3er-Gruppe`,
+          7: `${pitch} zwischen erster und zweiter schwarzer Taste`,
+          8: `${pitch} schwarze Taste in der Mitte der 3er-Gruppe`,
+          9: `${pitch} zwischen zweiter und dritter schwarzer Taste`,
+          10: `${pitch} schwarze Taste rechts in der 3er-Gruppe`,
+          11: `${pitch} rechts von der 3er-Gruppe`
+        };
+        return cues[semitone] || pitch;
+      }
+
+      function noteSpatialCueText(noteName) {
+        return `${foundationSpatialCueLabel(noteName)} · ${foundationKeyboardRegionLabel(noteName)}`;
+      }
+
+      function notesSpatialCueText(noteNames = []) {
+        const clean = noteNames.filter(Boolean);
+        if (!clean.length) {
+          return "";
+        }
+        if (clean.length === 1) {
+          return noteSpatialCueText(clean[0]);
+        }
+        return `${clean.map((noteName) => foundationPitchLabel(noteName)).join("-")} · von ${foundationKeyboardRegionLabel(clean[0])} bis ${foundationKeyboardRegionLabel(clean[clean.length - 1])}`;
+      }
+
+      function foundationMemoryCue(chapter = currentFoundationChapter()) {
+        const entries = foundationFocusEntries(chapter);
+        if (!entries.length) {
+          return "Zuerst Name lesen, dann Lage am Klavier greifen.";
+        }
+
+        if (entries.length === 1) {
+          const noteName = entries[0].name;
+          return `${foundationSpatialCueLabel(noteName)} · ${foundationKeyboardRegionLabel(noteName)}`;
+        }
+
+        const left = entries[0].name;
+        const right = entries[entries.length - 1].name;
+        const label = entries.map((entry) => foundationPitchLabel(entry.name)).join("-");
+        return `${label} · von ${foundationKeyboardRegionLabel(left)} bis ${foundationKeyboardRegionLabel(right)}`;
+      }
+
       function foundationPlayedSummary(chapter = currentFoundationChapter(), groupIndex = foundationGroupIndex) {
         if (!chapter) {
           return "";
@@ -5364,6 +5688,213 @@
         const coverage = entries.length ? Math.round((touched / entries.length) * 100) : 0;
         const mastery = entries.length ? Math.round((secure / entries.length) * 100) : 0;
         return { coverage, mastery };
+      }
+
+      function lessonConnectionStrength(entry) {
+        const stat = noteStatFor(entry.clef, entry.name);
+        if (!stat || stat.attempts === 0) {
+          return 0.12;
+        }
+        const accuracy = stat.correct / stat.attempts;
+        const exposure = Math.min(1, stat.attempts / 6);
+        return Math.max(0.12, Math.min(1, (accuracy * 0.72) + (exposure * 0.28)));
+      }
+
+      function foundationMentalMapComponents(chapter = currentFoundationChapter()) {
+        if (!chapter) {
+          return [];
+        }
+
+        const phase = chapter.phase;
+        if (phase === "combined") {
+          const notes = chapter.notes.slice(0, 3);
+          const entries = notes.map((noteName) => foundationEntryForPitch(noteName, chapter.mode));
+          return [{
+            label: chapter.playedLabel || foundationDisplayTitle(chapter),
+            notes,
+            entries
+          }];
+        }
+
+        if (phase === "loop" || phase === "spiral-loop") {
+          const groups = foundationChordGroups(chapter);
+          return groups.map((group, index) => ({
+            label: chapter.loopLabels?.[index] || `Form ${index + 1}`,
+            notes: group.slice(0, 3),
+            entries: group.slice(0, 3).map((noteName) => foundationEntryForPitch(noteName, chapter.mode))
+          }));
+        }
+
+        if (phase === "single") {
+          return chapter.notes.slice(0, 3).map((noteName, index) => ({
+            label: `${chapter.playedLabel || foundationDisplayTitle(chapter)} ${index + 1}`,
+            notes: [noteName],
+            entries: [foundationEntryForPitch(noteName, chapter.mode)]
+          }));
+        }
+
+        const entries = foundationChapterEntries(chapter).slice(0, 6);
+        return [{
+          label: foundationDisplayTitle(chapter),
+          notes: entries.map((entry) => entry.name),
+          entries
+        }];
+      }
+
+      function renderMentalMap() {
+        if (!mentalMapPanel || !mentalMapCopy || !mentalMapSvg) {
+          return;
+        }
+
+        const showMap = isFoundationModeActive && !isAuthPanelVisible && !isHomeViewVisible && !isTutorViewVisible && !isStudentCalendarViewVisible && !isManagementViewVisible && !isLibraryVisible;
+        mentalMapPanel.classList.toggle("is-hidden", !showMap);
+
+        if (!showMap) {
+          mentalMapCopy.textContent = "";
+          mentalMapSvg.replaceChildren();
+          return;
+        }
+
+        const chapter = currentFoundationChapter();
+        const components = foundationMentalMapComponents(chapter).map((component) => {
+          const entries = component.entries.map((entry) => ({ ...entry, strength: lessonConnectionStrength(entry) }));
+          const strength = entries.length
+            ? entries.reduce((sum, entry) => sum + entry.strength, 0) / entries.length
+            : 0.12;
+          return {
+            ...component,
+            entries,
+            strength
+          };
+        });
+
+        const averageStrength = components.length
+          ? Math.round((components.reduce((sum, component) => sum + component.strength, 0) / components.length) * 100)
+          : 0;
+        mentalMapCopy.textContent = `${foundationDisplayHandLabel(chapter)} · ${foundationDisplayTitle(chapter)} · Synapsenstärke ${averageStrength}%`;
+
+        const fragment = document.createDocumentFragment();
+        const svgNs = "http://www.w3.org/2000/svg";
+        const columnCount = components.length > 6 ? 3 : components.length > 3 ? 2 : 1;
+        const rowCount = Math.max(1, Math.ceil(Math.max(components.length, 1) / columnCount));
+        const componentWidth = columnCount >= 3 ? 106 : columnCount === 2 ? 128 : 178;
+        const componentHeight = 36;
+        const componentGapX = 12;
+        const componentGapY = 10;
+        const componentAreaWidth = (columnCount * componentWidth) + ((columnCount - 1) * componentGapX);
+        const componentAreaHeight = (rowCount * componentHeight) + ((rowCount - 1) * componentGapY);
+        const svgHeight = Math.max(160, componentAreaHeight + 32);
+        const centerY = svgHeight / 2;
+        const sensory = { x: 110, y: centerY };
+        const center = { x: 250, y: centerY };
+        const motor = { x: 390, y: centerY };
+        const relayTop = { x: 318, y: centerY - 34 };
+        const relayBottom = { x: 318, y: centerY + 34 };
+        const componentColumnX = 446;
+        const componentStartY = Math.max(16, (svgHeight - componentAreaHeight) / 2);
+
+        mentalMapSvg.setAttribute("viewBox", `0 0 640 ${svgHeight}`);
+        mentalMapSvg.style.height = `${svgHeight}px`;
+
+        const append = (element) => {
+          fragment.appendChild(element);
+          return element;
+        };
+        const line = (x1, y1, x2, y2, width, strong = false, delay = "0s") => {
+          const element = document.createElementNS(svgNs, "line");
+          element.setAttribute("x1", x1);
+          element.setAttribute("y1", y1);
+          element.setAttribute("x2", x2);
+          element.setAttribute("y2", y2);
+          element.setAttribute("stroke-width", width);
+          element.setAttribute("class", `mental-map-link${strong ? " is-strong" : ""}`);
+          element.style.animationDelay = delay;
+          return append(element);
+        };
+        const circle = (x, y, r, className, delay = "0s") => {
+          const element = document.createElementNS(svgNs, "circle");
+          element.setAttribute("cx", x);
+          element.setAttribute("cy", y);
+          element.setAttribute("r", r);
+          element.setAttribute("class", className);
+          element.style.animationDelay = delay;
+          return append(element);
+        };
+        const text = (x, y, value, className) => {
+          const element = document.createElementNS(svgNs, "text");
+          element.setAttribute("x", x);
+          element.setAttribute("y", y);
+          element.setAttribute("class", className);
+          element.textContent = value;
+          return append(element);
+        };
+        const path = (d, className, width, delay = "0s") => {
+          const element = document.createElementNS(svgNs, "path");
+          element.setAttribute("d", d);
+          element.setAttribute("fill", "none");
+          element.setAttribute("stroke-width", width);
+          element.setAttribute("class", className);
+          element.style.animationDelay = delay;
+          return append(element);
+        };
+
+        path(`M78,20 C30,20 18,${Math.max(54, centerY - 24)} 18,${centerY} C18,${Math.min(svgHeight - 38, centerY + 44)} 48,${svgHeight - 16} 94,${svgHeight - 16} L438,${svgHeight - 16} C525,${svgHeight - 16} 610,${Math.min(svgHeight - 42, centerY + 40)} 620,${centerY} C610,${Math.max(34, centerY - 42)} 516,16 424,16 Z`, "mental-map-brain", 1.5);
+        circle(sensory.x, sensory.y, 18, "mental-map-sensory", "0s");
+        text(sensory.x, sensory.y - 2, "Sehen", "mental-map-label");
+        text(sensory.x, sensory.y + 18, "Input", "mental-map-strength");
+        circle(center.x, center.y, 24, "mental-map-core", "0.1s");
+        text(center.x, center.y - 3, "Zuordnung", "mental-map-label");
+        text(center.x, center.y + 18, `${averageStrength}%`, "mental-map-strength");
+        circle(motor.x, motor.y, 18, "mental-map-motor", "0.22s");
+        text(motor.x, motor.y - 2, "Greifen", "mental-map-label");
+        text(motor.x, motor.y + 18, "Output", "mental-map-strength");
+        circle(relayTop.x, relayTop.y, 8, "mental-map-relay", "0.15s");
+        circle(relayBottom.x, relayBottom.y, 8, "mental-map-relay", "0.35s");
+        line(sensory.x + 16, sensory.y, center.x - 28, center.y, 2.2, averageStrength >= 55, "0.1s");
+        line(center.x + 22, center.y - 10, relayTop.x - 7, relayTop.y, 2.4, averageStrength >= 65, "0.16s");
+        line(center.x + 22, center.y + 10, relayBottom.x - 7, relayBottom.y, 2.4, averageStrength >= 65, "0.24s");
+        line(center.x + 24, center.y, motor.x - 18, motor.y, 2.5, averageStrength >= 60, "0.2s");
+        circle((sensory.x + center.x) / 2, sensory.y, 3.4, "mental-map-impulse", "0.15s");
+        circle((center.x + motor.x) / 2, motor.y, 3.4, "mental-map-impulse", "0.35s");
+
+        components.forEach((component, index) => {
+          const columnIndex = Math.floor(index / rowCount);
+          const rowIndex = index % rowCount;
+          const componentX = componentColumnX + (columnIndex * (componentWidth + componentGapX));
+          const componentY = componentStartY + (rowIndex * (componentHeight + componentGapY));
+          const relay = index % 2 === 0 ? relayTop : relayBottom;
+          const strokeWidth = (1.8 + (component.strength * 3.2)).toFixed(2);
+          const targetX = componentX;
+          const targetY = componentY + (componentHeight / 2);
+
+          line(relay.x + 7, relay.y, targetX - 16, targetY, strokeWidth, component.strength >= 0.62, `${(index * 0.18).toFixed(2)}s`);
+          circle(relay.x + ((targetX - relay.x) * 0.42), relay.y + ((targetY - relay.y) * 0.42), 3.1, "mental-map-impulse", `${(index * 0.11).toFixed(2)}s`);
+
+          const rect = document.createElementNS(svgNs, "rect");
+          rect.setAttribute("x", targetX);
+          rect.setAttribute("y", componentY);
+          rect.setAttribute("width", componentWidth);
+          rect.setAttribute("height", componentHeight);
+          rect.setAttribute("rx", "12");
+          rect.setAttribute("class", `mental-map-component${component.strength >= 0.62 ? " is-strong" : ""}`);
+          append(rect);
+
+          const label = document.createElementNS(svgNs, "text");
+          label.setAttribute("x", targetX + 12);
+          label.setAttribute("y", componentY + 14);
+          label.setAttribute("class", "mental-map-component-label");
+          label.textContent = component.label;
+          append(label);
+
+          const notes = document.createElementNS(svgNs, "text");
+          notes.setAttribute("x", targetX + 12);
+          notes.setAttribute("y", componentY + 28);
+          notes.setAttribute("class", "mental-map-component-notes");
+          notes.textContent = component.notes.map((noteName) => foundationPitchLabel(noteName)).join(" - ");
+          append(notes);
+        });
+
+        mentalMapSvg.replaceChildren(fragment);
       }
 
       function foundationChapterMastered(chapter = currentFoundationChapter()) {
@@ -5565,8 +6096,20 @@
         `;
       }
 
+      function trainerPromptHtml(mainHtml, cueText = "", metaText = "") {
+        const cue = cueText ? `<span class="target-description-cue">${escapeHtml(cueText)}</span>` : "";
+        const meta = metaText ? `<span class="target-description-meta">${escapeHtml(metaText)}</span>` : "";
+        return `
+          <div class="target-description-homework">
+            <span class="target-description-task">${mainHtml}</span>
+            ${cue}
+            ${meta}
+          </div>
+        `;
+      }
+
       function renderFoundationPanel() {
-        if (!foundationPanel || !foundationChapters || !foundationTitle || !foundationCopy || !foundationCurrentTarget || !foundationPlayedNote || !foundationAnchor || !foundationMap || !foundationRoute || !foundationProgressCopy || !foundationHint || !foundationNextButton) {
+        if (!foundationPanel || !foundationChapters || !foundationTitle || !foundationCopy || !foundationCurrentTarget || !foundationPlayedNote || !foundationAnchor || !foundationMap || !foundationRoute || !foundationMemory || !foundationProgressCopy || !foundationHint || !foundationNextButton) {
           return;
         }
 
@@ -5583,12 +6126,13 @@
         foundationCopy.textContent = foundationDisplayHandLabel(chapter);
         const shapeText = foundationShapeText(chapter);
         foundationCurrentTarget.textContent = shapeText
-          ? `Form ${shapeText}`
+          ? `Form ${shapeText} · ${foundationMemoryCue(chapter).split(" · ")[0]}`
           : "Taste greifen: warte auf die nächste Note.";
         foundationPlayedNote.textContent = foundationLastPlayedPitch || "Noch nichts gespielt";
         foundationAnchor.textContent = chapter.anchor;
         foundationMap.textContent = chapter.map;
         foundationRoute.textContent = chapter.route;
+        foundationMemory.textContent = foundationMemoryCue(chapter);
         foundationProgressCopy.textContent = `Lektion ${foundationChapterIndex + 1}/${foundationChaptersConfig.length} · ${curriculumProgress.completed}/${curriculumProgress.total} Kapitel fertig · Rechts ${curriculumProgress.rightCompleted}/${curriculumProgress.rightTotal} · Links ${curriculumProgress.leftCompleted}/${curriculumProgress.leftTotal} · ${progress.coverage}% bekannt · ${progress.mastery}% sicher`;
         foundationHint.textContent = "";
         if (foundationPrevButton) {
@@ -5622,6 +6166,7 @@
           fragment.appendChild(button);
         });
         foundationChapters.replaceChildren(fragment);
+        renderMentalMap();
       }
 
       function syncPracticeHomeworkPanel() {
@@ -7550,6 +8095,7 @@
         }
         syncPracticeHomeworkPanel();
         renderFoundationPanel();
+        renderMentalMap();
       }
 
       function noteStatFor(mode, noteName) {
@@ -8002,6 +8548,7 @@
         if (isFoundationModeActive) {
           renderFoundationPanel();
         }
+        renderMentalMap();
 
         if (!authUser || !managementUsers.length) {
           return;
@@ -9591,10 +10138,12 @@
 
         if (isDoubleModeEnabled) {
           const descriptions = [];
+          const cueNotes = [];
 
           activeNote.forEach((note) => {
             const targetKey = document.querySelector(`[data-midi="${note.midi}"]`);
             descriptions.push(`${clefConfigs[note.clef].label}: ${displayNoteName(note.name)}`);
+            cueNotes.push(note.name);
 
             if (targetKey) {
               targetKey.dataset.label = displayNoteName(note.name);
@@ -9615,7 +10164,15 @@
             }
           });
 
-          targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" | ")}</strong>`));
+          targetDescription.innerHTML = foundationPromptHtml(
+            homeworkPracticeDescriptionHtml(
+              trainerPromptHtml(
+                `<strong>${descriptions.join(" | ")}</strong>`,
+                notesSpatialCueText(cueNotes),
+                "Erst Namen lesen, dann die passenden Tastenbilder greifen."
+              )
+            )
+          );
         } else if (Array.isArray(activeNote)) {
           const descriptions = activeNote.map((note) => displayNoteName(note.name));
           if (isFoundationModeActive && foundationCurrentTarget) {
@@ -9624,7 +10181,15 @@
               ? `Form ${shapeText} · ${descriptions.join(" · ")}`
               : descriptions.join(" · ");
           }
-          targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml(`<strong>${descriptions.join(" · ")}</strong>`));
+          targetDescription.innerHTML = foundationPromptHtml(
+            homeworkPracticeDescriptionHtml(
+              trainerPromptHtml(
+                `<strong>${descriptions.join(" · ")}</strong>`,
+                notesSpatialCueText(activeNote.map((note) => note.name)),
+                "Lies den Griff als Form und greife dann das ganze Bild."
+              )
+            )
+          );
 
           activeNote.forEach((note) => {
             const targetKey = keyboard.querySelector(`[data-midi="${note.midi}"]`);
@@ -9648,7 +10213,11 @@
           }
           targetDescription.innerHTML = foundationPromptHtml(
             homeworkPracticeDescriptionHtml(
-              `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`
+              trainerPromptHtml(
+                `${clefConfigs[currentClef].label}${handLabel}: <strong>${displayNoteName(activeNote.name)}</strong>`,
+                noteSpatialCueText(activeNote.name),
+                "Ordne erst den Namen im Notensystem ein, dann greife die Taste im passenden Bereich."
+              )
             ),
             activeNote
           );
