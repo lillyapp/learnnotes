@@ -3692,6 +3692,38 @@
         cursor: pointer;
       }
 
+      .white-key[data-register="subcontra"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(196, 93, 63, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="contra"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(214, 133, 53, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="gross"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(187, 156, 44, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="klein"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(93, 156, 68, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="one-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(47, 107, 255, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="two-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(91, 86, 214, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="three-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(162, 74, 194, 0.2), #ffffff 34%);
+      }
+
+      .white-key[data-register="four-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(214, 70, 150, 0.2), #ffffff 34%);
+      }
+
       .white-key[data-label]::after {
         content: attr(data-label);
         position: absolute;
@@ -3746,6 +3778,38 @@
         border-radius: 0 0 4px 4px;
         background: #111111;
         cursor: pointer;
+      }
+
+      .black-key[data-register="subcontra"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(196, 93, 63, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="contra"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(214, 133, 53, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="gross"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(187, 156, 44, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="klein"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(93, 156, 68, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="one-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(47, 107, 255, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="two-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(91, 86, 214, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="three-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(162, 74, 194, 0.92), #111111 78%);
+      }
+
+      .black-key[data-register="four-line"]:not(.is-target):not(.is-correct):not(.is-wrong) {
+        background: linear-gradient(180deg, rgba(214, 70, 150, 0.92), #111111 78%);
       }
 
       .black-key[data-label]::after {
@@ -9603,6 +9667,7 @@
             key.className = "black-key";
             key.dataset.midi = String(midi);
             key.dataset.note = keyName;
+            key.dataset.register = registerBandForNote(keyName);
             key.setAttribute("aria-hidden", "true");
             key.style.left = `calc((100% / 52) * ${whiteIndex})`;
             blackFragment.appendChild(key);
@@ -9614,6 +9679,7 @@
           key.className = "white-key";
           key.dataset.midi = String(midi);
           key.dataset.note = keyName;
+          key.dataset.register = registerBandForNote(keyName);
           key.setAttribute("aria-hidden", "true");
           whiteFragment.appendChild(key);
         }
@@ -9764,6 +9830,7 @@
             key.className = "black-key";
             key.dataset.midi = String(midi);
             key.dataset.note = keyName;
+            key.dataset.register = registerBandForNote(keyName);
             key.setAttribute("aria-hidden", "true");
             key.style.left = `calc((100% / 52) * ${whiteIndex})`;
             blackFragment.appendChild(key);
@@ -9775,6 +9842,7 @@
           key.className = "white-key";
           key.dataset.midi = String(midi);
           key.dataset.note = keyName;
+          key.dataset.register = registerBandForNote(keyName);
           key.setAttribute("aria-hidden", "true");
           whiteFragment.appendChild(key);
         }
