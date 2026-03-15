@@ -4765,7 +4765,8 @@
       const trainerUiConfig = {
         fastAdvanceMs: 220,
         fastWrongResetMs: 140,
-        fastRoundResetMs: 260
+        fastRoundResetMs: 260,
+        hiddenAnswerRevealMs: 560
       };
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -5212,6 +5213,7 @@
       };
       let prefersSheetLetterReveal = false;
       let isSheetLetterRevealed = false;
+      let isSheetLetterFeedbackVisible = false;
       let notesSessionElapsedMs = 0;
       let notesSessionStartedAt = 0;
       let notesSessionTimerHandle = null;
@@ -10825,7 +10827,7 @@
 
         const shouldShow = !isFoundationModeActive && !isDoubleModeEnabled && Boolean(activeNote?.name);
         sheetNoteToggle.classList.toggle("is-hidden", !shouldShow);
-        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow || !isSheetLetterRevealed);
+        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow || (!isSheetLetterRevealed && !isSheetLetterFeedbackVisible));
 
         if (!shouldShow) {
           sheetNoteLetter.dataset.signal = "unknown";
@@ -10878,6 +10880,22 @@
 
       function resetSheetLetterReveal() {
         isSheetLetterRevealed = prefersSheetLetterReveal;
+        isSheetLetterFeedbackVisible = false;
+      }
+
+      function hiddenAnswerPreviewDelay() {
+        return (!prefersSheetLetterReveal && !isFoundationModeActive && !isDoubleModeEnabled)
+          ? trainerUiConfig.hiddenAnswerRevealMs
+          : 0;
+      }
+
+      function revealHiddenAnswerFeedback(activeNote) {
+        if (!activeNote || prefersSheetLetterReveal || isFoundationModeActive || isDoubleModeEnabled) {
+          return 0;
+        }
+        isSheetLetterFeedbackVisible = true;
+        renderSheetNoteLetter(activeNote);
+        return trainerUiConfig.hiddenAnswerRevealMs;
       }
 
       function clearKeyboardStates() {
@@ -11257,10 +11275,12 @@
           correctMidiNotes.add(midiNote);
           lastPlayedMidi = null;
           activeNote.state = "correct";
+          const activeNoteSnapshot = { ...activeNote };
+          const revealDelay = revealHiddenAnswerFeedback(activeNoteSnapshot);
           activeIndex += 1;
 
           if (rangeChanged) {
-            generateRound();
+            window.setTimeout(generateRound, revealDelay);
             return;
           }
 
@@ -11273,7 +11293,7 @@
             renderFoundationPanel();
             foundationMaybeMarkCompleted();
             maybeAdvanceFoundationChapter();
-            window.setTimeout(generateRound, isFoundationModeActive ? 900 : trainerUiConfig.fastRoundResetMs);
+            window.setTimeout(generateRound, Math.max(isFoundationModeActive ? 900 : trainerUiConfig.fastRoundResetMs, revealDelay));
           }
 
           return;
@@ -11287,9 +11307,10 @@
         queuePriorityNote(activeNote.clef, activeNote.name);
         rememberPromptedNote(activeNote.clef, activeNote.name);
         setActiveState("wrong");
+        const revealDelay = revealHiddenAnswerFeedback(activeNote);
 
         if (rangeChanged) {
-          window.setTimeout(generateRound, isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs);
+          window.setTimeout(generateRound, Math.max(isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs, revealDelay));
           return;
         }
 
@@ -11299,7 +11320,7 @@
             setActiveState("idle");
             markPromptStart();
           }
-        }, isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs);
+        }, Math.max(isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs, revealDelay));
       }
 
       function handlePlayedMidiDouble(midiNote) {
