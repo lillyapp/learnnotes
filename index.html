@@ -2197,6 +2197,45 @@
         display: none;
       }
 
+      .library-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+
+      .library-summary-card {
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        display: grid;
+        gap: 6px;
+      }
+
+      .library-summary-label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .library-summary-value {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1.05;
+        color: var(--text);
+      }
+
+      .library-summary-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--text-soft);
+      }
+
       .sheet-music.is-hidden {
         display: none;
       }
@@ -4386,13 +4425,12 @@
         minimumWindowSize: 5,
         sampleSize: 20,
         growThreshold: 0.98,
-        shrinkThreshold: 0.7,
-        maxLevel: 5
+        shrinkThreshold: 0.7
       };
       const keyboardRange = { start: 21, end: 108 };
       const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
       const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
-      const levelLabels = ["Mittlere C-Lage", "C-Lage", "D-Lage", "E-Lage", "F-Lage"];
+      const levelLabels = ["Insel 1", "Insel 2", "Insel 3", "Insel 4", "Insel 5", "Insel 6"];
       const clefSvgMarkup = {
         treble: `
           <svg viewBox="0 0 88 192" aria-hidden="true">
@@ -4434,17 +4472,17 @@
       const levelRangesByMode = {
         treble: [
           ["C4", "G4"],
-          ["C5", "G5"],
-          ["D5", "A5"],
-          ["E5", "B5"],
-          ["F5", "C6"]
+          ["E4", "C5"],
+          ["G4", "E5"],
+          ["B4", "G5"],
+          ["D5", "B5"],
+          ["F5", "D6"]
         ],
         bass: [
           ["F2", "C3"],
+          ["A2", "E3"],
           ["C3", "G3"],
-          ["D3", "A3"],
-          ["E3", "B3"],
-          ["F3", "C4"]
+          ["E3", "B3"]
         ]
       };
       function raiseNotesOneOctave(noteNames = []) {
@@ -5805,6 +5843,7 @@
         const chapter = currentFoundationChapter();
         const progress = foundationChapterProgress(chapter);
         const curriculumProgress = foundationCurriculumProgress();
+        const eta = masteryEta(80);
         foundationTitle.textContent = foundationDisplayTitle(chapter);
         foundationCopy.textContent = foundationDisplayHandLabel(chapter);
         foundationCurrentTarget.textContent = foundationTargetInstruction(chapter);
@@ -5812,7 +5851,7 @@
         foundationAnchor.textContent = chapter.anchor;
         foundationMap.textContent = chapter.map;
         foundationRoute.textContent = chapter.route;
-        foundationProgressCopy.textContent = `Lektion ${foundationChapterIndex + 1}/${foundationChaptersConfig.length} · ${curriculumProgress.completed}/${curriculumProgress.total} Kapitel fertig · Rechts ${curriculumProgress.rightCompleted}/${curriculumProgress.rightTotal} · Links ${curriculumProgress.leftCompleted}/${curriculumProgress.leftTotal} · ${progress.coverage}% bekannt · ${progress.mastery}% sicher`;
+        foundationProgressCopy.textContent = `Lektion ${foundationChapterIndex + 1}/${foundationChaptersConfig.length} · ${curriculumProgress.completed}/${curriculumProgress.total} Kapitel fertig · Rechts ${curriculumProgress.rightCompleted}/${curriculumProgress.rightTotal} · Links ${curriculumProgress.leftCompleted}/${curriculumProgress.leftTotal} · ${progress.coverage}% bekannt · ${progress.mastery}% sicher · 80%-ETA ${eta.etaLabel}`;
         foundationHint.textContent = "";
         if (foundationPrevButton) {
           foundationPrevButton.disabled = foundationChapterIndex <= 0;
@@ -7813,6 +7852,86 @@
         return noteMasteryScore(mode, noteName) >= 0.82;
       }
 
+      function allTrackedTrainerNotes() {
+        return ["treble", "bass"].flatMap((mode) => rangeOptionsForMode(mode).map((note) => ({
+          mode,
+          name: note.name
+        })));
+      }
+
+      function trainerAverageAttemptMs() {
+        const attempts = Number(timingStats?.attempts || 0);
+        if (!attempts) {
+          return 2200;
+        }
+        return Math.max(900, Number(timingStats.total_ms || 0) / attempts);
+      }
+
+      function formatEtaDuration(milliseconds) {
+        if (!Number.isFinite(milliseconds) || milliseconds <= 0) {
+          return "Ziel erreicht";
+        }
+
+        const totalMinutes = Math.max(1, Math.round(milliseconds / 60000));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        if (hours >= 24) {
+          const days = Math.floor(hours / 24);
+          const remainingHours = hours % 24;
+          return remainingHours ? `${days}d ${remainingHours}h` : `${days}d`;
+        }
+        if (hours > 0) {
+          return minutes ? `${hours}h ${minutes}m` : `${hours}h`;
+        }
+        return `${totalMinutes}m`;
+      }
+
+      function masteryEta(targetPercent = 80) {
+        const notes = allTrackedTrainerNotes();
+        const averageAttemptMs = trainerAverageAttemptMs();
+        let secureNotes = 0;
+        let remainingAttempts = 0;
+
+        for (const note of notes) {
+          const stat = noteStatFor(note.mode, note.name);
+          const attempts = Number(stat?.attempts || 0);
+          const scorePercent = Math.round(noteMasteryScore(note.mode, note.name) * 100);
+
+          if (scorePercent >= targetPercent) {
+            secureNotes += 1;
+            continue;
+          }
+
+          const accuracy = noteAccuracy(stat);
+          const speedMs = noteAverageResponseMs(stat) || averageAttemptMs;
+          const confusionTotal = Object.values(stat?.confusions || {}).reduce((sum, count) => sum + Number(count || 0), 0);
+          const deficit = Math.max(0, targetPercent - scorePercent);
+          const baseAttempts = attempts === 0 ? 6 : Math.max(0, 4 - attempts);
+          const accuracyPenalty = Math.max(0, (0.86 - accuracy) * 7);
+          const speedPenalty = Math.max(0, (speedMs - 1700) / 500);
+          const confusionPenalty = confusionTotal * 0.35;
+          remainingAttempts += baseAttempts + (deficit / 7) + accuracyPenalty + speedPenalty + confusionPenalty;
+        }
+
+        const roundedAttempts = Math.max(0, Math.ceil(remainingAttempts));
+        const etaMs = secureNotes >= notes.length
+          ? 0
+          : roundedAttempts * Math.max(1000, averageAttemptMs * 1.12);
+
+        return {
+          targetPercent,
+          totalNotes: notes.length,
+          secureNotes,
+          remainingNotes: Math.max(0, notes.length - secureNotes),
+          remainingAttempts: roundedAttempts,
+          averageAttemptMs,
+          etaMs,
+          etaLabel: formatEtaDuration(etaMs),
+          isComplete: secureNotes >= notes.length
+        };
+      }
+
       function rangeReadyForExpansion(mode, range) {
         const notes = notesInRange(mode, range);
         if (!notes.length) {
@@ -7908,8 +8027,61 @@
         return group;
       }
 
+      function createLibrarySummary() {
+        const eta = masteryEta(80);
+        const summary = document.createElement("section");
+        summary.className = "library-summary";
+
+        const cards = [
+          {
+            label: "80% Ziel",
+            value: `${eta.secureNotes}/${eta.totalNotes}`,
+            copy: eta.isComplete
+              ? "Alle Noten liegen bereits bei mindestens 80% Sicherheit."
+              : `${eta.remainingNotes} Noten muessen noch stabilisiert werden.`
+          },
+          {
+            label: "Geschaetzte Zeit",
+            value: eta.etaLabel,
+            copy: eta.isComplete
+              ? "Aktueller Stand erreicht das Ziel bereits."
+              : `Bei deinem aktuellen Tempo bis alle Noten bei 80% liegen.`
+          },
+          {
+            label: "Naechste Arbeit",
+            value: `${eta.remainingAttempts} Antworten`,
+            copy: `Prognose aus Trefferquote, Reaktionszeit und Verwechslungen.`
+          }
+        ];
+
+        for (const cardData of cards) {
+          const card = document.createElement("article");
+          card.className = "library-summary-card";
+
+          const label = document.createElement("p");
+          label.className = "library-summary-label";
+          label.textContent = cardData.label;
+          card.appendChild(label);
+
+          const value = document.createElement("p");
+          value.className = "library-summary-value";
+          value.textContent = cardData.value;
+          card.appendChild(value);
+
+          const copy = document.createElement("p");
+          copy.className = "library-summary-copy";
+          copy.textContent = cardData.copy;
+          card.appendChild(copy);
+
+          summary.appendChild(card);
+        }
+
+        return summary;
+      }
+
       function renderLibraryPanel() {
         libraryPanel.replaceChildren(
+          createLibrarySummary(),
           createLibraryGroup("treble"),
           createLibraryGroup("bass")
         );
@@ -8565,14 +8737,15 @@
 
       function levelProgressForMode(mode) {
         const state = mode ? srsStates[mode] : null;
+        const maxLevel = levelRangesForMode(mode).length || 1;
 
         if (!mode || !state) {
           return null;
         }
 
         return {
-          level: Math.max(1, Math.min(srsConfig.maxLevel, state.level || 1)),
-          maxLevel: srsConfig.maxLevel
+          level: Math.max(1, Math.min(maxLevel, state.level || 1)),
+          maxLevel
         };
       }
 
@@ -8690,6 +8863,26 @@
       function currentLevelRange(mode) {
         const state = srsStates[mode] || createInitialSrsState(mode);
         return srsRangeFromState(mode, state);
+      }
+
+      function mergedRange(rangeA, rangeB, mode = "treble") {
+        const allNotes = rangeOptionsForMode(mode).map((note) => note.name);
+        const firstStart = allNotes.indexOf(rangeA?.[0]);
+        const firstEnd = allNotes.indexOf(rangeA?.[1]);
+        const secondStart = allNotes.indexOf(rangeB?.[0]);
+        const secondEnd = allNotes.indexOf(rangeB?.[1]);
+
+        if (firstStart === -1 || firstEnd === -1) {
+          return rangeB;
+        }
+        if (secondStart === -1 || secondEnd === -1) {
+          return rangeA;
+        }
+
+        return [
+          allNotes[Math.min(firstStart, secondStart)],
+          allNotes[Math.max(firstEnd, secondEnd)]
+        ];
       }
 
       function activeDoubleRange(mode) {
@@ -9522,6 +9715,18 @@
         return ranges[Math.max(0, Math.min(ranges.length - 1, (state.level || 1) - 1))];
       }
 
+      function srsTrainingRangeFromState(mode, state) {
+        const focusRange = srsRangeFromState(mode, state);
+        const previousLevel = Math.max(1, (state?.level || 1) - 1);
+
+        if (previousLevel === (state?.level || 1)) {
+          return focusRange;
+        }
+
+        const previousRange = srsRangeFromState(mode, { ...state, level: previousLevel });
+        return mergedRange(previousRange, focusRange, mode);
+      }
+
       function notesInRange(mode, range) {
         const allNotes = rangeOptionsForMode(mode).map((note) => note.name);
         const startIndex = allNotes.indexOf(range[0]);
@@ -9540,7 +9745,7 @@
           return;
         }
 
-        selectedRange = srsRangeFromState(activeSrsMode, state);
+        selectedRange = srsTrainingRangeFromState(activeSrsMode, state);
       }
 
       function currentSrsAccuracy() {
@@ -9559,7 +9764,7 @@
           return;
         }
 
-        const range = srsRangeFromState(mode, state);
+        const range = srsTrainingRangeFromState(mode, state);
         const accuracy = state.attempts.length
           ? Math.round((state.attempts.filter(Boolean).length / state.attempts.length) * 100)
           : null;
@@ -9593,7 +9798,7 @@
         const accuracy = currentSrsAccuracy();
         const canGrow = state.level < levelRangesForMode(activeSrsMode).length;
         const canShrink = state.level > 1;
-        const currentRange = srsRangeFromState(activeSrsMode, state);
+        const currentRange = srsTrainingRangeFromState(activeSrsMode, state);
         const readyForExpansion = rangeReadyForExpansion(activeSrsMode, currentRange);
 
         if (accuracy >= srsConfig.growThreshold && canGrow && readyForExpansion) {
@@ -9601,7 +9806,7 @@
           state.level += 1;
 
           state.attempts = [];
-          const nextRange = srsRangeFromState(activeSrsMode, state);
+          const nextRange = srsTrainingRangeFromState(activeSrsMode, state);
           const previousNotes = new Set(notesInRange(activeSrsMode, previousRange));
           state.newNotes = notesInRange(activeSrsMode, nextRange).filter((noteName) => !previousNotes.has(noteName));
           applySrsRange();
@@ -9619,7 +9824,7 @@
           state.attempts = [];
           state.newNotes = [];
           applySrsRange();
-          const nextRange = srsRangeFromState(activeSrsMode, state);
+          const nextRange = srsTrainingRangeFromState(activeSrsMode, state);
           logSrsEvent("level-down", activeSrsMode, state, {
             previousRange: `${previousRange[0]}-${previousRange[1]}`,
             nextRange: `${nextRange[0]}-${nextRange[1]}`
@@ -9669,7 +9874,7 @@
         }
 
         const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
-        const previousRange = srsRangeFromState(mode, state);
+        const previousRange = srsTrainingRangeFromState(mode, state);
         const clampedLevel = Math.max(1, Math.min(ranges.length, nextLevel));
 
         if (state.level === clampedLevel) {
@@ -9679,7 +9884,7 @@
 
         state.level = clampedLevel;
         state.attempts = [];
-        const nextRange = srsRangeFromState(mode, state);
+        const nextRange = srsTrainingRangeFromState(mode, state);
         const previousNotes = new Set(notesInRange(mode, previousRange));
         state.newNotes = notesInRange(mode, nextRange).filter((noteName) => !previousNotes.has(noteName));
 
