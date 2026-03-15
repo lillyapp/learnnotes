@@ -2269,6 +2269,12 @@
         gap: 40px;
       }
 
+      .sheet-note-answer {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
       .sheet-note-letter {
         min-width: 1.4em;
         text-align: left;
@@ -2282,6 +2288,31 @@
       }
 
       .sheet-note-letter.is-hidden {
+        visibility: hidden;
+      }
+
+      .sheet-note-toggle {
+        width: 46px;
+        min-width: 46px;
+        height: 46px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .sheet-note-toggle i,
+      .sheet-note-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .sheet-note-toggle.is-hidden {
         display: none;
       }
 
@@ -3975,7 +4006,12 @@
               <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
               <div class="bar-line" aria-label="bar-line"></div>
             </div>
-            <div class="sheet-note-letter is-hidden" id="sheet-note-letter" aria-live="polite">C</div>
+            <div class="sheet-note-answer">
+              <div class="sheet-note-letter is-hidden" id="sheet-note-letter" aria-live="polite">C</div>
+              <button class="sheet-note-toggle is-hidden" id="sheet-note-toggle" type="button" aria-label="Antwort einblenden" title="Antwort einblenden">
+                <i data-lucide="eye"></i>
+              </button>
+            </div>
           </div>
         </div>
         <div class="sheet-music-double is-hidden" id="sheet-music-double">
@@ -4272,6 +4308,7 @@
       const trainer = document.querySelector(".trainer");
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
+      const sheetNoteToggle = document.getElementById("sheet-note-toggle");
       const practiceHomeworkPanel = document.getElementById("practice-homework-panel");
       const practiceHomeworkCopy = document.getElementById("practice-homework-copy");
       const practiceHomeworkMeta = document.getElementById("practice-homework-meta");
@@ -4785,6 +4822,7 @@
         fastest_ms: null,
         slowest_ms: null
       };
+      let isSheetLetterRevealed = false;
       let notesSessionElapsedMs = 0;
       let notesSessionStartedAt = 0;
       let notesSessionTimerHandle = null;
@@ -9856,19 +9894,24 @@
       }
 
       function renderSheetNoteLetter(activeNote = null) {
-        if (!sheetNoteLetter) {
+        if (!sheetNoteLetter || !sheetNoteToggle) {
           return;
         }
 
         const shouldShow = !isFoundationModeActive && !isDoubleModeEnabled && Boolean(activeNote?.name);
-        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow);
+        sheetNoteToggle.classList.toggle("is-hidden", !shouldShow);
+        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow || !isSheetLetterRevealed);
 
         if (!shouldShow) {
           sheetNoteLetter.textContent = "";
+          sheetNoteToggle.setAttribute("aria-label", "Antwort einblenden");
+          sheetNoteToggle.setAttribute("title", "Antwort einblenden");
           return;
         }
 
         sheetNoteLetter.textContent = displayPitchLetter(activeNote.name);
+        sheetNoteToggle.setAttribute("aria-label", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
+        sheetNoteToggle.setAttribute("title", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
       }
 
       function renderDoubleNotes() {
@@ -9887,6 +9930,10 @@
         doubleTrebleNotesContainer.replaceChildren(trebleFragment);
         renderSheetNoteLetter(null);
         renderKeyboardState();
+      }
+
+      function resetSheetLetterReveal() {
+        isSheetLetterRevealed = false;
       }
 
       function clearKeyboardStates() {
@@ -10117,6 +10164,7 @@
               ...randomNote(),
               state: "idle"
             }));
+        resetSheetLetterReveal();
         activeIndex = 0;
         currentClef = currentNotes[0]?.clef || "treble";
         lastPlayedMidi = null;
@@ -10145,6 +10193,7 @@
           }))
         };
         doublePairState = Array.from({ length: noteCount }, () => ({ bassDone: false, trebleDone: false }));
+        resetSheetLetterReveal();
         activeIndex = 0;
         lastPlayedMidi = null;
         foundationLastPlayedPitch = "";
@@ -10786,6 +10835,10 @@
 
       toggleSrsTrebleButton.addEventListener("click", () => toggleSrsMode("treble"));
       toggleSrsBassButton.addEventListener("click", () => toggleSrsMode("bass"));
+      sheetNoteToggle?.addEventListener("click", () => {
+        isSheetLetterRevealed = !isSheetLetterRevealed;
+        renderSheetNoteLetter(!isDoubleModeEnabled && !isFoundationModeActive ? currentNotes[activeIndex] || null : null);
+      });
       rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("manual:move", event));
       rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("manual:end", event));
       rangeBracketStart.addEventListener("pointerdown", (event) => beginRangeDrag("manual:start", event));
@@ -11481,6 +11534,7 @@
       homeModuleNotes.addEventListener("click", () => {
         isFoundationModeActive = false;
         resetNotesSessionTimer();
+        resetSheetLetterReveal();
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
