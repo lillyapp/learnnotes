@@ -2669,7 +2669,7 @@
 
       .bar {
         position: relative;
-        width: 40em;
+        width: 10em;
         height: 34em;
         background-color: transparent;
         background-image: var(--svg-stave);
@@ -5116,7 +5116,7 @@
 
       function recordResponseTiming() {
         if (!currentPromptStartedAt) {
-          return;
+          return null;
         }
         const elapsed = Math.max(120, Math.round(performance.now() - currentPromptStartedAt));
         timingStats = {
@@ -5126,6 +5126,7 @@
           slowest_ms: timingStats.slowest_ms === null ? elapsed : Math.max(Number(timingStats.slowest_ms || elapsed), elapsed)
         };
         recordLearningActivity();
+        return elapsed;
       }
 
       function isHomeworkModeActive() {
@@ -5224,10 +5225,7 @@
       function foundationOverallProgress() {
         const entries = foundationUniqueEntries();
         const touched = entries.filter((entry) => Number(noteStatFor(entry.clef, entry.name)?.attempts || 0) > 0).length;
-        const secure = entries.filter((entry) => {
-          const stat = noteStatFor(entry.clef, entry.name);
-          return stat && stat.attempts > 0 && (stat.correct / stat.attempts) >= 0.85;
-        }).length;
+        const secure = entries.filter((entry) => noteIsSecure(entry.clef, entry.name)).length;
         return {
           total: entries.length,
           touched,
@@ -5363,10 +5361,7 @@
 
         const entries = foundationChapterEntries(chapter);
         const touched = entries.filter((entry) => Number(noteStatFor(entry.clef, entry.name)?.attempts || 0) > 0).length;
-        const secure = entries.filter((entry) => {
-          const stat = noteStatFor(entry.clef, entry.name);
-          return stat && stat.attempts > 0 && (stat.correct / stat.attempts) >= 0.85;
-        }).length;
+        const secure = entries.filter((entry) => noteIsSecure(entry.clef, entry.name)).length;
         const coverage = entries.length ? Math.round((touched / entries.length) * 100) : 0;
         const mastery = entries.length ? Math.round((secure / entries.length) * 100) : 0;
         return { coverage, mastery };
@@ -7562,15 +7557,87 @@
         return noteStats[mode]?.[noteName] || null;
       }
 
-      function recordNoteStat(mode, noteName, isCorrect) {
+      function noteAccuracy(stat) {
+        const attempts = Number(stat?.attempts || 0);
+        return attempts ? Number(stat.correct || 0) / attempts : 0;
+      }
+
+      function noteAverageResponseMs(stat) {
+        const attempts = Number(stat?.attempts || 0);
+        return attempts ? Number(stat.total_ms || 0) / attempts : null;
+      }
+
+      function noteMasteryScore(mode, noteName) {
+        const stat = noteStatFor(mode, noteName);
+        if (!stat || !stat.attempts) {
+          return 0;
+        }
+
+        const accuracyScore = Math.min(1, noteAccuracy(stat) / 0.92);
+        const speedMs = noteAverageResponseMs(stat);
+        const speedScore = speedMs === null ? 0 : Math.max(0, Math.min(1, (3200 - speedMs) / 1700));
+        const streakScore = Math.max(0, Math.min(1, Number(stat.streak || 0) / 4));
+        const repetitionScore = Math.max(0, Math.min(1, Number(stat.attempts || 0) / 6));
+        return (accuracyScore * 0.42) + (speedScore * 0.23) + (streakScore * 0.2) + (repetitionScore * 0.15);
+      }
+
+      function noteIsSecure(mode, noteName) {
+        const stat = noteStatFor(mode, noteName);
+        if (!stat || Number(stat.attempts || 0) < 4) {
+          return false;
+        }
+        return noteMasteryScore(mode, noteName) >= 0.82;
+      }
+
+      function rangeReadyForExpansion(mode, range) {
+        const notes = notesInRange(mode, range);
+        if (!notes.length) {
+          return false;
+        }
+        return notes.every((noteName) => noteIsSecure(mode, noteName));
+      }
+
+      function queueContrastDrill(mode, targetNoteName, playedNoteName) {
+        if (!mode || !targetNoteName) {
+          return;
+        }
+
+        queuePriorityNote(mode, targetNoteName);
+        if (playedNoteName) {
+          queuePriorityNote(mode, playedNoteName);
+        }
+        queuePriorityNote(mode, targetNoteName);
+      }
+
+      function recordNoteStat(mode, noteName, isCorrect, { responseMs = null, playedNoteName = "" } = {}) {
         if (!mode || !noteName) {
           return;
         }
 
-        const stats = noteStats[mode][noteName] || { attempts: 0, correct: 0 };
+        const stats = noteStats[mode][noteName] || {
+          attempts: 0,
+          correct: 0,
+          streak: 0,
+          total_ms: 0,
+          fastest_ms: null,
+          slowest_ms: null,
+          confusions: {}
+        };
         stats.attempts += 1;
         if (isCorrect) {
           stats.correct += 1;
+          stats.streak = Number(stats.streak || 0) + 1;
+        } else {
+          stats.streak = 0;
+          if (playedNoteName && playedNoteName !== noteName) {
+            stats.confusions = stats.confusions || {};
+            stats.confusions[playedNoteName] = Number(stats.confusions[playedNoteName] || 0) + 1;
+          }
+        }
+        if (responseMs !== null && Number.isFinite(responseMs)) {
+          stats.total_ms = Number(stats.total_ms || 0) + responseMs;
+          stats.fastest_ms = stats.fastest_ms === null ? responseMs : Math.min(Number(stats.fastest_ms || responseMs), responseMs);
+          stats.slowest_ms = stats.slowest_ms === null ? responseMs : Math.max(Number(stats.slowest_ms || responseMs), responseMs);
         }
         noteStats[mode][noteName] = stats;
         syncLiveProgressUi();
@@ -7607,7 +7674,7 @@
           score.className = "library-note-score";
           score.textContent = !stat || stat.attempts === 0
             ? "noch nicht gelernt"
-            : `${Math.round((stat.correct / stat.attempts) * 100)}% sicher`;
+            : `${Math.round(noteMasteryScore(mode, note.name) * 100)}% sicher`;
           item.appendChild(score);
 
           grid.appendChild(item);
@@ -8749,7 +8816,7 @@
       }
 
       function noteSelectionWeight(mode, noteName, isNew = false) {
-        if (!authUser || !mode) {
+        if (!mode) {
           return 1;
         }
 
@@ -8762,11 +8829,14 @@
           return isNew ? 8 : 5;
         }
 
-        const accuracy = stat.correct / stat.attempts;
-        const masteryPenalty = 1 + Math.max(0, desiredAccuracy - accuracy) * 8;
+        const accuracy = noteAccuracy(stat);
+        const masteryGap = 1 - noteMasteryScore(mode, noteName);
+        const confusionTotal = Object.values(stat.confusions || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        const masteryPenalty = 1 + Math.max(0, desiredAccuracy - accuracy) * 8 + (masteryGap * 5);
         const freshnessBoost = Math.max(0.7, 1.7 - Math.min(stat.attempts, 36) / 36);
+        const confusionBoost = 1 + Math.min(2.2, confusionTotal / 3);
         const newNoteBoost = isNew ? 1.8 : 1;
-        return Math.max(0.35, masteryPenalty * freshnessBoost * newNoteBoost);
+        return Math.max(0.35, masteryPenalty * freshnessBoost * confusionBoost * newNoteBoost);
       }
 
       function pickWeightedNote(availableNotes, mode = null) {
@@ -8779,7 +8849,7 @@
           return priorityNote;
         }
 
-        if (!authUser || !mode) {
+        if (!mode) {
           const nonRecent = availableNotes.filter((note) => !isRecentlyPrompted(mode, note.name));
           const source = nonRecent.length ? nonRecent : availableNotes;
           return source[Math.floor(Math.random() * source.length)];
@@ -9266,9 +9336,11 @@
         const accuracy = currentSrsAccuracy();
         const canGrow = state.level < levelRangesForMode(activeSrsMode).length;
         const canShrink = state.level > 1;
+        const currentRange = srsRangeFromState(activeSrsMode, state);
+        const readyForExpansion = rangeReadyForExpansion(activeSrsMode, currentRange);
 
-        if (accuracy >= srsConfig.growThreshold && canGrow) {
-          const previousRange = srsRangeFromState(activeSrsMode, state);
+        if (accuracy >= srsConfig.growThreshold && canGrow && readyForExpansion) {
+          const previousRange = currentRange;
           state.level += 1;
 
           state.attempts = [];
@@ -9285,7 +9357,7 @@
         }
 
         if (accuracy < srsConfig.shrinkThreshold && canShrink) {
-          const previousRange = srsRangeFromState(activeSrsMode, state);
+          const previousRange = currentRange;
           state.level -= 1;
           state.attempts = [];
           state.newNotes = [];
@@ -9297,6 +9369,13 @@
           });
           updateSrsUi();
           return true;
+        }
+
+        if (accuracy >= srsConfig.growThreshold && canGrow && !readyForExpansion) {
+          logSrsEvent("hold", activeSrsMode, state, {
+            reason: "range-not-secure",
+            currentRange: `${currentRange[0]}-${currentRange[1]}`
+          });
         }
 
         return false;
@@ -9877,8 +9956,8 @@
           const matchingNote = currentNotes.find((note) => note.midi === midiNote && note.state !== "correct");
 
           if (matchingNote) {
-            recordResponseTiming();
-            recordNoteStat(matchingNote.clef, matchingNote.name, true);
+            const responseMs = recordResponseTiming();
+            recordNoteStat(matchingNote.clef, matchingNote.name, true, { responseMs });
             correctMidiNotes.add(midiNote);
             matchingNote.state = "correct";
             lastPlayedMidi = null;
@@ -9910,11 +9989,13 @@
             return;
           }
 
-          recordResponseTiming();
+          const responseMs = recordResponseTiming();
+          const playedNoteName = midiNumberToName(midiNote);
           currentNotes.forEach((note) => {
             if (note.state !== "correct") {
               note.state = "wrong";
-              recordNoteStat(note.clef, note.name, false);
+              recordNoteStat(note.clef, note.name, false, { responseMs, playedNoteName });
+              queueContrastDrill(note.clef, note.name, deriveClefForNote(playedNoteName) === note.clef ? playedNoteName : "");
             }
           });
           renderNotes();
@@ -9937,10 +10018,10 @@
 
         if (midiNote === activeNote.midi) {
           rememberPromptedNote(activeNote.clef, activeNote.name);
-          recordResponseTiming();
+          const responseMs = recordResponseTiming();
           const rangeChanged = recordSrsAttempt(true);
           const state = activeSrsState();
-          recordNoteStat(activeNote.clef, activeNote.name, true);
+          recordNoteStat(activeNote.clef, activeNote.name, true, { responseMs });
           maybeAdvanceFoundationChapter();
           void maybeUnlockHomeworkFreePractice();
           if (activeNote.isNew && state) {
@@ -9972,9 +10053,11 @@
           return;
         }
 
-        recordResponseTiming();
+        const responseMs = recordResponseTiming();
         const rangeChanged = recordSrsAttempt(false);
-        recordNoteStat(activeNote.clef, activeNote.name, false);
+        const playedNoteName = midiNumberToName(midiNote);
+        recordNoteStat(activeNote.clef, activeNote.name, false, { responseMs, playedNoteName });
+        queueContrastDrill(activeNote.clef, activeNote.name, deriveClefForNote(playedNoteName) === activeNote.clef ? playedNoteName : "");
         queuePriorityNote(activeNote.clef, activeNote.name);
         rememberPromptedNote(activeNote.clef, activeNote.name);
         setActiveState("wrong");
@@ -10009,22 +10092,22 @@
 
         if (!pairState.bassDone && midiNote === bassNote.midi) {
           rememberPromptedNote("bass", bassNote.name);
-          recordResponseTiming();
+          const responseMs = recordResponseTiming();
           matched = true;
           pairState.bassDone = true;
           bassNote.state = "correct";
           correctMidiNotes.add(midiNote);
-          recordNoteStat("bass", bassNote.name, true);
+          recordNoteStat("bass", bassNote.name, true, { responseMs });
         }
 
         if (!pairState.trebleDone && midiNote === trebleNote.midi) {
           rememberPromptedNote("treble", trebleNote.name);
-          recordResponseTiming();
+          const responseMs = recordResponseTiming();
           matched = true;
           pairState.trebleDone = true;
           trebleNote.state = "correct";
           correctMidiNotes.add(midiNote);
-          recordNoteStat("treble", trebleNote.name, true);
+          recordNoteStat("treble", trebleNote.name, true, { responseMs });
         }
 
         if (matched) {
@@ -10048,17 +10131,20 @@
           return;
         }
 
-        recordResponseTiming();
+        const responseMs = recordResponseTiming();
+        const playedNoteName = midiNumberToName(midiNote);
         if (!pairState.bassDone) {
           bassNote.state = "wrong";
-          recordNoteStat("bass", bassNote.name, false);
+          recordNoteStat("bass", bassNote.name, false, { responseMs, playedNoteName });
+          queueContrastDrill("bass", bassNote.name, deriveClefForNote(playedNoteName) === "bass" ? playedNoteName : "");
           queuePriorityNote("bass", bassNote.name);
           rememberPromptedNote("bass", bassNote.name);
         }
 
         if (!pairState.trebleDone) {
           trebleNote.state = "wrong";
-          recordNoteStat("treble", trebleNote.name, false);
+          recordNoteStat("treble", trebleNote.name, false, { responseMs, playedNoteName });
+          queueContrastDrill("treble", trebleNote.name, deriveClefForNote(playedNoteName) === "treble" ? playedNoteName : "");
           queuePriorityNote("treble", trebleNote.name);
           rememberPromptedNote("treble", trebleNote.name);
         }
