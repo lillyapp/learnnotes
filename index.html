@@ -4779,7 +4779,10 @@
       const keyboardRange = { start: 21, end: 108 };
       const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
       const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
-      const levelLabels = ["Insel 1", "Insel 2", "Insel 3", "Insel 4", "Insel 5", "Insel 6"];
+      const levelLabelsByMode = {
+        treble: ["eingestrichen", "zweigestrichen", "dreigestrichen", "viergestrichen"],
+        bass: ["Subkontra", "Kontra", "grosse", "kleine"]
+      };
       const clefSvgMarkup = {
         treble: `
           <svg viewBox="0 0 88 192" aria-hidden="true">
@@ -4820,18 +4823,16 @@
       };
       const levelRangesByMode = {
         treble: [
-          ["C4", "G4"],
-          ["E4", "C5"],
-          ["G4", "E5"],
-          ["B4", "G5"],
-          ["D5", "B5"],
-          ["F5", "D6"]
+          ["C4", "B4"],
+          ["C5", "B5"],
+          ["C6", "B6"],
+          ["C7", "C8"]
         ],
         bass: [
-          ["F2", "C3"],
-          ["A2", "E3"],
-          ["C3", "G3"],
-          ["E3", "B3"]
+          ["A0", "B0"],
+          ["C1", "B1"],
+          ["C2", "B2"],
+          ["C3", "B3"]
         ]
       };
       function raiseNotesOneOctave(noteNames = []) {
@@ -9205,6 +9206,11 @@
         };
       }
 
+      function levelLabelForMode(mode, level) {
+        const labels = levelLabelsByMode[mode] || [];
+        return labels[Math.max(0, level - 1)] || `Level ${level}`;
+      }
+
       function updateLevelUi() {
         const progress = levelProgressForMode(activeSrsMode);
 
@@ -9225,7 +9231,7 @@
 
         levelIndicator.classList.remove("is-hidden");
         levelIndicator.dataset.signal = signal;
-        levelIndicatorLabel.textContent = `${srsModeConfigs[activeSrsMode].label} ${levelLabels[progress.level - 1] || "Level"}`;
+        levelIndicatorLabel.textContent = `${srsModeConfigs[activeSrsMode].label} ${levelLabelForMode(activeSrsMode, progress.level)}`;
         levelIndicatorValue.textContent = `${progress.level} / ${progress.maxLevel}`;
         renderKeyboardLevels();
       }
@@ -9322,7 +9328,7 @@
       }
 
       function mergedRange(rangeA, rangeB, mode = "treble") {
-        const allNotes = rangeOptionsForMode(mode).map((note) => note.name);
+        const allNotes = srsRangeOptionsForMode(mode).map((note) => note.name);
         const firstStart = allNotes.indexOf(rangeA?.[0]);
         const firstEnd = allNotes.indexOf(rangeA?.[1]);
         const secondStart = allNotes.indexOf(rangeB?.[0]);
@@ -9902,6 +9908,15 @@
         return buildRange(config.range[0], config.range[1], config.reference);
       }
 
+      function srsRangeOptionsForMode(mode) {
+        if (!mode) {
+          return [];
+        }
+
+        const config = clefConfigs[mode];
+        return buildRange(config.range[0], config.range[1], config.reference);
+      }
+
       function populateSchoolRangeSelect(selectElement, mode, selectedValue = "") {
         const options = rangeOptionsForMode(mode);
         selectElement.replaceChildren();
@@ -10427,7 +10442,7 @@
       }
 
       function notesInRange(mode, range) {
-        const allNotes = rangeOptionsForMode(mode).map((note) => note.name);
+        const allNotes = srsRangeOptionsForMode(mode).map((note) => note.name);
         const startIndex = allNotes.indexOf(range[0]);
         const endIndex = allNotes.indexOf(range[1]);
         if (startIndex === -1 || endIndex === -1) {
