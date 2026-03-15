@@ -2360,15 +2360,43 @@
       }
 
       .sheet-note-letter {
-        min-width: 1.6em;
-        text-align: left;
-        font-size: 9em;
+        min-width: 1.72em;
+        width: 1.72em;
+        height: 1.72em;
+        border-radius: 999px;
+        text-align: center;
+        font-size: 5.6em;
         font-weight: 900;
-        line-height: 0.9;
-        letter-spacing: -0.06em;
-        color: rgba(17, 17, 17, 0.9);
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: #ffffff;
+        background: rgba(17, 17, 17, 0.18);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 14px 28px rgba(17, 17, 17, 0.12);
         pointer-events: none;
         user-select: none;
+      }
+
+      .sheet-note-letter[data-signal="unknown"] {
+        background: rgba(120, 126, 138, 0.86);
+      }
+
+      .sheet-note-letter[data-signal="learning"] {
+        background: rgba(47, 107, 255, 0.92);
+      }
+
+      .sheet-note-letter[data-signal="secure"] {
+        background: rgba(29, 122, 60, 0.92);
+      }
+
+      .sheet-note-letter[data-signal="correct"] {
+        background: rgba(29, 155, 57, 0.96);
+      }
+
+      .sheet-note-letter[data-signal="wrong"] {
+        background: rgba(214, 36, 36, 0.94);
       }
 
       .sheet-note-letter.is-hidden {
@@ -3086,6 +3114,34 @@
         height: 100%;
       }
 
+      .note-slot-current-bar {
+        position: absolute;
+        top: 1.4em;
+        bottom: 1.4em;
+        left: 50%;
+        width: 4.5em;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: rgba(120, 126, 138, 0.16);
+        z-index: 0;
+      }
+
+      .note-slot-current-bar[data-signal="learning"] {
+        background: rgba(47, 107, 255, 0.18);
+      }
+
+      .note-slot-current-bar[data-signal="secure"] {
+        background: rgba(29, 122, 60, 0.16);
+      }
+
+      .note-slot-current-bar[data-signal="correct"] {
+        background: rgba(29, 155, 57, 0.18);
+      }
+
+      .note-slot-current-bar[data-signal="wrong"] {
+        background: rgba(214, 36, 36, 0.18);
+      }
+
       .note-badge {
         position: absolute;
         top: 50%;
@@ -3098,6 +3154,7 @@
         user-select: none;
         pointer-events: none;
         animation: noteBadgeFloat 1.5s ease-in-out infinite;
+        z-index: 3;
       }
 
       @keyframes noteBadgeFloat {
@@ -3121,6 +3178,7 @@
         background-color: var(--note-color);
         transform: translate(-50%, calc(-50% + var(--offset)));
         transition: background-color 120ms ease, filter 120ms ease;
+        z-index: 2;
       }
 
       .note.note-down {
@@ -3152,6 +3210,7 @@
         color: var(--staff-ink);
         user-select: none;
         pointer-events: none;
+        z-index: 2;
       }
 
       .white-key.is-foundation-mark,
@@ -3196,6 +3255,7 @@
         background: var(--ledger-color);
         transform: translate(-50%, calc(-50% + var(--offset)));
         transition: background-color 120ms ease, filter 120ms ease;
+        z-index: 1;
       }
 
       .note-slot.is-current .note {
@@ -8006,6 +8066,24 @@
         return noteMasteryScore(mode, noteName) >= 0.82;
       }
 
+      function signalStateForNote(mode, noteName, noteState = "idle") {
+        if (noteState === "correct") {
+          return "correct";
+        }
+        if (noteState === "wrong") {
+          return "wrong";
+        }
+
+        const stat = noteStatFor(mode, noteName);
+        if (!stat || Number(stat.attempts || 0) === 0) {
+          return "unknown";
+        }
+        if (noteMasteryScore(mode, noteName) >= 0.82) {
+          return "secure";
+        }
+        return "learning";
+      }
+
       function libraryRangeOptionsForMode(mode) {
         if (!mode) {
           return [];
@@ -10326,9 +10404,14 @@
       function createNoteSlot(note, index) {
         const slot = document.createElement("div");
         slot.className = "note-slot";
+        const isCurrent = (isFoundationModeActive && isFoundationChordPhase() && note.state !== "correct") || index === activeIndex;
 
-        if ((isFoundationModeActive && isFoundationChordPhase() && note.state !== "correct") || index === activeIndex) {
+        if (isCurrent) {
           slot.classList.add("is-current");
+          const currentBar = document.createElement("div");
+          currentBar.className = "note-slot-current-bar";
+          currentBar.dataset.signal = signalStateForNote(note.clef, note.name, note.state);
+          slot.appendChild(currentBar);
         }
 
         for (const step of ledgerSteps(note.step)) {
@@ -10404,12 +10487,14 @@
 
         if (!shouldShow) {
           sheetNoteLetter.textContent = "";
+          sheetNoteLetter.dataset.signal = "unknown";
           sheetNoteToggle.setAttribute("aria-label", "Antwort einblenden");
           sheetNoteToggle.setAttribute("title", "Antwort einblenden");
           return;
         }
 
         sheetNoteLetter.textContent = displayPitchLetter(activeNote.name);
+        sheetNoteLetter.dataset.signal = signalStateForNote(activeNote.clef, activeNote.name, activeNote.state);
         sheetNoteToggle.setAttribute("aria-label", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
         sheetNoteToggle.setAttribute("title", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
       }
