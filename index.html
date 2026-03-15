@@ -4771,6 +4771,11 @@
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
       const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udHVzZmlmamZiendsdmxpZ3J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTM1NzUsImV4cCI6MjA4ODcyOTU3NX0.Yl3Z3DlJP7_7DsND_H0c6TdFRIcBHGxCO92Z05aQrgY";
+      const HABITS_SUPABASE_PROJECT_REF = "gglgenarpskajkaanknk";
+      const HABITS_SUPABASE_URL = window.HABITS_SUPABASE_URL || `https://${HABITS_SUPABASE_PROJECT_REF}.supabase.co`;
+      const HABITS_SUPABASE_ANON_KEY = window.HABITS_SUPABASE_ANON_KEY || "";
+      const HABITS_AUTO_LOG_HABIT_ID = "7aed83eb-d7c8-4a8c-a797-dd2ff342f12f";
+      const HABITS_AUTO_LOG_MARKER_PREFIX = "kisum-habit-autolog";
       const srsConfig = {
         minimumWindowSize: 5,
         sampleSize: 20,
@@ -5161,7 +5166,9 @@
       let debugConsoleEntries = [];
       let activeSrsMode = null;
       let supabaseClient = null;
+      let habitsSupabaseClient = null;
       let authUser = null;
+      let habitsAuthUser = null;
       let authSubscription = null;
       let remoteSaveTimer = null;
       let isRemoteStateApplying = false;
@@ -5501,6 +5508,185 @@
         return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       }
 
+      function isHabitsSupabaseConfigured() {
+        return Boolean(HABITS_SUPABASE_URL && HABITS_SUPABASE_ANON_KEY);
+      }
+
+      async function initHabitsSupabase() {
+        if (!isHabitsSupabaseConfigured()) {
+          return;
+        }
+
+        habitsSupabaseClient = createClient(HABITS_SUPABASE_URL, HABITS_SUPABASE_ANON_KEY, {
+          auth: {
+            storageKey: "kisum-habits-auth"
+          }
+        });
+
+        const { data, error } = await habitsSupabaseClient.auth.getSession();
+        if (error) {
+          console.error("[Habits] Session konnte nicht geladen werden", error);
+          habitsAuthUser = null;
+          return;
+        }
+
+        habitsAuthUser = data.session?.user || null;
+      }
+
+      async function syncHabitsAuthWithCredentials(email, password, action = "sign-in") {
+        if (!habitsSupabaseClient || !email || !password) {
+          return { ok: false, skipped: true };
+        }
+
+        const request = action === "sign-up"
+          ? habitsSupabaseClient.auth.signUp({ email, password })
+          : habitsSupabaseClient.auth.signInWithPassword({ email, password });
+
+        const { data, error } = await request;
+        if (error) {
+          console.warn("[Habits] Anmeldung fehlgeschlagen", error);
+          habitsAuthUser = null;
+          return { ok: false, error };
+        }
+
+        habitsAuthUser = data.session?.user || data.user || habitsAuthUser;
+        return { ok: true, user: habitsAuthUser };
+      }
+
+      async function signOutHabitsSupabase() {
+        if (!habitsSupabaseClient) {
+          habitsAuthUser = null;
+          return;
+        }
+
+        const { error } = await habitsSupabaseClient.auth.signOut();
+        if (error) {
+          console.warn("[Habits] Abmeldung fehlgeschlagen", error);
+        }
+        habitsAuthUser = null;
+      }
+
+      async function autoLogHabitsPracticeStart() {
+        if (!habitsSupabaseClient || !HABITS_AUTO_LOG_HABIT_ID) {
+          return false;
+        }
+
+        const today = getLocalDateKey();
+        const markerKey = habitsAutoLogMarkerKey(today);
+
+        try {
+          if (localStorage.getItem(markerKey) === "done") {
+            return true;
+          }
+        } catch (_error) {
+          // ignore storage issues and continue with remote check
+        }
+
+        const { data: habit, error: habitError } = await habitsSupabaseClient
+          .from("habits")
+          .select("id, user_id, progress")
+          .eq("id", HABITS_AUTO_LOG_HABIT_ID)
+          .maybeSingle();
+
+        if (habitError) {
+          console.warn("[Habits] Habit konnte nicht geladen werden", habitError);
+          return false;
+        }
+
+        if (!habit) {
+          console.warn("[Habits] Habit nicht gefunden", HABITS_AUTO_LOG_HABIT_ID);
+          return false;
+        }
+
+        const ownerUserId = habit.user_id || habitsAuthUser?.id || null;
+        const weekday = getEnglishWeekdayKey();
+
+        const { data: existingDay, error: existingDayError } = await habitsSupabaseClient
+          .from("habits_days")
+          .select("id")
+          .eq("habit_id", HABITS_AUTO_LOG_HABIT_ID)
+          .eq("date", today)
+          .maybeSingle();
+
+        if (existingDayError) {
+          console.warn("[Habits] Tagesstatus konnte nicht gelesen werden", existingDayError);
+          return false;
+        }
+
+        if (!existingDay) {
+          const { error: dayInsertError } = await habitsSupabaseClient
+            .from("habits_days")
+            .insert({
+              id: crypto.randomUUID(),
+              habit_id: HABITS_AUTO_LOG_HABIT_ID,
+              date: today,
+              weekday,
+              done: true,
+              day: today,
+              user_id: ownerUserId
+            });
+
+          if (dayInsertError) {
+            console.warn("[Habits] habits_days konnte nicht geschrieben werden", dayInsertError);
+            return false;
+          }
+
+          const nextProgress = Math.max(0, Number(habit.progress || 0)) + 1;
+          const { error: habitUpdateError } = await habitsSupabaseClient
+            .from("habits")
+            .update({
+              progress: nextProgress,
+              updated_at: new Date().toISOString()
+            })
+            .eq("id", HABITS_AUTO_LOG_HABIT_ID);
+
+          if (habitUpdateError) {
+            console.warn("[Habits] Habit-Fortschritt konnte nicht aktualisiert werden", habitUpdateError);
+          }
+        }
+
+        const { data: existingLog, error: existingLogError } = await habitsSupabaseClient
+          .from("habits_daily_log")
+          .select("id")
+          .eq("habit_id", HABITS_AUTO_LOG_HABIT_ID)
+          .eq("day", today)
+          .maybeSingle();
+
+        if (existingLogError) {
+          console.warn("[Habits] habits_daily_log konnte nicht gelesen werden", existingLogError);
+          return false;
+        }
+
+        if (!existingLog) {
+          const { error: logInsertError } = await habitsSupabaseClient
+            .from("habits_daily_log")
+            .insert({
+              id: crypto.randomUUID(),
+              user_id: ownerUserId,
+              habit_id: HABITS_AUTO_LOG_HABIT_ID,
+              day: today,
+              done: true
+            });
+
+          if (logInsertError) {
+            console.warn("[Habits] habits_daily_log konnte nicht geschrieben werden", logInsertError);
+            return false;
+          }
+        }
+
+        try {
+          localStorage.setItem(markerKey, "done");
+        } catch (_error) {
+          // ignore storage issues after successful sync
+        }
+
+        console.log("[Habits] Lernstart automatisch geloggt", {
+          habitId: HABITS_AUTO_LOG_HABIT_ID,
+          day: today
+        });
+        return true;
+      }
+
       async function refreshCalendarSubscriptionUi() {
         if (!supabaseClient || !authUser || !userRole) {
           calendarSubscriptionUrl = "";
@@ -5717,6 +5903,21 @@
 
       function todayActivityKey() {
         return new Date().toISOString().slice(0, 10);
+      }
+
+      function getLocalDateKey(date = new Date()) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function getEnglishWeekdayKey(date = new Date()) {
+        return date.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+      }
+
+      function habitsAutoLogMarkerKey(day = getLocalDateKey()) {
+        return `${HABITS_AUTO_LOG_MARKER_PREFIX}:${HABITS_AUTO_LOG_HABIT_ID}:${day}`;
       }
 
       function markPromptStart() {
@@ -8063,6 +8264,10 @@
           }
 
           if (data.session?.user || data.user) {
+            await syncHabitsAuthWithCredentials(email, password, action);
+          }
+
+          if (data.session?.user || data.user) {
             setAuthStatus("Anmeldung wird abgeschlossen...", "success");
           } else if (action === "sign-up") {
             setAuthStatus("Registrierung angelegt. Falls Mail-Bestätigung aktiv ist, bestätige zuerst deine E-Mail.", "success");
@@ -8084,6 +8289,7 @@
         authBusy = true;
         updateAuthUi();
         try {
+          await signOutHabitsSupabase();
           const { error } = await supabaseClient.auth.signOut();
 
           if (error) {
@@ -8102,6 +8308,8 @@
       }
 
       async function initSupabase() {
+        await initHabitsSupabase();
+
         if (!isSupabaseConfigured()) {
           updateAuthUi();
           return;
@@ -12509,6 +12717,7 @@
         isLibraryVisible = false;
         updateModeUi();
         generateRound();
+        void autoLogHabitsPracticeStart();
       });
       homeModuleIceCream.addEventListener("click", () => {
         setSchoolStatus("Ice-Cream-Modul ist noch nicht belegt.", "");
