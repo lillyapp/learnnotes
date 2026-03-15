@@ -4759,7 +4759,8 @@
       const noteCount = 1;
       const practiceConfig = {
         recentPromptWindow: 3,
-        retryQueueLimit: 12
+        retryQueueLimit: 12,
+        adaptiveJumpHistory: 2
       };
       const trainerUiConfig = {
         fastAdvanceMs: 220,
@@ -9506,6 +9507,108 @@
         return recentPromptHistory.includes(`${mode}:${noteName}`);
       }
 
+      function recentPromptedNotesForMode(mode, limit = practiceConfig.adaptiveJumpHistory) {
+        if (!mode || limit <= 0) {
+          return [];
+        }
+
+        const notes = [];
+        for (const entry of recentPromptHistory) {
+          const [entryMode, noteName] = String(entry || "").split(":");
+          if (entryMode !== mode || !noteName) {
+            continue;
+          }
+          notes.push(noteName);
+          if (notes.length >= limit) {
+            break;
+          }
+        }
+        return notes;
+      }
+
+      function diatonicDistanceBetween(leftNoteName, rightNoteName) {
+        if (!leftNoteName || !rightNoteName) {
+          return 0;
+        }
+        return Math.abs(diatonicValue(leftNoteName) - diatonicValue(rightNoteName));
+      }
+
+      function adaptiveReadingStrictness(mode, availableNotes) {
+        if (!mode || !availableNotes.length) {
+          return 0;
+        }
+
+        const scores = availableNotes.map((note) => noteMasteryScore(mode, note.name));
+        const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+        const secureShare = availableNotes.filter((note) => noteIsSecure(mode, note.name)).length / availableNotes.length;
+        return Math.max(0, Math.min(1, (averageScore * 0.72) + (secureShare * 0.28)));
+      }
+
+      function minAdaptiveJumpDistance(strictness) {
+        if (strictness >= 0.84) {
+          return 5;
+        }
+        if (strictness >= 0.72) {
+          return 4;
+        }
+        if (strictness >= 0.58) {
+          return 3;
+        }
+        if (strictness >= 0.46) {
+          return 2;
+        }
+        return 0;
+      }
+
+      function maxAdaptiveNeighborDistance(strictness) {
+        if (strictness <= 0.2) {
+          return 1;
+        }
+        if (strictness <= 0.32) {
+          return 2;
+        }
+        if (strictness <= 0.42) {
+          return 3;
+        }
+        return 0;
+      }
+
+      function applyAdaptiveJumpFilter(candidates, mode) {
+        if (!mode || candidates.length < 3) {
+          return candidates;
+        }
+
+        const strictness = adaptiveReadingStrictness(mode, candidates);
+        const recentNotes = recentPromptedNotesForMode(mode);
+        if (!recentNotes.length) {
+          return candidates;
+        }
+
+        const maximumNeighborDistance = maxAdaptiveNeighborDistance(strictness);
+        if (maximumNeighborDistance) {
+          const nearby = candidates.filter((note) =>
+            recentNotes.some((recentNoteName) => diatonicDistanceBetween(note.name, recentNoteName) <= maximumNeighborDistance)
+          );
+
+          if (nearby.length >= Math.max(2, Math.floor(candidates.length * 0.25))) {
+            return nearby;
+          }
+        }
+
+        const minimumDistance = minAdaptiveJumpDistance(strictness);
+        if (!minimumDistance) {
+          return candidates;
+        }
+
+        const filtered = candidates.filter((note) =>
+          recentNotes.every((recentNoteName) => diatonicDistanceBetween(note.name, recentNoteName) >= minimumDistance)
+        );
+
+        return filtered.length >= Math.max(2, Math.floor(candidates.length * 0.3))
+          ? filtered
+          : candidates;
+      }
+
       function queuePriorityNote(mode, noteName) {
         if (!mode || !noteName) {
           return;
@@ -9768,25 +9871,26 @@
         const state = srsStates[mode];
         const nonRecent = availableNotes.filter((note) => !isRecentlyPrompted(mode, note.name));
         const candidates = nonRecent.length ? nonRecent : availableNotes;
-        const weights = candidates.map((note) =>
+        const adaptiveCandidates = applyAdaptiveJumpFilter(candidates, mode);
+        const weights = adaptiveCandidates.map((note) =>
           noteSelectionWeight(mode, note.name, Boolean(state?.newNotes?.includes(note.name)))
         );
         const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
 
         if (!(totalWeight > 0)) {
-          return candidates[Math.floor(Math.random() * candidates.length)];
+          return adaptiveCandidates[Math.floor(Math.random() * adaptiveCandidates.length)];
         }
 
         let threshold = Math.random() * totalWeight;
 
-        for (let index = 0; index < candidates.length; index += 1) {
+        for (let index = 0; index < adaptiveCandidates.length; index += 1) {
           threshold -= weights[index];
           if (threshold <= 0) {
-            return candidates[index];
+            return adaptiveCandidates[index];
           }
         }
 
-        return candidates[candidates.length - 1];
+        return adaptiveCandidates[adaptiveCandidates.length - 1];
       }
 
       function rangeOptionsForMode(mode) {
