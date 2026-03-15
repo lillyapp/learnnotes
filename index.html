@@ -2259,14 +2259,17 @@
         margin: 0 auto;
         padding-left: 16em;
         overflow: visible;
-        position: relative;
+        display: grid;
+        align-items: center;
+      }
+
+      .sheet-note-group {
+        display: flex;
+        align-items: center;
+        gap: 40px;
       }
 
       .sheet-note-letter {
-        position: absolute;
-        left: calc(100% + 24px);
-        top: 50%;
-        transform: translateY(-50%);
         min-width: 1.4em;
         text-align: left;
         font-size: 9em;
@@ -3965,13 +3968,15 @@
           <div class="foundation-chapters is-hidden" id="foundation-chapters"></div>
         </section>
         <div class="sheet-music">
-          <div class="bar">
-            <div class="stave-header"></div>
-            <div class="clef-symbol" id="clef-symbol" data-clef="treble" aria-hidden="true"></div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
-            <div class="bar-line" aria-label="bar-line"></div>
+          <div class="sheet-note-group">
+            <div class="bar">
+              <div class="stave-header"></div>
+              <div class="clef-symbol" id="clef-symbol" data-clef="treble" aria-hidden="true"></div>
+              <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
+              <div class="bar-line" aria-label="bar-line"></div>
+            </div>
+            <div class="sheet-note-letter is-hidden" id="sheet-note-letter" aria-live="polite">C</div>
           </div>
-          <div class="sheet-note-letter is-hidden" id="sheet-note-letter" aria-live="polite">C</div>
         </div>
         <div class="sheet-music-double is-hidden" id="sheet-music-double">
           <div class="bar">
