@@ -96,7 +96,7 @@
         }
 
         .trainer.is-foundation-mode .sheet-music {
-          padding-left: 14em;
+          padding-left: 16em;
         }
       }
 
@@ -106,15 +106,17 @@
         width: 100%;
         margin: 0;
         align-self: start;
+        max-height: calc(100vh - 220px);
       }
 
       .trainer.is-foundation-mode .sheet-music {
         grid-column: 1;
         grid-row: 1;
-        width: 100%;
-        margin: 0;
+        width: max-content;
+        max-width: 100%;
+        margin: 0 auto;
         padding-left: 16em;
-        justify-self: stretch;
+        justify-self: center;
       }
 
       .trainer.is-foundation-mode .keyboard {
@@ -2049,6 +2051,45 @@
         color: var(--text);
       }
 
+      .session-timer {
+        width: 70px;
+        min-width: 70px;
+        height: 70px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(47, 107, 255, 0.14), transparent 58%),
+          var(--surface);
+        display: grid;
+        place-items: center;
+        padding: 8px;
+        text-align: center;
+        box-shadow: 0 10px 24px rgba(17, 17, 17, 0.06);
+      }
+
+      .session-timer.is-hidden {
+        display: none;
+      }
+
+      .session-timer-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .session-timer-value {
+        display: block;
+        margin-top: 3px;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+
       .toolbar-button {
         flex: 0 0 46px;
         width: 46px;
@@ -2212,12 +2253,33 @@
       }
 
       .sheet-music {
-        font-size: min(2.52vw, 1.6vh);
+        font-size: min(3.62vw, 2.3vh);
         width: max-content;
         max-width: 100%;
         margin: 0 auto;
         padding-left: 16em;
         overflow: visible;
+        position: relative;
+      }
+
+      .sheet-note-letter {
+        position: absolute;
+        left: calc(100% + 24px);
+        top: 50%;
+        transform: translateY(-50%);
+        min-width: 1.4em;
+        text-align: left;
+        font-size: 9em;
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: -0.06em;
+        color: rgba(17, 17, 17, 0.9);
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .sheet-note-letter.is-hidden {
+        display: none;
       }
 
       .practice-homework-panel {
@@ -2263,16 +2325,21 @@
       }
 
       .foundation-panel {
-        width: min(100%, 980px);
+        width: 100%;
         margin: 0 auto 8px;
-        padding: 12px 14px;
+        padding: 16px 18px;
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 24px;
         background: rgba(255, 255, 255, 0.92);
         display: grid;
-        gap: 8px;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 10px;
         position: relative;
         isolation: isolate;
+        min-height: 100%;
+        min-width: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
       }
 
       .foundation-panel.is-hidden {
@@ -2287,26 +2354,38 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+        flex-wrap: wrap;
         gap: 12px;
+      }
+
+      .foundation-topline > :first-child {
+        flex: 1 1 240px;
+        min-width: 0;
       }
 
       .foundation-nav {
         display: flex;
         align-items: center;
-        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
       }
 
       .foundation-nav-group {
         display: grid;
-        gap: 6px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
         justify-items: end;
+        flex: 0 1 auto;
+        min-width: min(100%, 220px);
       }
 
       .foundation-loop-timer {
-        min-height: 18px;
-        font-size: 11px;
+        min-height: 22px;
+        font-size: clamp(12px, 0.85vw, 14px);
         font-weight: 700;
         color: var(--text-soft);
+        text-align: right;
       }
 
       .foundation-nav-button.is-active {
@@ -2334,37 +2413,40 @@
 
       .foundation-title {
         margin: 0;
-        font-size: 17px;
+        font-size: clamp(18px, 1.55vw, 24px);
         font-weight: 800;
         color: var(--text);
+        line-height: 1.05;
+        overflow-wrap: anywhere;
       }
 
       .foundation-copy {
         margin: 6px 0 0;
         display: inline-flex;
         align-items: center;
-        min-height: 26px;
-        padding: 0 10px;
+        min-height: 34px;
+        padding: 0 14px;
         border-radius: 999px;
         background: rgba(47, 107, 255, 0.08);
         border: 1px solid rgba(47, 107, 255, 0.18);
         color: #2f6bff;
-        font-size: 12px;
+        font-size: clamp(13px, 1vw, 16px);
         font-weight: 800;
         line-height: 1;
         width: fit-content;
+        max-width: 100%;
       }
 
       .foundation-hint,
       .foundation-progress-copy {
         margin: 0;
         color: var(--text-soft);
-        font-size: 12px;
-        line-height: 1.45;
+        font-size: clamp(12px, 0.9vw, 15px);
+        line-height: 1.4;
       }
 
       .foundation-progress-copy {
-        font-size: 12px;
+        font-size: clamp(12px, 0.9vw, 15px);
       }
 
       .foundation-hint:empty {
@@ -2372,10 +2454,10 @@
       }
 
       .foundation-square {
-        min-height: min(42vh, 340px);
+        min-height: 100%;
         display: grid;
         align-content: start;
-        gap: 8px;
+        gap: 10px;
       }
 
       .foundation-played-note-card {
@@ -2384,14 +2466,14 @@
 
       .foundation-played-note-question {
         margin: 0;
-        font-size: 12px;
+        font-size: 16px;
         color: var(--text-soft);
       }
 
       .foundation-played-note-value {
         margin: 0;
         min-height: 44px;
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 800;
         letter-spacing: -0.03em;
         color: var(--text);
@@ -2416,7 +2498,8 @@
       .foundation-chapters {
         display: flex;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 8px;
+        max-width: 100%;
       }
 
       .foundation-chapters.is-hidden {
@@ -2424,16 +2507,17 @@
       }
 
       .foundation-chip {
-        min-height: 30px;
-        padding: 0 10px;
+        min-height: 36px;
+        padding: 0 12px;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--surface);
         color: var(--text);
         font: inherit;
-        font-size: 11px;
+        font-size: clamp(11px, 0.82vw, 13px);
         font-weight: 700;
         cursor: pointer;
+        max-width: 100%;
       }
 
       .foundation-chip.is-active {
@@ -2454,17 +2538,17 @@
 
       .foundation-map-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
       }
 
       .foundation-map-card {
-        padding: 8px 10px;
+        padding: 10px 12px;
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 18px;
         background: var(--surface);
         display: grid;
-        gap: 4px;
+        gap: 6px;
       }
 
       .foundation-map-label {
@@ -2476,32 +2560,34 @@
       }
 
       .foundation-map-label i {
-        width: 14px;
-        height: 14px;
+        width: 18px;
+        height: 18px;
       }
 
       .foundation-map-value {
         margin: 0;
-        font-size: 12px;
+        font-size: clamp(13px, 0.92vw, 15px);
         font-weight: 700;
         color: var(--text);
+        line-height: 1.35;
+        overflow-wrap: anywhere;
       }
 
       @media (max-height: 860px) {
         .foundation-panel {
-          padding: 10px 12px;
-          gap: 6px;
+          padding: 12px 14px;
+          gap: 8px;
         }
 
         .foundation-square {
-          min-height: min(34vh, 250px);
+          min-height: 100%;
         }
 
         .foundation-copy,
         .foundation-hint,
         .foundation-progress-copy,
         .foundation-map-value {
-          font-size: 11px;
+          font-size: 13px;
         }
       }
 
@@ -2514,31 +2600,21 @@
         }
 
         .trainer.is-foundation-mode .sheet-music {
-          padding-left: 12em;
-          font-size: min(2.05vw, 1.22vh);
+          padding-left: 16em;
+          font-size: min(3.62vw, 2.3vh);
         }
 
         .trainer.is-foundation-mode .foundation-panel {
-          padding: 10px 11px;
-          gap: 6px;
-        }
-
-        .foundation-topline {
+          padding: 12px 14px;
           gap: 8px;
         }
 
-        .foundation-title {
-          font-size: 15px;
-        }
-
-        .foundation-copy {
-          min-height: 22px;
-          padding: 0 8px;
-          font-size: 11px;
+        .foundation-topline {
+          gap: 14px;
         }
 
         .foundation-nav {
-          gap: 4px;
+          gap: 8px;
         }
 
         .foundation-nav-button {
@@ -2547,8 +2623,8 @@
         }
 
         .foundation-square {
-          min-height: min(28vh, 205px);
-          gap: 6px;
+          min-height: 100%;
+          gap: 8px;
         }
 
         .foundation-played-note-question,
@@ -2556,26 +2632,45 @@
         .foundation-progress-copy,
         .foundation-map-value,
         .foundation-loop-timer {
-          font-size: 10px;
+          font-size: 12px;
         }
 
         .foundation-played-note-value {
           min-height: 38px;
           padding: 8px 10px;
-          font-size: 20px;
+          font-size: 28px;
         }
 
         .foundation-map-grid {
-          gap: 6px;
+          gap: 8px;
         }
 
         .foundation-map-card {
-          padding: 7px 8px;
-          border-radius: 14px;
+          padding: 9px 10px;
+          border-radius: 16px;
         }
 
         .trainer.is-foundation-mode .keyboard {
           height: min(17vh, 150px);
+        }
+      }
+
+      @media (max-width: 1440px) {
+        .foundation-map-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .foundation-nav-group {
+          width: 100%;
+          justify-items: start;
+        }
+
+        .foundation-nav {
+          justify-content: flex-start;
+        }
+
+        .foundation-loop-timer {
+          text-align: left;
         }
       }
 
@@ -2600,7 +2695,7 @@
 
         .trainer.is-foundation-mode .sheet-music {
           grid-row: 2;
-          padding-left: 10em;
+          padding-left: 16em;
         }
 
         .trainer.is-foundation-mode .keyboard {
@@ -3444,6 +3539,10 @@
             <span class="level-indicator-label" id="level-indicator-label">Level</span>
             <span class="level-indicator-value" id="level-indicator-value">1 / 5</span>
           </div>
+          <div class="session-timer is-hidden" id="session-timer" aria-live="polite">
+            <span class="session-timer-label">Session</span>
+            <span class="session-timer-value" id="session-timer-value">00:00</span>
+          </div>
         </div>
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
           <div class="auth-heading">
@@ -3872,6 +3971,7 @@
             <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
+          <div class="sheet-note-letter is-hidden" id="sheet-note-letter" aria-live="polite">C</div>
         </div>
         <div class="sheet-music-double is-hidden" id="sheet-music-double">
           <div class="bar">
@@ -4186,6 +4286,8 @@
       const levelIndicator = document.getElementById("level-indicator");
       const levelIndicatorLabel = document.getElementById("level-indicator-label");
       const levelIndicatorValue = document.getElementById("level-indicator-value");
+      const sessionTimer = document.getElementById("session-timer");
+      const sessionTimerValue = document.getElementById("session-timer-value");
       const trainerInfo = document.getElementById("trainer-info");
       const libraryView = document.getElementById("library-view");
       const libraryBackButton = document.getElementById("library-back-button");
@@ -4214,6 +4316,7 @@
       const doubleTrebleClef = document.getElementById("double-treble-clef");
       const doubleBassNotesContainer = document.getElementById("double-bass-notes");
       const doubleTrebleNotesContainer = document.getElementById("double-treble-notes");
+      const sheetNoteLetter = document.getElementById("sheet-note-letter");
       const whiteKeysContainer = document.getElementById("white-keys");
       const blackKeysContainer = document.getElementById("black-keys");
       const midiIndicator = document.getElementById("midi-indicator");
@@ -4228,6 +4331,11 @@
       const practiceConfig = {
         recentPromptWindow: 3,
         retryQueueLimit: 12
+      };
+      const trainerUiConfig = {
+        fastAdvanceMs: 220,
+        fastWrongResetMs: 140,
+        fastRoundResetMs: 260
       };
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -4672,6 +4780,9 @@
         fastest_ms: null,
         slowest_ms: null
       };
+      let notesSessionElapsedMs = 0;
+      let notesSessionStartedAt = 0;
+      let notesSessionTimerHandle = null;
       let currentPromptStartedAt = 0;
       let homeworkRangePickerTarget = "treble:start";
       let activeHomeworkRangeDrag = null;
@@ -5079,6 +5190,77 @@
         syncPracticeHomeworkPanel();
       }
 
+      function formatSessionTimer(milliseconds) {
+        const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        if (hours > 0) {
+          return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        }
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function currentNotesSessionElapsedMs() {
+        if (!notesSessionStartedAt) {
+          return notesSessionElapsedMs;
+        }
+        return notesSessionElapsedMs + Math.max(0, Date.now() - notesSessionStartedAt);
+      }
+
+      function renderSessionTimer() {
+        if (!sessionTimerValue) {
+          return;
+        }
+        sessionTimerValue.textContent = formatSessionTimer(currentNotesSessionElapsedMs());
+      }
+
+      function stopNotesSessionTimer() {
+        if (notesSessionStartedAt) {
+          notesSessionElapsedMs = currentNotesSessionElapsedMs();
+          notesSessionStartedAt = 0;
+        }
+        if (notesSessionTimerHandle) {
+          window.clearInterval(notesSessionTimerHandle);
+          notesSessionTimerHandle = null;
+        }
+        renderSessionTimer();
+      }
+
+      function startNotesSessionTimer() {
+        if (notesSessionStartedAt) {
+          return;
+        }
+        notesSessionStartedAt = Date.now();
+        renderSessionTimer();
+        if (notesSessionTimerHandle) {
+          window.clearInterval(notesSessionTimerHandle);
+        }
+        notesSessionTimerHandle = window.setInterval(renderSessionTimer, 1000);
+      }
+
+      function resetNotesSessionTimer() {
+        notesSessionElapsedMs = 0;
+        notesSessionStartedAt = 0;
+        if (notesSessionTimerHandle) {
+          window.clearInterval(notesSessionTimerHandle);
+          notesSessionTimerHandle = null;
+        }
+        renderSessionTimer();
+      }
+
+      function syncNotesSessionTimer(isVisible) {
+        if (!sessionTimer) {
+          return;
+        }
+        sessionTimer.classList.toggle("is-hidden", !isVisible);
+        if (isVisible) {
+          startNotesSessionTimer();
+          return;
+        }
+        stopNotesSessionTimer();
+      }
+
       function syncHomeworkAttentionUi() {
         if (!homeModuleNotesAlert) {
           return;
@@ -5368,7 +5550,7 @@
       }
 
       function foundationChapterMastered(chapter = currentFoundationChapter()) {
-        return Boolean(foundationChapterCompletions[chapter?.id]);
+        return Boolean(foundationChapterCompletions[chapter?.id]) || foundationChapterReadyToComplete(chapter);
       }
 
       function formatFoundationLoopTimer(milliseconds) {
@@ -5582,10 +5764,7 @@
         const curriculumProgress = foundationCurriculumProgress();
         foundationTitle.textContent = foundationDisplayTitle(chapter);
         foundationCopy.textContent = foundationDisplayHandLabel(chapter);
-        const shapeText = foundationShapeText(chapter);
-        foundationCurrentTarget.textContent = shapeText
-          ? `Form ${shapeText}`
-          : "Taste greifen: warte auf die nächste Note.";
+        foundationCurrentTarget.textContent = foundationTargetInstruction(chapter);
         foundationPlayedNote.textContent = foundationLastPlayedPitch || "Noch nichts gespielt";
         foundationAnchor.textContent = chapter.anchor;
         foundationMap.textContent = chapter.map;
@@ -7525,6 +7704,7 @@
           isLibraryVisible = false;
         }
         const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
+        const isStandardTrainerVisible = !hidesTrainerContent && !isFoundationMode;
         midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
@@ -7549,6 +7729,7 @@
         if (hidesTrainerContent || !isFoundationMode) {
           clearFoundationLoopTimer();
         }
+        syncNotesSessionTimer(isStandardTrainerVisible);
         syncPracticeHomeworkPanel();
         renderFoundationPanel();
       }
@@ -8669,7 +8850,40 @@
       }
 
       function shouldRevealKeyboardTarget() {
-        return isFoundationModeActive || isRangeSelectorVisible;
+        return isRangeSelectorVisible;
+      }
+
+      function foundationTargetInstruction(chapter = currentFoundationChapter()) {
+        if (!chapter) {
+          return "Lies die Note im Notensystem und finde die passende Taste.";
+        }
+        if (isFoundationChordPhase(chapter)) {
+          return "Lies das gezeigte Klangbild im Notensystem und greife alle Toene.";
+        }
+        if (chapter.includeBlack) {
+          return "Lies die Note im Notensystem und finde sie sicher, auch mit schwarzen Tasten.";
+        }
+        return "Lies die Note im Notensystem und finde die passende Taste.";
+      }
+
+      function foundationChapterReadyToComplete(chapter = currentFoundationChapter()) {
+        const entries = foundationChapterEntries(chapter);
+        if (!entries.length) {
+          return false;
+        }
+        return entries.every((entry) => noteIsSecure(entry.clef, entry.name));
+      }
+
+      function foundationMaybeMarkCompleted(chapter = currentFoundationChapter()) {
+        if (foundationChapterReadyToComplete(chapter)) {
+          markFoundationChapterCompleted(chapter);
+          return true;
+        }
+        return false;
+      }
+
+      function displayPitchLetter(noteName) {
+        return displayNoteName(String(noteName || "")).replace(/\d/g, "");
       }
 
       function parseNoteName(name) {
@@ -9636,6 +9850,22 @@
         renderKeyboardState();
       }
 
+      function renderSheetNoteLetter(activeNote = null) {
+        if (!sheetNoteLetter) {
+          return;
+        }
+
+        const shouldShow = !isFoundationModeActive && !isDoubleModeEnabled && Boolean(activeNote?.name);
+        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow);
+
+        if (!shouldShow) {
+          sheetNoteLetter.textContent = "";
+          return;
+        }
+
+        sheetNoteLetter.textContent = displayPitchLetter(activeNote.name);
+      }
+
       function renderDoubleNotes() {
         const bassFragment = document.createDocumentFragment();
         const trebleFragment = document.createDocumentFragment();
@@ -9650,6 +9880,7 @@
 
         doubleBassNotesContainer.replaceChildren(bassFragment);
         doubleTrebleNotesContainer.replaceChildren(trebleFragment);
+        renderSheetNoteLetter(null);
         renderKeyboardState();
       }
 
@@ -9729,12 +9960,15 @@
           : currentNotes[activeIndex];
 
         if ((!isDoubleModeEnabled && !activeNote) || (isDoubleModeEnabled && activeNote.length === 0)) {
+          renderSheetNoteLetter(null);
           if (isFoundationModeActive && foundationCurrentTarget) {
             foundationCurrentTarget.textContent = "Kapitel abgeschlossen. Weiter zum nächsten Bereich.";
           }
           targetDescription.innerHTML = foundationPromptHtml(homeworkPracticeDescriptionHtml("Alle Noten geschafft."));
           return;
         }
+
+        renderSheetNoteLetter(Array.isArray(activeNote) ? null : activeNote);
 
         if (isDoubleModeEnabled) {
           const descriptions = [];
@@ -9776,10 +10010,7 @@
           const descriptions = activeNote.map((note) => displayNoteName(note.name));
           const revealKeyboardTarget = shouldRevealKeyboardTarget();
           if (isFoundationModeActive && foundationCurrentTarget) {
-            const shapeText = foundationShapeText();
-            foundationCurrentTarget.textContent = shapeText
-              ? `Form ${shapeText} · ${descriptions.join(" · ")}`
-              : descriptions.join(" · ");
+            foundationCurrentTarget.textContent = foundationTargetInstruction();
           }
           targetDescription.innerHTML = foundationPromptHtml(
             homeworkPracticeDescriptionHtml(
@@ -9807,10 +10038,7 @@
 
           const handLabel = clefConfigs[currentClef].handLabel ? `, ${clefConfigs[currentClef].handLabel}` : "";
           if (isFoundationModeActive && foundationCurrentTarget) {
-            const shapeText = foundationShapeText();
-            foundationCurrentTarget.textContent = shapeText
-              ? `Form ${shapeText} · ${displayNoteName(activeNote.name)}`
-              : `Taste greifen: ${displayNoteName(activeNote.name)} · ${clefConfigs[currentClef].handLabel || clefConfigs[currentClef].label}`;
+            foundationCurrentTarget.textContent = foundationTargetInstruction();
           }
           targetDescription.innerHTML = foundationPromptHtml(
             homeworkPracticeDescriptionHtml(
@@ -9971,8 +10199,8 @@
               const groups = foundationChordGroups();
               if (isFoundationLoopPhase(currentFoundationChapter())) {
                 const isLastGroup = foundationGroupIndex >= groups.length - 1;
-                if (isLastGroup) {
-                  markFoundationChapterCompleted();
+              if (isLastGroup) {
+                  foundationMaybeMarkCompleted();
                   foundationGroupIndex = 0;
                   maybeAdvanceFoundationChapter();
                 } else {
@@ -9982,7 +10210,7 @@
                 return;
               }
 
-              markFoundationChapterCompleted();
+              foundationMaybeMarkCompleted();
               maybeAdvanceFoundationChapter();
               window.setTimeout(generateRound, 650);
             }
@@ -10008,7 +10236,7 @@
             });
             renderNotes();
             markPromptStart();
-          }, 350);
+          }, isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs);
           return;
         }
 
@@ -10045,9 +10273,9 @@
           if (activeIndex >= currentNotes.length) {
             foundationLastPlayedPitch = foundationPlayedSummary(currentFoundationChapter());
             renderFoundationPanel();
-            markFoundationChapterCompleted();
+            foundationMaybeMarkCompleted();
             maybeAdvanceFoundationChapter();
-            window.setTimeout(generateRound, 900);
+            window.setTimeout(generateRound, isFoundationModeActive ? 900 : trainerUiConfig.fastRoundResetMs);
           }
 
           return;
@@ -10063,7 +10291,7 @@
         setActiveState("wrong");
 
         if (rangeChanged) {
-          window.setTimeout(generateRound, 350);
+          window.setTimeout(generateRound, isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs);
           return;
         }
 
@@ -10073,7 +10301,7 @@
             setActiveState("idle");
             markPromptStart();
           }
-        }, 350);
+        }, isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs);
       }
 
       function handlePlayedMidiDouble(midiNote) {
@@ -10124,7 +10352,7 @@
             markPromptStart();
 
             if (activeIndex >= noteCount) {
-              window.setTimeout(generateRound, 900);
+              window.setTimeout(generateRound, trainerUiConfig.fastRoundResetMs);
             }
           }
 
@@ -10161,7 +10389,7 @@
           }
           renderDoubleNotes();
           markPromptStart();
-        }, 350);
+        }, trainerUiConfig.fastWrongResetMs);
       }
 
       function onMidiMessage(event) {
@@ -11247,6 +11475,7 @@
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
       homeModuleNotes.addEventListener("click", () => {
         isFoundationModeActive = false;
+        resetNotesSessionTimer();
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
@@ -11262,7 +11491,7 @@
       });
       homeModuleBookworm.addEventListener("click", () => {
         isFoundationModeActive = true;
-        foundationAutopilotEnabled = true;
+        foundationAutopilotEnabled = false;
         isHomeViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
