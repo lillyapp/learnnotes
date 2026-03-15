@@ -875,9 +875,9 @@
       }
 
       .library-view {
-        width: min(97vw, var(--module-max-width));
+        width: min(99vw, 1760px);
         display: grid;
-        gap: var(--module-gap);
+        gap: 24px;
         align-content: start;
       }
 
@@ -922,14 +922,15 @@
       }
 
       .tutor-back {
-        min-height: 42px;
-        padding: 0 16px;
+        min-height: 58px;
+        padding: 0 24px;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--surface);
         color: var(--text);
         font: inherit;
-        font-weight: 600;
+        font-size: 28px;
+        font-weight: 700;
         cursor: pointer;
       }
 
@@ -2184,13 +2185,14 @@
       }
 
       .library-panel {
-        width: min(100%, 920px);
-        padding: var(--module-card-padding-y) var(--module-card-padding-x);
+        width: min(100%, 1520px);
+        padding: 28px 32px 34px;
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 28px;
         background: var(--surface-soft);
         display: grid;
-        gap: 18px;
+        gap: 28px;
+        align-content: start;
       }
 
       .library-panel.is-hidden {
@@ -2199,22 +2201,22 @@
 
       .library-summary {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 18px;
       }
 
       .library-summary-card {
-        padding: 14px 16px;
+        padding: 20px 24px;
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 22px;
         background: var(--surface);
         display: grid;
-        gap: 6px;
+        gap: 10px;
       }
 
       .library-summary-label {
         margin: 0;
-        font-size: 12px;
+        font-size: 18px;
         font-weight: 700;
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -2223,7 +2225,7 @@
 
       .library-summary-value {
         margin: 0;
-        font-size: 24px;
+        font-size: clamp(44px, 3.2vw, 58px);
         font-weight: 800;
         line-height: 1.05;
         color: var(--text);
@@ -2231,9 +2233,49 @@
 
       .library-summary-copy {
         margin: 0;
-        font-size: 13px;
+        font-size: 28px;
         line-height: 1.4;
         color: var(--text-soft);
+      }
+
+      .strength-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px 22px;
+        margin-top: 18px;
+      }
+
+      .strength-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        color: var(--text-soft);
+      }
+
+      .strength-legend-swatch {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(17, 17, 17, 0.12);
+        border: 1px solid rgba(17, 17, 17, 0.08);
+        flex: 0 0 auto;
+      }
+
+      .strength-legend-swatch[data-state="unknown"] {
+        background: rgba(17, 17, 17, 0.12);
+      }
+
+      .strength-legend-swatch[data-state="learning"] {
+        background: linear-gradient(180deg, rgba(47, 107, 255, 0.95), rgba(47, 107, 255, 0.45));
+      }
+
+      .strength-legend-swatch[data-state="secure"] {
+        background: linear-gradient(180deg, rgba(29, 122, 60, 0.95), rgba(29, 122, 60, 0.52));
+      }
+
+      .strength-legend-swatch[data-state="focus"] {
+        background: linear-gradient(180deg, rgba(47, 107, 255, 1), rgba(47, 107, 255, 0.55));
       }
 
       .sheet-music.is-hidden {
@@ -2306,16 +2348,19 @@
         display: flex;
         align-items: center;
         gap: 40px;
+        justify-content: center;
       }
 
       .sheet-note-answer {
         display: flex;
         align-items: center;
         gap: 16px;
+        flex: 0 0 8.8em;
+        min-width: 8.8em;
       }
 
       .sheet-note-letter {
-        min-width: 1.4em;
+        min-width: 1.6em;
         text-align: left;
         font-size: 9em;
         font-weight: 900;
@@ -2352,7 +2397,8 @@
       }
 
       .sheet-note-toggle.is-hidden {
-        display: none;
+        visibility: hidden;
+        pointer-events: none;
       }
 
       .practice-homework-panel {
@@ -2615,6 +2661,96 @@
         gap: 10px;
       }
 
+      .foundation-strength-board {
+        position: relative;
+        min-height: 300px;
+        padding: 22px 22px 18px;
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(246, 247, 250, 0.92));
+        overflow: hidden;
+      }
+
+      .foundation-strength-label {
+        margin: 0 0 16px;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .foundation-strength-chart {
+        position: relative;
+        height: 216px;
+      }
+
+      .foundation-strength-bars {
+        position: absolute;
+        inset: 0 0 76px;
+      }
+
+      .foundation-strength-bar {
+        position: absolute;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: max(4px, min(12px, calc(100% / 88 - 1px)));
+        border-radius: 999px 999px 0 0;
+        background: linear-gradient(180deg, rgba(47, 107, 255, 0.95), rgba(47, 107, 255, 0.45));
+        opacity: 0.92;
+      }
+
+      .foundation-strength-bar[data-state="unknown"] {
+        background: rgba(17, 17, 17, 0.12);
+        opacity: 0.45;
+      }
+
+      .foundation-strength-bar[data-state="secure"] {
+        background: linear-gradient(180deg, rgba(29, 122, 60, 0.95), rgba(29, 122, 60, 0.52));
+      }
+
+      .foundation-strength-bar[data-state="focus"] {
+        background: linear-gradient(180deg, rgba(47, 107, 255, 1), rgba(47, 107, 255, 0.55));
+      }
+
+      .foundation-strength-keyboard {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 84px;
+        opacity: 1;
+      }
+
+      .foundation-strength-white-keys,
+      .foundation-strength-black-keys {
+        position: absolute;
+        inset: 0;
+      }
+
+      .foundation-strength-white-key,
+      .foundation-strength-black-key {
+        position: absolute;
+        box-sizing: border-box;
+      }
+
+      .foundation-strength-white-key {
+        top: 0;
+        bottom: 0;
+        border: 1px solid rgba(17, 17, 17, 0.18);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .foundation-strength-black-key {
+        top: 0;
+        height: 58%;
+        border: 1px solid rgba(17, 17, 17, 0.3);
+        border-radius: 0 0 6px 6px;
+        background: rgba(17, 17, 17, 0.88);
+        transform: translateX(-50%);
+        z-index: 2;
+      }
+
       .foundation-map-card {
         padding: 10px 12px;
         border: 1px solid var(--border);
@@ -2718,6 +2854,15 @@
           gap: 8px;
         }
 
+        .foundation-strength-board {
+          min-height: 148px;
+          padding: 10px 10px 8px;
+        }
+
+        .foundation-strength-chart {
+          height: 114px;
+        }
+
         .foundation-map-card {
           padding: 9px 10px;
           border-radius: 16px;
@@ -2731,6 +2876,10 @@
       @media (max-width: 1440px) {
         .foundation-map-grid {
           grid-template-columns: 1fr;
+        }
+
+        .foundation-strength-board {
+          min-height: 150px;
         }
 
         .foundation-nav-group {
@@ -4860,6 +5009,7 @@
         fastest_ms: null,
         slowest_ms: null
       };
+      let prefersSheetLetterReveal = false;
       let isSheetLetterRevealed = false;
       let notesSessionElapsedMs = 0;
       let notesSessionStartedAt = 0;
@@ -4961,6 +5111,7 @@
             fastest_ms: null,
             slowest_ms: null
           },
+          sheet_letter_revealed: false,
           selected_range: ["C4", "C8"],
           manual_selected_range: ["C4", "C8"],
           double_selected_ranges: defaultDoubleSelectedRanges(),
@@ -5247,6 +5398,7 @@
           foundation_progress: foundationChapterCompletions,
           activity_log: activityLog,
           timing_stats: timingStats,
+          sheet_letter_revealed: prefersSheetLetterReveal,
           selected_range: selectedRange,
           manual_selected_range: manualSelectedRange,
           double_selected_ranges: doubleSelectedRanges,
@@ -7480,6 +7632,8 @@
           fastest_ms: null,
           slowest_ms: null
         };
+        prefersSheetLetterReveal = Boolean(record.sheet_letter_revealed);
+        isSheetLetterRevealed = prefersSheetLetterReveal;
         selectedRange = Array.isArray(record.selected_range) ? record.selected_range : ["C4", "C8"];
         manualSelectedRange = Array.isArray(record.manual_selected_range) ? record.manual_selected_range : [...selectedRange];
         doubleSelectedRanges = record.double_selected_ranges || defaultDoubleSelectedRanges();
@@ -7852,8 +8006,17 @@
         return noteMasteryScore(mode, noteName) >= 0.82;
       }
 
+      function libraryRangeOptionsForMode(mode) {
+        if (!mode) {
+          return [];
+        }
+
+        const config = clefConfigs[mode];
+        return buildRange(config.range[0], config.range[1], config.reference, { includeBlack: true });
+      }
+
       function allTrackedTrainerNotes() {
-        return ["treble", "bass"].flatMap((mode) => rangeOptionsForMode(mode).map((note) => ({
+        return ["treble", "bass"].flatMap((mode) => libraryRangeOptionsForMode(mode).map((note) => ({
           mode,
           name: note.name
         })));
@@ -7999,7 +8162,7 @@
         const grid = document.createElement("div");
         grid.className = "library-grid";
 
-        for (const note of rangeOptionsForMode(mode)) {
+        for (const note of libraryRangeOptionsForMode(mode)) {
           const stat = noteStatFor(mode, note.name);
           const item = document.createElement("div");
           item.className = "library-note";
@@ -8082,8 +8245,7 @@
       function renderLibraryPanel() {
         libraryPanel.replaceChildren(
           createLibrarySummary(),
-          createLibraryGroup("treble"),
-          createLibraryGroup("bass")
+          createStrengthBoard({ title: "Staerken auf dem Klavier" })
         );
       }
 
@@ -8219,9 +8381,9 @@
 
       function noteCoveragePercent(progress) {
         const noteStats = progress?.note_stats || {};
-        const totalKnownNotes = 28;
-        const touched = Object.values(noteStats.treble || {}).filter((entry) => Number(entry?.attempts || 0) > 0).length
-          + Object.values(noteStats.bass || {}).filter((entry) => Number(entry?.attempts || 0) > 0).length;
+        const trackedNotes = allTrackedTrainerNotes();
+        const touched = trackedNotes.filter((note) => Number(noteStats?.[note.mode]?.[note.name]?.attempts || 0) > 0).length;
+        const totalKnownNotes = trackedNotes.length || 1;
         return Math.max(0, Math.min(100, Math.round((touched / totalKnownNotes) * 100)));
       }
 
@@ -9389,6 +9551,139 @@
         blackContainer.replaceChildren(blackFragment);
       }
 
+      function keyLayoutMetrics() {
+        let whiteCount = 0;
+        const metrics = [];
+
+        for (let midi = keyboardRange.start; midi <= keyboardRange.end; midi += 1) {
+          if (isBlackKey(midi)) {
+            metrics.push({
+              midi,
+              noteName: midiNumberToName(midi),
+              isBlack: true,
+              left: (whiteCount / 52) * 100
+            });
+            continue;
+          }
+
+          metrics.push({
+            midi,
+            noteName: midiNumberToName(midi),
+            isBlack: false,
+            left: ((whiteCount / 52) * 100),
+            width: 100 / 52
+          });
+          whiteCount += 1;
+        }
+
+        return metrics;
+      }
+
+      function createStrengthBoard({ title = "Staerken je Taste", focusNotes = [] } = {}) {
+        const metrics = keyLayoutMetrics();
+        const activeNotes = new Set(focusNotes);
+        const whiteFragment = document.createDocumentFragment();
+        const blackFragment = document.createDocumentFragment();
+        const barsFragment = document.createDocumentFragment();
+        const board = document.createElement("section");
+        board.className = "foundation-strength-board";
+        board.setAttribute("aria-label", title);
+
+        const label = document.createElement("p");
+        label.className = "foundation-strength-label";
+        label.textContent = title;
+        board.appendChild(label);
+
+        const chart = document.createElement("div");
+        chart.className = "foundation-strength-chart";
+
+        const bars = document.createElement("div");
+        bars.className = "foundation-strength-bars";
+        bars.setAttribute("aria-hidden", "true");
+
+        for (const metric of metrics) {
+          const key = document.createElement("div");
+          key.className = metric.isBlack ? "foundation-strength-black-key" : "foundation-strength-white-key";
+          if (metric.isBlack) {
+            key.style.left = `${metric.left}%`;
+            key.style.width = `${100 / 88}%`;
+            blackFragment.appendChild(key);
+          } else {
+            key.style.left = `${metric.left}%`;
+            key.style.width = `${metric.width}%`;
+            whiteFragment.appendChild(key);
+          }
+
+          const noteName = metric.noteName;
+          const mode = deriveClefForNote(noteName);
+          const stat = noteStatFor(mode, noteName);
+          const strength = Math.round(noteMasteryScore(mode, noteName) * 100);
+          const bar = document.createElement("div");
+          bar.className = "foundation-strength-bar";
+          bar.style.left = `${metric.isBlack ? metric.left : metric.left + ((metric.width || 0) / 2)}%`;
+          bar.style.height = `${Math.max(6, strength * 0.8)}%`;
+          bar.title = `${displayNoteName(noteName)} ${strength}%`;
+
+          if (!stat || Number(stat.attempts || 0) === 0) {
+            bar.dataset.state = "unknown";
+          } else if (strength >= 80) {
+            bar.dataset.state = "secure";
+          } else if (activeNotes.has(noteName)) {
+            bar.dataset.state = "focus";
+          }
+
+          barsFragment.appendChild(bar);
+        }
+
+        bars.replaceChildren(barsFragment);
+        chart.appendChild(bars);
+
+        const keyboard = document.createElement("div");
+        keyboard.className = "foundation-strength-keyboard";
+        keyboard.setAttribute("aria-hidden", "true");
+
+        const whiteKeys = document.createElement("div");
+        whiteKeys.className = "foundation-strength-white-keys";
+        whiteKeys.replaceChildren(whiteFragment);
+        keyboard.appendChild(whiteKeys);
+
+        const blackKeys = document.createElement("div");
+        blackKeys.className = "foundation-strength-black-keys";
+        blackKeys.replaceChildren(blackFragment);
+        keyboard.appendChild(blackKeys);
+
+        chart.appendChild(keyboard);
+        board.appendChild(chart);
+
+        const legend = document.createElement("div");
+        legend.className = "strength-legend";
+        const legendItems = [
+          { state: "unknown", label: "noch nicht gelernt" },
+          { state: "learning", label: "im Aufbau" },
+          { state: "secure", label: "80%+ sicher" },
+          { state: "focus", label: "aktuelle Fokuszone" }
+        ];
+
+        for (const itemData of legendItems) {
+          const item = document.createElement("div");
+          item.className = "strength-legend-item";
+
+          const swatch = document.createElement("span");
+          swatch.className = "strength-legend-swatch";
+          swatch.dataset.state = itemData.state;
+          item.appendChild(swatch);
+
+          const text = document.createElement("span");
+          text.textContent = itemData.label;
+          item.appendChild(text);
+
+          legend.appendChild(item);
+        }
+
+        board.appendChild(legend);
+        return board;
+      }
+
       function findKeyByNoteIn(root, noteName) {
         return root?.querySelector?.(`[data-note="${noteName}"]`) || null;
       }
@@ -10138,7 +10433,7 @@
       }
 
       function resetSheetLetterReveal() {
-        isSheetLetterRevealed = false;
+        isSheetLetterRevealed = prefersSheetLetterReveal;
       }
 
       function clearKeyboardStates() {
@@ -11042,7 +11337,9 @@
       toggleSrsBassButton.addEventListener("click", () => toggleSrsMode("bass"));
       sheetNoteToggle?.addEventListener("click", () => {
         isSheetLetterRevealed = !isSheetLetterRevealed;
+        prefersSheetLetterReveal = isSheetLetterRevealed;
         renderSheetNoteLetter(!isDoubleModeEnabled && !isFoundationModeActive ? currentNotes[activeIndex] || null : null);
+        queueRemoteSave("sheet-letter");
       });
       rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("manual:move", event));
       rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("manual:end", event));
