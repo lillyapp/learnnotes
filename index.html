@@ -2383,16 +2383,36 @@
         transition: opacity 120ms ease, background-color 140ms ease;
       }
 
-      .sheet-note-letter[data-signal="unknown"] {
-        background: rgba(120, 126, 138, 0.86);
+      .sheet-note-letter[data-register="subcontra"] {
+        background: rgba(196, 93, 63, 0.92);
       }
 
-      .sheet-note-letter[data-signal="learning"] {
+      .sheet-note-letter[data-register="contra"] {
+        background: rgba(214, 133, 53, 0.92);
+      }
+
+      .sheet-note-letter[data-register="gross"] {
+        background: rgba(187, 156, 44, 0.92);
+      }
+
+      .sheet-note-letter[data-register="klein"] {
+        background: rgba(93, 156, 68, 0.92);
+      }
+
+      .sheet-note-letter[data-register="one-line"] {
         background: rgba(47, 107, 255, 0.92);
       }
 
-      .sheet-note-letter[data-signal="secure"] {
-        background: rgba(29, 122, 60, 0.92);
+      .sheet-note-letter[data-register="two-line"] {
+        background: rgba(91, 86, 214, 0.92);
+      }
+
+      .sheet-note-letter[data-register="three-line"] {
+        background: rgba(162, 74, 194, 0.92);
+      }
+
+      .sheet-note-letter[data-register="four-line"] {
+        background: rgba(214, 70, 150, 0.92);
       }
 
       .sheet-note-letter[data-signal="correct"] {
@@ -3130,12 +3150,36 @@
         z-index: 0;
       }
 
-      .note-slot-current-bar[data-signal="learning"] {
+      .note-slot-current-bar[data-register="subcontra"] {
+        background: rgba(196, 93, 63, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="contra"] {
+        background: rgba(214, 133, 53, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="gross"] {
+        background: rgba(187, 156, 44, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="klein"] {
+        background: rgba(93, 156, 68, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="one-line"] {
         background: rgba(47, 107, 255, 0.18);
       }
 
-      .note-slot-current-bar[data-signal="secure"] {
-        background: rgba(29, 122, 60, 0.16);
+      .note-slot-current-bar[data-register="two-line"] {
+        background: rgba(91, 86, 214, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="three-line"] {
+        background: rgba(162, 74, 194, 0.18);
+      }
+
+      .note-slot-current-bar[data-register="four-line"] {
+        background: rgba(214, 70, 150, 0.18);
       }
 
       .note-slot-current-bar[data-signal="correct"] {
@@ -8048,6 +8092,75 @@
         return attempts ? Number(stat.total_ms || 0) / attempts : null;
       }
 
+      function registerBandForNote(noteName) {
+        const { octave } = parseNoteName(noteName);
+        if (octave <= 0) {
+          return "subcontra";
+        }
+        if (octave === 1) {
+          return "contra";
+        }
+        if (octave === 2) {
+          return "gross";
+        }
+        if (octave === 3) {
+          return "klein";
+        }
+        if (octave === 4) {
+          return "one-line";
+        }
+        if (octave === 5) {
+          return "two-line";
+        }
+        if (octave === 6) {
+          return "three-line";
+        }
+        return "four-line";
+      }
+
+      function daysSinceIso(isoText) {
+        if (!isoText) {
+          return 0;
+        }
+        const timestamp = new Date(isoText).getTime();
+        if (!Number.isFinite(timestamp)) {
+          return 0;
+        }
+        return Math.max(0, (Date.now() - timestamp) / (24 * 60 * 60 * 1000));
+      }
+
+      function noteRetentionFactor(stat) {
+        if (!stat?.last_seen_at) {
+          return 1;
+        }
+
+        const daysSinceSeen = daysSinceIso(stat.last_seen_at);
+        const attempts = Number(stat.attempts || 0);
+        const accuracy = noteAccuracy(stat);
+        const streak = Number(stat.streak || 0);
+        const graceDays = 0.85
+          + Math.min(4.5, attempts / 4)
+          + Math.max(0, (accuracy - 0.6) * 3.2)
+          + Math.min(2.2, streak / 2.2);
+
+        if (daysSinceSeen <= graceDays) {
+          return 1;
+        }
+
+        const overdueDays = daysSinceSeen - graceDays;
+        const dailyDecay = accuracy >= 0.88
+          ? 0.08
+          : accuracy >= 0.75
+            ? 0.12
+            : 0.18;
+
+        return Math.max(0.42, Math.exp(-overdueDays * dailyDecay));
+      }
+
+      function noteDaysSinceSeen(mode, noteName) {
+        return daysSinceIso(noteStatFor(mode, noteName)?.last_seen_at || "");
+      }
+
       function noteMasteryScore(mode, noteName) {
         const stat = noteStatFor(mode, noteName);
         if (!stat || !stat.attempts) {
@@ -8059,7 +8172,8 @@
         const speedScore = speedMs === null ? 0 : Math.max(0, Math.min(1, (3200 - speedMs) / 1700));
         const streakScore = Math.max(0, Math.min(1, Number(stat.streak || 0) / 4));
         const repetitionScore = Math.max(0, Math.min(1, Number(stat.attempts || 0) / 6));
-        return (accuracyScore * 0.42) + (speedScore * 0.23) + (streakScore * 0.2) + (repetitionScore * 0.15);
+        const baseScore = (accuracyScore * 0.42) + (speedScore * 0.23) + (streakScore * 0.2) + (repetitionScore * 0.15);
+        return baseScore * noteRetentionFactor(stat);
       }
 
       function noteIsSecure(mode, noteName) {
@@ -8151,12 +8265,14 @@
           const accuracy = noteAccuracy(stat);
           const speedMs = noteAverageResponseMs(stat) || averageAttemptMs;
           const confusionTotal = Object.values(stat?.confusions || {}).reduce((sum, count) => sum + Number(count || 0), 0);
+          const retentionGap = Math.max(0, 1 - noteRetentionFactor(stat));
           const deficit = Math.max(0, targetPercent - scorePercent);
           const baseAttempts = attempts === 0 ? 6 : Math.max(0, 4 - attempts);
           const accuracyPenalty = Math.max(0, (0.86 - accuracy) * 7);
           const speedPenalty = Math.max(0, (speedMs - 1700) / 500);
           const confusionPenalty = confusionTotal * 0.35;
-          remainingAttempts += baseAttempts + (deficit / 7) + accuracyPenalty + speedPenalty + confusionPenalty;
+          const retentionPenalty = retentionGap * 8;
+          remainingAttempts += baseAttempts + (deficit / 7) + accuracyPenalty + speedPenalty + confusionPenalty + retentionPenalty;
         }
 
         const roundedAttempts = Math.max(0, Math.ceil(remainingAttempts));
@@ -8209,12 +8325,16 @@
           total_ms: 0,
           fastest_ms: null,
           slowest_ms: null,
-          confusions: {}
+          confusions: {},
+          last_seen_at: null,
+          last_correct_at: null
         };
         stats.attempts += 1;
+        stats.last_seen_at = new Date().toISOString();
         if (isCorrect) {
           stats.correct += 1;
           stats.streak = Number(stats.streak || 0) + 1;
+          stats.last_correct_at = stats.last_seen_at;
         } else {
           stats.streak = 0;
           if (playedNoteName && playedNoteName !== noteName) {
@@ -9526,11 +9646,14 @@
         const accuracy = noteAccuracy(stat);
         const masteryGap = 1 - noteMasteryScore(mode, noteName);
         const confusionTotal = Object.values(stat.confusions || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        const daysSinceSeen = noteDaysSinceSeen(mode, noteName);
+        const retentionPenalty = 1 + Math.max(0, 1 - noteRetentionFactor(stat)) * 4.2;
         const masteryPenalty = 1 + Math.max(0, desiredAccuracy - accuracy) * 8 + (masteryGap * 5);
         const freshnessBoost = Math.max(0.7, 1.7 - Math.min(stat.attempts, 36) / 36);
         const confusionBoost = 1 + Math.min(2.2, confusionTotal / 3);
+        const recencyBoost = 1 + Math.max(0, daysSinceSeen - 1) * (accuracy >= 0.85 ? 0.22 : 0.38);
         const newNoteBoost = isNew ? 1.8 : 1;
-        return Math.max(0.35, masteryPenalty * freshnessBoost * confusionBoost * newNoteBoost);
+        return Math.max(0.35, masteryPenalty * freshnessBoost * confusionBoost * recencyBoost * retentionPenalty * newNoteBoost);
       }
 
       function pickWeightedNote(availableNotes, mode = null) {
@@ -10414,6 +10537,7 @@
           slot.classList.add("is-current");
           const currentBar = document.createElement("div");
           currentBar.className = "note-slot-current-bar";
+          currentBar.dataset.register = registerBandForNote(note.name);
           currentBar.dataset.signal = signalStateForNote(note.clef, note.name, note.state);
           slot.appendChild(currentBar);
         }
@@ -10491,6 +10615,7 @@
 
         if (!shouldShow) {
           sheetNoteLetter.dataset.signal = "unknown";
+          sheetNoteLetter.dataset.register = "one-line";
           sheetNoteToggle.setAttribute("aria-label", "Antwort einblenden");
           sheetNoteToggle.setAttribute("title", "Antwort einblenden");
           return;
@@ -10499,6 +10624,11 @@
         const nextLetter = displayPitchLetter(activeNote.name);
         if (sheetNoteLetter.textContent !== nextLetter) {
           sheetNoteLetter.textContent = nextLetter;
+        }
+
+        const nextRegister = registerBandForNote(activeNote.name);
+        if (sheetNoteLetter.dataset.register !== nextRegister) {
+          sheetNoteLetter.dataset.register = nextRegister;
         }
 
         const nextSignal = signalStateForNote(activeNote.clef, activeNote.name, activeNote.state);
