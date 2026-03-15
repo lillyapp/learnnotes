@@ -10630,6 +10630,58 @@
         };
       }
 
+      function srsProgressScore(state) {
+        if (!state) {
+          return -1;
+        }
+
+        const level = Math.max(1, Number(state.level) || 1);
+        const attempts = Array.isArray(state.attempts) ? state.attempts.length : 0;
+        const newNotes = Array.isArray(state.newNotes) ? state.newNotes.length : 0;
+        return ((level - 1) * 1000) + attempts + (newNotes * 10);
+      }
+
+      function resolveSrsResumeMode() {
+        if (activeSrsMode && srsStates[activeSrsMode]) {
+          return activeSrsMode;
+        }
+
+        const trebleScore = srsProgressScore(srsStates.treble);
+        const bassScore = srsProgressScore(srsStates.bass);
+        const bestScore = Math.max(trebleScore, bassScore);
+
+        if (bestScore <= 0) {
+          return null;
+        }
+
+        return trebleScore >= bassScore ? "treble" : "bass";
+      }
+
+      function resumeSrsProgressForNotesMode() {
+        const resumeMode = resolveSrsResumeMode();
+        if (!resumeMode) {
+          return false;
+        }
+
+        if (isDoubleModeEnabled) {
+          isDoubleModeEnabled = false;
+        }
+
+        if (!activeSrsMode) {
+          manualSelectedRange = [...selectedRange];
+        }
+
+        activeSrsMode = resumeMode;
+        isRangeSelectorVisible = false;
+        toggleRangeButton.classList.remove("is-active");
+        keyboardKeys.classList.remove("is-cut-mode");
+        srsStates[activeSrsMode] = srsStates[activeSrsMode] || createInitialSrsState(activeSrsMode);
+        applySrsRange();
+        updateSrsUi();
+        syncRangeBracketPositions();
+        return true;
+      }
+
       function activeSrsState() {
         return activeSrsMode ? srsStates[activeSrsMode] : null;
       }
@@ -12715,6 +12767,7 @@
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
         isLibraryVisible = false;
+        resumeSrsProgressForNotesMode();
         updateModeUi();
         generateRound();
         void autoLogHabitsPracticeStart();
