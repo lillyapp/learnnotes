@@ -2377,6 +2377,10 @@
         box-shadow: 0 14px 28px rgba(17, 17, 17, 0.12);
         pointer-events: none;
         user-select: none;
+        opacity: 1;
+        will-change: opacity, background-color;
+        backface-visibility: hidden;
+        transition: opacity 120ms ease, background-color 140ms ease;
       }
 
       .sheet-note-letter[data-signal="unknown"] {
@@ -2400,7 +2404,7 @@
       }
 
       .sheet-note-letter.is-hidden {
-        visibility: hidden;
+        opacity: 0;
       }
 
       .sheet-note-toggle {
@@ -10486,15 +10490,21 @@
         sheetNoteLetter.classList.toggle("is-hidden", !shouldShow || !isSheetLetterRevealed);
 
         if (!shouldShow) {
-          sheetNoteLetter.textContent = "";
           sheetNoteLetter.dataset.signal = "unknown";
           sheetNoteToggle.setAttribute("aria-label", "Antwort einblenden");
           sheetNoteToggle.setAttribute("title", "Antwort einblenden");
           return;
         }
 
-        sheetNoteLetter.textContent = displayPitchLetter(activeNote.name);
-        sheetNoteLetter.dataset.signal = signalStateForNote(activeNote.clef, activeNote.name, activeNote.state);
+        const nextLetter = displayPitchLetter(activeNote.name);
+        if (sheetNoteLetter.textContent !== nextLetter) {
+          sheetNoteLetter.textContent = nextLetter;
+        }
+
+        const nextSignal = signalStateForNote(activeNote.clef, activeNote.name, activeNote.state);
+        if (sheetNoteLetter.dataset.signal !== nextSignal) {
+          sheetNoteLetter.dataset.signal = nextSignal;
+        }
         sheetNoteToggle.setAttribute("aria-label", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
         sheetNoteToggle.setAttribute("title", isSheetLetterRevealed ? "Antwort ausblenden" : "Antwort einblenden");
       }
