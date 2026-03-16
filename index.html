@@ -4768,8 +4768,11 @@
         fastRoundResetMs: 260,
         hiddenAnswerRevealMs: 560
       };
+      // SUPABASE KISUM
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
+      
+      // SUPABASE HABITS
       const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udHVzZmlmamZiendsdmxpZ3J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTM1NzUsImV4cCI6MjA4ODcyOTU3NX0.Yl3Z3DlJP7_7DsND_H0c6TdFRIcBHGxCO92Z05aQrgY";
       const HABITS_SUPABASE_PROJECT_REF = "gglgenarpskajkaanknk";
       const HABITS_SUPABASE_URL = window.HABITS_SUPABASE_URL || `https://${HABITS_SUPABASE_PROJECT_REF}.supabase.co`;
@@ -5598,11 +5601,10 @@
           return false;
         }
 
-        const ownerUserId = habit.user_id || habitsAuthUser?.id || null;
         const weekday = getEnglishWeekdayKey();
 
         const { data: existingDay, error: existingDayError } = await habitsSupabaseClient
-          .from("habits_days")
+          .from("habit_days")
           .select("id")
           .eq("habit_id", HABITS_AUTO_LOG_HABIT_ID)
           .eq("date", today)
@@ -5615,19 +5617,21 @@
 
         if (!existingDay) {
           const { error: dayInsertError } = await habitsSupabaseClient
-            .from("habits_days")
-            .insert({
-              id: crypto.randomUUID(),
-              habit_id: HABITS_AUTO_LOG_HABIT_ID,
-              date: today,
-              weekday,
-              done: true,
-              day: today,
-              user_id: ownerUserId
-            });
+            .from("habit_days")
+            .upsert(
+              {
+                id: crypto.randomUUID(),
+                habit_id: HABITS_AUTO_LOG_HABIT_ID,
+                date: today,
+                weekday,
+                done: true,
+                day: today
+              },
+              { onConflict: "habit_id,date", ignoreDuplicates: true }
+            );
 
           if (dayInsertError) {
-            console.warn("[Habits] habits_days konnte nicht geschrieben werden", dayInsertError);
+            console.warn("[Habits] habit_days konnte nicht geschrieben werden", dayInsertError);
             return false;
           }
 
@@ -5642,35 +5646,6 @@
 
           if (habitUpdateError) {
             console.warn("[Habits] Habit-Fortschritt konnte nicht aktualisiert werden", habitUpdateError);
-          }
-        }
-
-        const { data: existingLog, error: existingLogError } = await habitsSupabaseClient
-          .from("habits_daily_log")
-          .select("id")
-          .eq("habit_id", HABITS_AUTO_LOG_HABIT_ID)
-          .eq("day", today)
-          .maybeSingle();
-
-        if (existingLogError) {
-          console.warn("[Habits] habits_daily_log konnte nicht gelesen werden", existingLogError);
-          return false;
-        }
-
-        if (!existingLog) {
-          const { error: logInsertError } = await habitsSupabaseClient
-            .from("habits_daily_log")
-            .insert({
-              id: crypto.randomUUID(),
-              user_id: ownerUserId,
-              habit_id: HABITS_AUTO_LOG_HABIT_ID,
-              day: today,
-              done: true
-            });
-
-          if (logInsertError) {
-            console.warn("[Habits] habits_daily_log konnte nicht geschrieben werden", logInsertError);
-            return false;
           }
         }
 
