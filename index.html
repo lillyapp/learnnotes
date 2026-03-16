@@ -4799,7 +4799,7 @@
           <p class="target-description" id="target-description" aria-live="polite"></p>
         </div>
         <div class="mobile-note-picker is-hidden" id="mobile-note-picker" aria-label="Notenauswahl mobil">
-          <div class="mobile-note-picker-grid">
+          <div class="mobile-note-picker-grid" id="mobile-note-picker-grid">
             <button class="mobile-note-button" type="button" data-letter="C">C</button>
             <button class="mobile-note-button" type="button" data-letter="D">D</button>
             <button class="mobile-note-button" type="button" data-letter="E">E</button>
@@ -5156,7 +5156,7 @@
       const sessionTimerValue = document.getElementById("session-timer-value");
       const trainerInfo = document.getElementById("trainer-info");
       const mobileNotePicker = document.getElementById("mobile-note-picker");
-      const mobileNoteButtons = Array.from(document.querySelectorAll(".mobile-note-button"));
+      const mobileNotePickerGrid = document.getElementById("mobile-note-picker-grid");
       const libraryView = document.getElementById("library-view");
       const libraryBackButton = document.getElementById("library-back-button");
       const libraryPanel = document.getElementById("library-panel");
@@ -5215,6 +5215,7 @@
         roundResetMs: 260
       };
       const RHYTHM_METRONOME_AUDIO_URL = "https://raw.githubusercontent.com/lillyapp/learnnotes/main/freesound_community-metronome-85688.mp3";
+      const mobileNoteLetters = ["C", "D", "E", "F", "G", "A", "H"];
       // SUPABASE KISUM
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -10345,6 +10346,29 @@
         return window.matchMedia("(max-width: 1023px)").matches;
       }
 
+      function renderMobileNotePicker() {
+        if (!mobileNotePickerGrid) {
+          return;
+        }
+
+        const shuffledLetters = [...mobileNoteLetters];
+        for (let index = shuffledLetters.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [shuffledLetters[index], shuffledLetters[swapIndex]] = [shuffledLetters[swapIndex], shuffledLetters[index]];
+        }
+
+        const fragment = document.createDocumentFragment();
+        shuffledLetters.forEach((letter) => {
+          const button = document.createElement("button");
+          button.className = "mobile-note-button";
+          button.type = "button";
+          button.dataset.letter = letter;
+          button.textContent = letter;
+          fragment.appendChild(button);
+        });
+        mobileNotePickerGrid.replaceChildren(fragment);
+      }
+
       function syncMobileSheetNoteTogglePlacement() {
         if (!sheetNoteToggle || !toolbar || !sheetNoteToggleHomeParent) {
           return;
@@ -11862,8 +11886,12 @@
         }
 
         const shouldShow = !isFoundationModeActive && !isDoubleModeEnabled && Boolean(activeNote?.name);
+        const forceVisibleOnMobile = isPhoneViewport();
         sheetNoteToggle.classList.toggle("is-hidden", !shouldShow);
-        sheetNoteLetter.classList.toggle("is-hidden", !shouldShow || (!isSheetLetterRevealed && !isSheetLetterFeedbackVisible));
+        sheetNoteLetter.classList.toggle(
+          "is-hidden",
+          !shouldShow || (!forceVisibleOnMobile && !isSheetLetterRevealed && !isSheetLetterFeedbackVisible)
+        );
 
         if (!shouldShow) {
           sheetNoteLetter.dataset.signal = "unknown";
@@ -12171,6 +12199,7 @@
         markPromptStart();
         updateClefUi();
         renderNotes();
+        renderMobileNotePicker();
         updateSrsUi();
       }
 
@@ -13678,10 +13707,12 @@
       rhythmBpmValue?.addEventListener("click", () => {
         promptRhythmBpm();
       });
-      mobileNoteButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          handleMobileNoteChoice(button.dataset.letter || "");
-        });
+      mobileNotePickerGrid?.addEventListener("click", (event) => {
+        const button = event.target?.closest?.(".mobile-note-button");
+        if (!button) {
+          return;
+        }
+        handleMobileNoteChoice(button.dataset.letter || "");
       });
       managementRefreshButton.addEventListener("click", async () => {
         try {
