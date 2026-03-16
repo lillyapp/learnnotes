@@ -2199,6 +2199,199 @@
         display: none;
       }
 
+      .rhythm-view {
+        width: min(97vw, var(--module-max-width));
+        display: grid;
+        gap: var(--module-gap);
+        align-content: start;
+      }
+
+      .rhythm-view.is-hidden {
+        display: none;
+      }
+
+      .rhythm-dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .rhythm-sheet-stage,
+      .rhythm-panel {
+        padding: 22px 24px;
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .rhythm-sheet-stage {
+        display: grid;
+        align-items: center;
+        min-height: min(72vh, 760px);
+        overflow: auto;
+      }
+
+      .rhythm-sheet-music {
+        font-size: min(2.8vw, 2.2vh);
+        width: 100%;
+        margin: 0;
+        padding-left: 13em;
+      }
+
+      .rhythm-sheet-music .sheet-note-group {
+        justify-content: flex-start;
+      }
+
+      .rhythm-sheet-music .bar {
+        width: min(100%, 28em);
+      }
+
+      .rhythm-panel {
+        display: grid;
+        align-content: start;
+        gap: 20px;
+      }
+
+      .rhythm-kicker {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .rhythm-title {
+        margin: 0;
+        font-size: clamp(28px, 3vw, 42px);
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+        color: var(--text);
+      }
+
+      .rhythm-copy {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text-soft);
+      }
+
+      .rhythm-bpm-card,
+      .rhythm-feedback-card {
+        padding: 18px 20px;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        background: var(--surface);
+      }
+
+      .rhythm-bpm-label,
+      .rhythm-feedback-label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .rhythm-bpm-value {
+        appearance: none;
+        width: 100%;
+        margin: 10px 0 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        font-size: clamp(64px, 9vw, 120px);
+        font-weight: 900;
+        line-height: 0.88;
+        letter-spacing: -0.07em;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .rhythm-bpm-value:hover,
+      .rhythm-bpm-value:focus-visible {
+        color: var(--signal-target);
+        outline: none;
+      }
+
+      .rhythm-click-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .rhythm-click-dot {
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        cursor: pointer;
+        transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
+      }
+
+      .rhythm-click-dot:hover {
+        transform: translateY(-1px);
+      }
+
+      .rhythm-click-dot.is-active {
+        border-color: var(--signal-target);
+        background: color-mix(in srgb, var(--signal-target) 16%, #ffffff);
+      }
+
+      .rhythm-click-dot.is-hit {
+        transform: scale(0.96);
+        border-color: var(--text);
+        background: color-mix(in srgb, var(--text) 10%, #ffffff);
+      }
+
+      .rhythm-feedback-score {
+        margin: 10px 0 2px;
+        font-size: clamp(44px, 5vw, 62px);
+        font-weight: 900;
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+        color: var(--text);
+      }
+
+      .rhythm-feedback-text {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .rhythm-feedback-text[data-state="fast"] {
+        color: var(--signal-warning-strong);
+      }
+
+      .rhythm-feedback-text[data-state="slow"] {
+        color: var(--signal-danger-strong);
+      }
+
+      .rhythm-feedback-text[data-state="steady"] {
+        color: var(--signal-success-strong);
+      }
+
+      @media (max-width: 1024px) {
+        .rhythm-dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .rhythm-sheet-stage {
+          min-height: auto;
+        }
+
+        .rhythm-sheet-music {
+          font-size: min(4vw, 2.1vh);
+          padding-left: 13em;
+        }
+      }
+
       .library-summary {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -4019,53 +4212,8 @@
                 <p class="home-module-copy">Direkt in den Trainer mit Notensystem, SRS und Aufgabenmodus.</p>
               </div>
             </button>
-            <button class="home-module is-hidden" id="home-module-tutor" type="button" data-theme="notes">
+            <button class="home-module" id="home-module-ice-cream" type="button" data-theme="notes">
               <div class="home-module-art" aria-hidden="true">
-                <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-man-petting-a-dog.svg" alt="">
-                </div>
-              </div>
-              <div class="home-module-label">
-                <h2 class="home-module-title">Unterrichtsplanung</h2>
-                <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
-              </div>
-            </button>
-            <button class="home-module is-hidden" id="home-module-management" type="button" data-theme="notes">
-              <div class="home-module-art" aria-hidden="true">
-                <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-woman-swinging-on-a-swing.svg" alt="">
-                </div>
-              </div>
-              <div class="home-module-label">
-                <h2 class="home-module-title">Verwaltung</h2>
-                <p class="home-module-copy">Verwalte User, Rollen, Sperrungen und Lernfortschritt in einer Übersicht.</p>
-              </div>
-            </button>
-            <button class="home-module is-hidden" id="home-module-calendar" type="button" data-theme="notes">
-              <div class="home-module-art" aria-hidden="true">
-                <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-clumsy-man-dropping-documents-and-files.svg" alt="">
-                </div>
-              </div>
-              <div class="home-module-label">
-                <h2 class="home-module-title">Kalender</h2>
-                <p class="home-module-copy">Sieh deinen aktuellen Unterrichtsmonat und den nächsten Termin auf einen Blick.</p>
-              </div>
-            </button>
-            <button class="home-module" id="home-module-library" type="button" data-theme="notes">
-              <div class="home-module-art" aria-hidden="true">
-                <div class="home-module-graphic">
-                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/bookworm-immersed-in-book-leisure-or-self-education.svg" alt="">
-                </div>
-              </div>
-              <div class="home-module-label">
-                <h2 class="home-module-title">Bibliothek</h2>
-                <p class="home-module-copy">Behalte gelernte Noten und deinen aktuellen Sicherheitsstand im Blick.</p>
-              </div>
-            </button>
-            <button class="home-module is-muted" id="home-module-ice-cream" type="button" data-theme="notes">
-              <div class="home-module-art" aria-hidden="true">
-                <span class="home-module-badge">DEMNÄCHST</span>
                 <div class="home-module-graphic">
                   <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-ice-cream.svg" alt="">
                 </div>
@@ -4084,6 +4232,50 @@
               <div class="home-module-label">
                 <h2 class="home-module-title">Lerne die Grundlagen</h2>
                 <p class="home-module-copy">Baue eine blinde Tastaturkarte fuer alle 88 Klaviertasten auf.</p>
+              </div>
+            </button>
+            <button class="home-module" id="home-module-library" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/bookworm-immersed-in-book-leisure-or-self-education.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Bibliothek</h2>
+                <p class="home-module-copy">Behalte gelernte Noten und deinen aktuellen Sicherheitsstand im Blick.</p>
+              </div>
+            </button>
+            <button class="home-module is-hidden" id="home-module-calendar" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-clumsy-man-dropping-documents-and-files.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Kalender</h2>
+                <p class="home-module-copy">Sieh deinen aktuellen Unterrichtsmonat und den nächsten Termin auf einen Blick.</p>
+              </div>
+            </button>
+            <button class="home-module is-hidden" id="home-module-management" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-woman-swinging-on-a-swing.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Verwaltung</h2>
+                <p class="home-module-copy">Verwalte User, Rollen, Sperrungen und Lernfortschritt in einer Übersicht.</p>
+              </div>
+            </button>
+            <button class="home-module is-hidden" id="home-module-tutor" type="button" data-theme="notes">
+              <div class="home-module-art" aria-hidden="true">
+                <div class="home-module-graphic">
+                  <img class="home-module-illustration" src="https://raw.githubusercontent.com/lillyapp/learnnotes/main/open-doodles-man-petting-a-dog.svg" alt="">
+                </div>
+              </div>
+              <div class="home-module-label">
+                <h2 class="home-module-title">Unterrichtsplanung</h2>
+                <p class="home-module-copy">Plane Unterrichte, notiere Hausaufgaben und behalte alle Zuweisungen im Überblick.</p>
               </div>
             </button>
           </div>
@@ -4407,6 +4599,47 @@
           </div>
           <div class="library-panel" id="library-panel" aria-live="polite"></div>
         </section>
+        <section class="rhythm-view is-hidden" id="rhythm-view" aria-label="Taktgefühl">
+          <div class="tutor-view-header">
+            <button class="tutor-back" id="rhythm-back-button" type="button">Zurück</button>
+          </div>
+          <div class="rhythm-dashboard">
+            <section class="rhythm-sheet-stage" aria-label="Notensystem Taktgefühl">
+              <div class="sheet-music rhythm-sheet-music">
+                <div class="sheet-note-group">
+                  <div class="bar">
+                    <div class="stave-header"></div>
+                    <div class="clef-symbol" id="rhythm-clef-symbol" data-clef="treble" aria-hidden="true"></div>
+                    <div class="bar-notes" id="rhythm-bar-notes" aria-live="polite"></div>
+                    <div class="bar-line" aria-label="bar-line"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="rhythm-panel" aria-label="Rhythmussteuerung">
+              <div>
+                <p class="rhythm-kicker">Taktgefühl</p>
+                <h2 class="rhythm-title">Bleib stabil im Puls.</h2>
+              </div>
+              <p class="rhythm-copy">Arbeite die vier Noten nacheinander ab und tippe die Klicks gleichmäßig im Tempo.</p>
+              <div class="rhythm-bpm-card">
+                <p class="rhythm-bpm-label">BPM</p>
+                <button class="rhythm-bpm-value" id="rhythm-bpm-value" type="button" aria-label="BPM ändern" title="BPM ändern">80</button>
+              </div>
+              <div class="rhythm-click-grid" id="rhythm-click-grid" aria-label="Vier Klickpunkte">
+                <button class="rhythm-click-dot is-active" type="button" data-index="0" aria-label="Klick 1"></button>
+                <button class="rhythm-click-dot" type="button" data-index="1" aria-label="Klick 2"></button>
+                <button class="rhythm-click-dot" type="button" data-index="2" aria-label="Klick 3"></button>
+                <button class="rhythm-click-dot" type="button" data-index="3" aria-label="Klick 4"></button>
+              </div>
+              <div class="rhythm-feedback-card" aria-live="polite">
+                <p class="rhythm-feedback-label">Im Takt</p>
+                <p class="rhythm-feedback-score"><span id="rhythm-accuracy-value">100</span>%</p>
+                <p class="rhythm-feedback-text" id="rhythm-feedback-text" data-state="steady">Genau richtig</p>
+              </div>
+            </section>
+          </div>
+        </section>
         <section class="tutor-view is-hidden" id="management-view" aria-label="Verwaltung">
           <div class="tutor-view-header">
             <button class="tutor-back" id="management-back-button" type="button">Zurück</button>
@@ -4649,6 +4882,15 @@
       const homeModuleNotes = document.getElementById("home-module-notes");
       const homeModuleNotesAlert = document.getElementById("home-module-notes-alert");
       const homeModuleIceCream = document.getElementById("home-module-ice-cream");
+      const rhythmView = document.getElementById("rhythm-view");
+      const rhythmBackButton = document.getElementById("rhythm-back-button");
+      const rhythmBarNotes = document.getElementById("rhythm-bar-notes");
+      const rhythmClefSymbol = document.getElementById("rhythm-clef-symbol");
+      const rhythmBpmValue = document.getElementById("rhythm-bpm-value");
+      const rhythmClickGrid = document.getElementById("rhythm-click-grid");
+      const rhythmClickDots = Array.from(document.querySelectorAll(".rhythm-click-dot"));
+      const rhythmAccuracyValue = document.getElementById("rhythm-accuracy-value");
+      const rhythmFeedbackText = document.getElementById("rhythm-feedback-text");
       const homeModuleTutor = document.getElementById("home-module-tutor");
       const homeModuleManagement = document.getElementById("home-module-management");
       const homeModuleCalendar = document.getElementById("home-module-calendar");
@@ -4746,6 +4988,14 @@
         fastRoundResetMs: 150,
         hiddenAnswerRevealMs: 220
       };
+      const rhythmConfig = {
+        bpm: 80,
+        noteCount: 4,
+        toleranceRatio: 0.12,
+        feedbackWindow: 16,
+        roundResetMs: 260
+      };
+      const RHYTHM_METRONOME_AUDIO_URL = "https://raw.githubusercontent.com/lillyapp/learnnotes/main/freesound_community-metronome-85688.mp3";
       // SUPABASE KISUM
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
       const SUPABASE_URL = window.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
@@ -5136,10 +5386,23 @@
       let isInfoVisible = false;
       let isLibraryVisible = false;
       let isHomeViewVisible = false;
+      let isRhythmViewVisible = false;
       let isTutorViewVisible = false;
       let isStudentCalendarViewVisible = false;
       let isManagementViewVisible = false;
       let isDoubleModeEnabled = false;
+      let rhythmNotes = [];
+      let rhythmActiveIndex = 0;
+      let rhythmTapCount = 0;
+      let rhythmBeatIndex = 0;
+      let rhythmAnchorMs = 0;
+      let rhythmAccuracySamples = [];
+      let rhythmTimingOffsets = [];
+      let rhythmHitIndex = -1;
+      let rhythmResetHandle = null;
+      let rhythmMetronomeAudio = null;
+      let rhythmMetronomeTimer = null;
+      let rhythmMetronomeNextBeatMs = 0;
       let midiAccessRef = null;
       let midiOutputsRef = [];
       let isMidiConnecting = false;
@@ -8303,9 +8566,9 @@
         if (!canSeeLibrary) {
           isLibraryVisible = false;
         }
-        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
+        const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         const isStandardTrainerVisible = !hidesTrainerContent && !isFoundationMode;
-        midiIndicator.hidden = isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
+        midiIndicator.hidden = isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
         toggleRangeButton.disabled = activeSrsMode !== null || isHomeworkMode;
@@ -8314,9 +8577,10 @@
         toggleDoubleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsTrebleButton.classList.toggle("is-hidden", isHomeworkMode);
         toggleSrsBassButton.classList.toggle("is-hidden", isHomeworkMode);
-        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible || isFoundationMode);
+        toolbar.classList.toggle("is-hidden", isAuthPanelVisible || isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible || isFoundationMode);
         trainer?.classList.toggle("is-foundation-mode", isFoundationMode);
         homeView.classList.toggle("is-hidden", !isHomeViewVisible || isAuthPanelVisible);
+        rhythmView.classList.toggle("is-hidden", !isRhythmViewVisible || isAuthPanelVisible);
         tutorView.classList.toggle("is-hidden", !canSeeTutorView || !isTutorViewVisible || isAuthPanelVisible);
         studentCalendarView.classList.toggle("is-hidden", !canSeeStudentCalendar || !isStudentCalendarViewVisible || isAuthPanelVisible);
         managementView.classList.toggle("is-hidden", !canSeeManagementView || !isManagementViewVisible || isAuthPanelVisible);
@@ -8328,6 +8592,12 @@
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || (!isKeyboardVisible && !isFoundationMode));
         if (hidesTrainerContent || !isFoundationMode) {
           clearFoundationLoopTimer();
+        }
+        if (!isRhythmViewVisible) {
+          clearRhythmRoundReset();
+          stopRhythmMetronome();
+        } else if (!rhythmMetronomeTimer) {
+          startRhythmMetronome();
         }
         syncNotesSessionTimer(isStandardTrainerVisible);
         syncPracticeHomeworkPanel();
@@ -10957,10 +11227,10 @@
         return [];
       }
 
-      function createNoteSlot(note, index) {
+      function createNoteSlot(note, index, currentIndex = activeIndex, highlightPendingNotes = isFoundationModeActive && isFoundationChordPhase()) {
         const slot = document.createElement("div");
         slot.className = "note-slot";
-        const isCurrent = (isFoundationModeActive && isFoundationChordPhase() && note.state !== "correct") || index === activeIndex;
+        const isCurrent = (highlightPendingNotes && note.state !== "correct") || index === currentIndex;
 
         if (isCurrent) {
           slot.classList.add("is-current");
@@ -11031,6 +11301,247 @@
 
         notesContainer.replaceChildren(fragment);
         renderKeyboardState();
+      }
+
+      function rhythmBeatMs() {
+        return 60000 / rhythmConfig.bpm;
+      }
+
+      function activeRhythmMode() {
+        return semitoneValue(selectedRange[1]) < semitoneValue("C4") ? "bass" : "treble";
+      }
+
+      function activeRhythmRange() {
+        const mode = activeRhythmMode();
+        const config = clefConfigs[mode];
+        const fallback = mode === "bass" ? levelRangesByMode.bass[2] : levelRangesByMode.treble[0];
+        const range = buildRange(selectedRange[0], selectedRange[1], config.reference);
+        return range.length ? range : buildRange(fallback[0], fallback[1], config.reference);
+      }
+
+      function renderRhythmDots() {
+        const activeDotIndex = rhythmBeatIndex % rhythmConfig.noteCount;
+        rhythmClickDots.forEach((dot, index) => {
+          dot.classList.toggle("is-active", index === activeDotIndex);
+          dot.classList.toggle("is-hit", index === rhythmHitIndex);
+        });
+      }
+
+      function renderRhythmFeedback() {
+        const averageAccuracy = rhythmAccuracySamples.length
+          ? Math.round(rhythmAccuracySamples.reduce((sum, value) => sum + value, 0) / rhythmAccuracySamples.length)
+          : 100;
+        const averageOffset = rhythmTimingOffsets.length
+          ? rhythmTimingOffsets.reduce((sum, value) => sum + value, 0) / rhythmTimingOffsets.length
+          : 0;
+        const threshold = rhythmBeatMs() * 0.05;
+        let feedbackState = "steady";
+        let feedbackLabel = "Genau richtig";
+
+        if (averageOffset > threshold) {
+          feedbackState = "slow";
+          feedbackLabel = "Schneller";
+        } else if (averageOffset < -threshold) {
+          feedbackState = "fast";
+          feedbackLabel = "Langsamer";
+        }
+
+        if (rhythmAccuracyValue) {
+          rhythmAccuracyValue.textContent = String(Math.max(0, Math.min(100, averageAccuracy)));
+        }
+        if (rhythmFeedbackText) {
+          rhythmFeedbackText.textContent = feedbackLabel;
+          rhythmFeedbackText.dataset.state = feedbackState;
+        }
+      }
+
+      function renderRhythmNotes() {
+        if (!rhythmBarNotes) {
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        rhythmBarNotes.style.gridTemplateColumns = `repeat(${Math.max(1, rhythmNotes.length)}, minmax(0, 1fr))`;
+        rhythmNotes.forEach((note, index) => {
+          fragment.appendChild(createNoteSlot(note, index, rhythmActiveIndex, false));
+        });
+        rhythmBarNotes.replaceChildren(fragment);
+        renderRhythmDots();
+      }
+
+      function clearRhythmRoundReset() {
+        if (rhythmResetHandle) {
+          window.clearTimeout(rhythmResetHandle);
+          rhythmResetHandle = null;
+        }
+      }
+
+      function ensureRhythmMetronomeAudio() {
+        if (rhythmMetronomeAudio) {
+          return rhythmMetronomeAudio;
+        }
+
+        const audio = new Audio(RHYTHM_METRONOME_AUDIO_URL);
+        audio.preload = "auto";
+        rhythmMetronomeAudio = audio;
+        return audio;
+      }
+
+      function playRhythmMetronomeClick() {
+        const audio = ensureRhythmMetronomeAudio();
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (error) {
+          // Ignore reset issues and still attempt playback.
+        }
+        const playback = audio.play();
+        if (playback?.catch) {
+          playback.catch(() => {});
+        }
+      }
+
+      function stopRhythmMetronome() {
+        if (rhythmMetronomeTimer) {
+          window.clearTimeout(rhythmMetronomeTimer);
+          rhythmMetronomeTimer = null;
+        }
+        if (rhythmMetronomeAudio) {
+          try {
+            rhythmMetronomeAudio.pause();
+            rhythmMetronomeAudio.currentTime = 0;
+          } catch (error) {
+            // Ignore audio teardown issues.
+          }
+        }
+      }
+
+      function scheduleRhythmMetronome() {
+        if (!isRhythmViewVisible) {
+          return;
+        }
+
+        rhythmBeatIndex = (rhythmBeatIndex + 1) % rhythmConfig.noteCount;
+        renderRhythmDots();
+        playRhythmMetronomeClick();
+        const beatMs = rhythmBeatMs();
+        const now = performance.now();
+        rhythmMetronomeNextBeatMs = rhythmMetronomeNextBeatMs > now
+          ? rhythmMetronomeNextBeatMs + beatMs
+          : now + beatMs;
+        const delay = Math.max(0, rhythmMetronomeNextBeatMs - performance.now());
+        rhythmMetronomeTimer = window.setTimeout(scheduleRhythmMetronome, delay);
+      }
+
+      function startRhythmMetronome() {
+        stopRhythmMetronome();
+        rhythmBeatIndex = rhythmConfig.noteCount - 1;
+        rhythmMetronomeNextBeatMs = performance.now();
+        scheduleRhythmMetronome();
+      }
+
+      function updateRhythmBpm(nextBpm) {
+        const numericBpm = Number(nextBpm);
+        if (!Number.isFinite(numericBpm)) {
+          return false;
+        }
+
+        const clampedBpm = Math.max(30, Math.min(240, Math.round(numericBpm)));
+        rhythmConfig.bpm = clampedBpm;
+        if (rhythmBpmValue) {
+          rhythmBpmValue.textContent = String(clampedBpm);
+        }
+        if (isRhythmViewVisible) {
+          startRhythmMetronome();
+        }
+        return true;
+      }
+
+      function promptRhythmBpm() {
+        const nextValue = window.prompt("BPM eingeben", String(rhythmConfig.bpm));
+        if (nextValue === null) {
+          return;
+        }
+        updateRhythmBpm(nextValue);
+      }
+
+      function generateRhythmRound() {
+        clearRhythmRoundReset();
+        const mode = activeRhythmMode();
+        const fixedNoteName = mode === "bass" ? "D3" : "D4";
+        const fixedNote = decorateNote({
+          name: fixedNoteName,
+          midi: semitoneValue(fixedNoteName),
+          step: diatonicValue(fixedNoteName) - diatonicValue(clefConfigs[mode].reference)
+        }, mode);
+        rhythmNotes = Array.from({ length: rhythmConfig.noteCount }, () => ({
+          ...fixedNote,
+          state: "idle"
+        }));
+        rhythmActiveIndex = 0;
+        rhythmTapCount = 0;
+        rhythmBeatIndex = 0;
+        rhythmAnchorMs = 0;
+        rhythmHitIndex = -1;
+        if (rhythmClefSymbol) {
+          rhythmClefSymbol.dataset.clef = mode;
+          rhythmClefSymbol.innerHTML = clefSvgMarkup[mode] || "";
+        }
+        if (rhythmBpmValue) {
+          rhythmBpmValue.textContent = String(rhythmConfig.bpm);
+        }
+        renderRhythmNotes();
+        renderRhythmFeedback();
+      }
+
+      function commitRhythmSample(offsetMs) {
+        const beatMs = rhythmBeatMs();
+        const score = Math.max(0, Math.min(100, Math.round(100 - (Math.abs(offsetMs) / (beatMs * 0.5)) * 100)));
+        rhythmAccuracySamples.push(score);
+        rhythmTimingOffsets.push(offsetMs);
+        if (rhythmAccuracySamples.length > rhythmConfig.feedbackWindow) {
+          rhythmAccuracySamples.shift();
+        }
+        if (rhythmTimingOffsets.length > rhythmConfig.feedbackWindow) {
+          rhythmTimingOffsets.shift();
+        }
+      }
+
+      function handleRhythmTap(clickedIndex = null) {
+        if (!isRhythmViewVisible || !rhythmNotes.length) {
+          return;
+        }
+
+        const now = performance.now();
+        const beatMs = rhythmBeatMs();
+        if (rhythmTapCount === 0) {
+          rhythmAnchorMs = now;
+        }
+        const expectedTimestamp = rhythmAnchorMs + rhythmTapCount * beatMs;
+        const offsetMs = now - expectedTimestamp;
+        commitRhythmSample(offsetMs);
+
+        const activeNote = rhythmNotes[rhythmActiveIndex];
+        if (activeNote) {
+          activeNote.state = Math.abs(offsetMs) <= beatMs * rhythmConfig.toleranceRatio ? "correct" : "wrong";
+        }
+
+        rhythmHitIndex = clickedIndex === null ? rhythmTapCount % rhythmConfig.noteCount : clickedIndex;
+        rhythmTapCount += 1;
+        rhythmActiveIndex += 1;
+        renderRhythmNotes();
+        renderRhythmFeedback();
+
+        window.setTimeout(() => {
+          rhythmHitIndex = -1;
+          renderRhythmDots();
+        }, 110);
+
+        if (rhythmActiveIndex >= rhythmNotes.length) {
+          rhythmResetHandle = window.setTimeout(() => {
+            generateRhythmRound();
+          }, rhythmConfig.roundResetMs);
+        }
       }
 
       function renderSheetNoteLetter(activeNote = null) {
@@ -11939,6 +12450,7 @@
         if (!authUser) {
           isAuthPanelVisible = true;
           isHomeViewVisible = false;
+          isRhythmViewVisible = false;
           isTutorViewVisible = false;
           isStudentCalendarViewVisible = false;
           isManagementViewVisible = false;
@@ -11950,6 +12462,7 @@
         }
         isHomeViewVisible = !isHomeViewVisible;
         if (isHomeViewVisible) {
+          isRhythmViewVisible = false;
           isTutorViewVisible = false;
           isStudentCalendarViewVisible = false;
           isManagementViewVisible = false;
@@ -12568,16 +13081,24 @@
         isTutorViewVisible = false;
         isTutorModalOpen = false;
         isHomeViewVisible = true;
+        isRhythmViewVisible = false;
         isStudentCalendarViewVisible = false;
         updateModeUi();
       });
       studentCalendarBackButton.addEventListener("click", () => {
         isStudentCalendarViewVisible = false;
         isHomeViewVisible = true;
+        isRhythmViewVisible = false;
         updateModeUi();
       });
       libraryBackButton.addEventListener("click", () => {
         isLibraryVisible = false;
+        isHomeViewVisible = true;
+        isRhythmViewVisible = false;
+        updateModeUi();
+      });
+      rhythmBackButton?.addEventListener("click", () => {
+        isRhythmViewVisible = false;
         isHomeViewVisible = true;
         updateModeUi();
       });
@@ -12585,6 +13106,7 @@
         isManagementViewVisible = false;
         isManagementModalOpen = false;
         isHomeViewVisible = true;
+        isRhythmViewVisible = false;
         updateTutorUi();
         updateModeUi();
       });
@@ -12716,6 +13238,7 @@
         resetNotesSessionTimer();
         resetSheetLetterReveal();
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
@@ -12726,14 +13249,27 @@
         void autoLogHabitsPracticeStart();
       });
       homeModuleIceCream.addEventListener("click", () => {
-        setSchoolStatus("Ice-Cream-Modul ist noch nicht belegt.", "");
-        isHomeViewVisible = true;
+        isFoundationModeActive = false;
+        isHomeViewVisible = false;
+        isRhythmViewVisible = true;
+        isTutorViewVisible = false;
+        isStudentCalendarViewVisible = false;
+        isManagementViewVisible = false;
+        isLibraryVisible = false;
+        isInfoVisible = false;
+        rhythmAccuracySamples = [];
+        rhythmTimingOffsets = [];
+        ensureRhythmMetronomeAudio();
+        generateRhythmRound();
+        startRhythmMetronome();
         updateModeUi();
+        void autoLogHabitsPracticeStart();
       });
       homeModuleBookworm.addEventListener("click", () => {
         isFoundationModeActive = true;
         foundationAutopilotEnabled = false;
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
@@ -12766,6 +13302,7 @@
         }
         isFoundationModeActive = false;
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = true;
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
@@ -12779,6 +13316,7 @@
         }
         isFoundationModeActive = false;
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = true;
@@ -12798,6 +13336,7 @@
         }
         isFoundationModeActive = false;
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = true;
         isManagementViewVisible = false;
@@ -12808,12 +13347,23 @@
       homeModuleLibrary.addEventListener("click", () => {
         isFoundationModeActive = false;
         isHomeViewVisible = false;
+        isRhythmViewVisible = false;
         isTutorViewVisible = false;
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
         isLibraryVisible = true;
         renderLibraryPanel();
         updateLibraryUi();
+      });
+      rhythmClickGrid?.addEventListener("click", (event) => {
+        const dot = event.target?.closest?.(".rhythm-click-dot");
+        if (!dot) {
+          return;
+        }
+        handleRhythmTap(Number(dot.dataset.index || 0));
+      });
+      rhythmBpmValue?.addEventListener("click", () => {
+        promptRhythmBpm();
       });
       managementRefreshButton.addEventListener("click", async () => {
         try {
