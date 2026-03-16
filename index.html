@@ -4073,6 +4073,35 @@
         font-size: inherit;
       }
 
+      .mobile-note-picker {
+        display: none;
+      }
+
+      .mobile-note-picker.is-hidden {
+        display: none;
+      }
+
+      .mobile-note-picker-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+
+      .mobile-note-button {
+        min-height: 50px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-size: 22px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
       .trainer-info.is-hidden {
         display: none;
       }
@@ -4099,6 +4128,182 @@
 
         .keyboard {
           height: min(20vh, 180px);
+        }
+      }
+
+      @media (max-width: 767px) {
+        main {
+          width: 100vw;
+          height: auto;
+          min-height: 100svh;
+          margin: 0;
+          padding: 12px 10px calc(176px + env(safe-area-inset-bottom, 0px));
+          display: block;
+        }
+
+        .trainer {
+          gap: 14px;
+          align-content: start;
+          justify-items: stretch;
+        }
+
+        .toolbar {
+          display: grid;
+          grid-template-columns: repeat(3, 46px);
+          justify-content: center;
+          gap: 10px 12px;
+          min-height: auto;
+        }
+
+        .toolbar-button {
+          margin: 0 auto;
+        }
+
+        #toggle-range-button {
+          display: none;
+        }
+
+        #toggle-keyboard-button {
+          display: none;
+        }
+
+        #toggle-info-button {
+          display: none;
+        }
+
+        #toggle-home-button {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        #toggle-double-button {
+          display: none;
+        }
+
+        #toggle-srs-treble-button {
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        #toggle-srs-bass-button {
+          grid-column: 3;
+          grid-row: 1;
+        }
+
+        .level-indicator,
+        .session-timer {
+          display: none !important;
+        }
+
+        .home-view,
+        .rhythm-view,
+        .tutor-view,
+        .library-view {
+          width: 100%;
+          gap: 14px;
+        }
+
+        .home-header {
+          align-items: center;
+        }
+
+        .home-heading {
+          font-size: clamp(30px, 11vw, 44px);
+        }
+
+        .home-modules {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 14px;
+        }
+
+        .home-module {
+          width: 100%;
+          aspect-ratio: auto;
+          min-height: 228px;
+          border-radius: 26px;
+        }
+
+        .home-module-copy {
+          min-height: 0;
+          font-size: 13px;
+        }
+
+        #home-module-ice-cream,
+        #home-module-bookworm {
+          display: none !important;
+        }
+
+        .sheet-music {
+          width: calc(100% - 3em);
+          margin-bottom: 28px;
+          justify-items: center;
+          padding-left: 10.5em;
+          overflow: visible;
+          font-size: min(4.8vw, 2.2vh);
+          zoom: 0.95;
+        }
+
+        .bar {
+          width: 5em;
+        }
+
+        .stave-header {
+          left: -16em;
+          width: 16em;
+        }
+
+        .sheet-note-group {
+          flex-direction: column;
+          gap: 16px;
+          overflow: visible;
+          width: 100%;
+        }
+
+        .sheet-note-answer {
+          flex: 0 0 auto;
+          min-width: 0;
+          width: calc(100% + 10.5em);
+          margin-left: -10.5em;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .sheet-note-letter {
+          min-width: 0;
+          width: auto;
+          height: auto;
+          border-radius: 0;
+          background: transparent !important;
+          box-shadow: none;
+          color: var(--text);
+          font-size: clamp(40px, 12vw, 64px);
+          line-height: 1;
+          margin: 0 auto;
+        }
+
+        .toolbar .sheet-note-toggle {
+          display: inline-flex;
+          flex: 0 0 46px;
+        }
+
+        .trainer-info {
+          display: none;
+        }
+
+        .mobile-note-picker {
+          display: block;
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: max(10px, env(safe-area-inset-bottom, 0px));
+          z-index: 35;
+          width: 100%;
+          padding: 0 12px;
+          box-sizing: border-box;
+        }
+
+        .midi-indicator {
+          display: none !important;
         }
       }
     </style>
@@ -4593,6 +4798,17 @@
         <div class="trainer-info" id="trainer-info">
           <p class="target-description" id="target-description" aria-live="polite"></p>
         </div>
+        <div class="mobile-note-picker is-hidden" id="mobile-note-picker" aria-label="Notenauswahl mobil">
+          <div class="mobile-note-picker-grid">
+            <button class="mobile-note-button" type="button" data-letter="C">C</button>
+            <button class="mobile-note-button" type="button" data-letter="D">D</button>
+            <button class="mobile-note-button" type="button" data-letter="E">E</button>
+            <button class="mobile-note-button" type="button" data-letter="F">F</button>
+            <button class="mobile-note-button" type="button" data-letter="G">G</button>
+            <button class="mobile-note-button" type="button" data-letter="A">A</button>
+            <button class="mobile-note-button" type="button" data-letter="H">H</button>
+          </div>
+        </div>
         <section class="library-view is-hidden" id="library-view" aria-label="Bibliothek">
           <div class="tutor-view-header">
             <button class="tutor-back" id="library-back-button" type="button">Zurück</button>
@@ -4916,6 +5132,7 @@
       const sheetMusic = document.querySelector(".sheet-music");
       const sheetMusicDouble = document.getElementById("sheet-music-double");
       const sheetNoteToggle = document.getElementById("sheet-note-toggle");
+      const sheetNoteToggleHomeParent = sheetNoteToggle?.parentElement || null;
       const practiceHomeworkPanel = document.getElementById("practice-homework-panel");
       const practiceHomeworkCopy = document.getElementById("practice-homework-copy");
       const practiceHomeworkMeta = document.getElementById("practice-homework-meta");
@@ -4938,6 +5155,8 @@
       const sessionTimer = document.getElementById("session-timer");
       const sessionTimerValue = document.getElementById("session-timer-value");
       const trainerInfo = document.getElementById("trainer-info");
+      const mobileNotePicker = document.getElementById("mobile-note-picker");
+      const mobileNoteButtons = Array.from(document.querySelectorAll(".mobile-note-button"));
       const libraryView = document.getElementById("library-view");
       const libraryBackButton = document.getElementById("library-back-button");
       const libraryPanel = document.getElementById("library-panel");
@@ -8568,6 +8787,7 @@
         }
         const hidesTrainerContent = isAuthPanelVisible || isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         const isStandardTrainerVisible = !hidesTrainerContent && !isFoundationMode;
+        const isMobileNotePickerVisible = isPhoneViewport() && isStandardTrainerVisible && !isDoubleModeEnabled;
         midiIndicator.hidden = isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible;
         toggleHomeButton.classList.toggle("is-active", isHomeViewVisible);
         toggleDoubleButton.classList.toggle("is-active", isDoubleModeEnabled);
@@ -8589,6 +8809,7 @@
         sheetMusicDouble.classList.toggle("is-hidden", hidesTrainerContent || !isDoubleModeEnabled || isLibraryVisible || isFoundationMode);
         foundationPanel?.classList.toggle("is-hidden", hidesTrainerContent || !isFoundationModeActive);
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || (!isInfoVisible && !isHomeworkMode));
+        mobileNotePicker?.classList.toggle("is-hidden", !isMobileNotePickerVisible);
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || (!isKeyboardVisible && !isFoundationMode));
         if (hidesTrainerContent || !isFoundationMode) {
           clearFoundationLoopTimer();
@@ -8599,6 +8820,7 @@
         } else if (!rhythmMetronomeTimer) {
           startRhythmMetronome();
         }
+        syncMobileSheetNoteTogglePlacement();
         syncNotesSessionTimer(isStandardTrainerVisible);
         syncPracticeHomeworkPanel();
         renderFoundationPanel();
@@ -10117,6 +10339,96 @@
 
       function displayPitchLetter(noteName) {
         return displayNoteName(String(noteName || "")).replace(/\d/g, "");
+      }
+
+      function isPhoneViewport() {
+        return window.matchMedia("(max-width: 1023px)").matches;
+      }
+
+      function syncMobileSheetNoteTogglePlacement() {
+        if (!sheetNoteToggle || !toolbar || !sheetNoteToggleHomeParent) {
+          return;
+        }
+
+        if (isPhoneViewport()) {
+          if (sheetNoteToggle.parentElement !== toolbar) {
+            toolbar.appendChild(sheetNoteToggle);
+          }
+          return;
+        }
+
+        if (sheetNoteToggle.parentElement !== sheetNoteToggleHomeParent) {
+          sheetNoteToggleHomeParent.appendChild(sheetNoteToggle);
+        }
+      }
+
+      function handleMobileNoteChoice(letter) {
+        if (!isPhoneViewport() || !currentNotes.length || isDoubleModeEnabled || isFoundationModeActive) {
+          return;
+        }
+
+        const activeNote = currentNotes[activeIndex];
+        if (!activeNote) {
+          return;
+        }
+
+        const guessedLetter = String(letter || "").trim().toUpperCase();
+        const expectedLetter = displayPitchLetter(activeNote.name).toUpperCase();
+        const responseMs = recordResponseTiming();
+
+        if (guessedLetter === expectedLetter) {
+          rememberPromptedNote(activeNote.clef, activeNote.name);
+          const rangeChanged = recordSrsAttempt(true);
+          const state = activeSrsState();
+          recordNoteStat(activeNote.clef, activeNote.name, true, { responseMs });
+          maybeAdvanceFoundationChapter();
+          void maybeUnlockHomeworkFreePractice();
+          if (activeNote.isNew && state) {
+            state.newNotes = state.newNotes.filter((noteName) => noteName !== activeNote.name);
+            queuePriorityNote(activeNote.clef, activeNote.name);
+          }
+          activeNote.state = "correct";
+          const activeNoteSnapshot = { ...activeNote };
+          const revealDelay = revealHiddenAnswerFeedback(activeNoteSnapshot);
+          activeIndex += 1;
+
+          if (rangeChanged) {
+            window.setTimeout(generateRound, revealDelay);
+            return;
+          }
+
+          renderNotes();
+          refreshCurrentMarker();
+          markPromptStart();
+
+          if (activeIndex >= currentNotes.length) {
+            foundationLastPlayedPitch = foundationPlayedSummary(currentFoundationChapter());
+            renderFoundationPanel();
+            foundationMaybeMarkCompleted();
+            maybeAdvanceFoundationChapter();
+            window.setTimeout(generateRound, Math.max(isFoundationModeActive ? 900 : trainerUiConfig.fastRoundResetMs, revealDelay));
+          }
+          return;
+        }
+
+        const rangeChanged = recordSrsAttempt(false);
+        recordNoteStat(activeNote.clef, activeNote.name, false, { responseMs, playedNoteName: guessedLetter });
+        queuePriorityNote(activeNote.clef, activeNote.name);
+        rememberPromptedNote(activeNote.clef, activeNote.name);
+        setActiveState("wrong");
+        const revealDelay = revealHiddenAnswerFeedback(activeNote);
+
+        if (rangeChanged) {
+          window.setTimeout(generateRound, Math.max(isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs, revealDelay));
+          return;
+        }
+
+        window.setTimeout(() => {
+          if (currentNotes[activeIndex] && currentNotes[activeIndex].state === "wrong") {
+            setActiveState("idle");
+            markPromptStart();
+          }
+        }, Math.max(isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs, revealDelay));
       }
 
       function parseNoteName(name) {
@@ -12569,6 +12881,7 @@
       doubleRangeTrebleStart.addEventListener("pointercancel", endRangeDrag);
       doubleRangeTrebleEnd.addEventListener("pointercancel", endRangeDrag);
       window.addEventListener("resize", () => {
+        syncMobileSheetNoteTogglePlacement();
         syncRangeBracketPositions();
         renderKeyboardLevels();
         if (isTutorViewVisible) {
@@ -13364,6 +13677,11 @@
       });
       rhythmBpmValue?.addEventListener("click", () => {
         promptRhythmBpm();
+      });
+      mobileNoteButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          handleMobileNoteChoice(button.dataset.letter || "");
+        });
       });
       managementRefreshButton.addEventListener("click", async () => {
         try {
