@@ -6,7 +6,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       :root {
-        color-scheme: light dark;
+        color-scheme: light;
         --svg-stave: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%20192%22%20preserveAspectRatio%3D%22none%20slice%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%2224%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%2224%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%2224%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%2224%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%2224%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
         --svg-stave-header: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave-header%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%22192%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%22192%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%22192%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%22192%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%22192%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
         --svg-bar-line: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2098%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23000%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Ebar-line%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20x1%3D%2211%22%20x2%3D%2211%22%20y2%3D%2298%22%2F%3E%3C%2Fsvg%3E");
@@ -24,31 +24,22 @@
         --tooltip-bg: #111111;
         --tooltip-text: #ffffff;
         --keyboard-bg: #f3f3f3;
+        --signal-success: #1d7a3c;
+        --signal-success-soft: rgba(231, 250, 236, 0.95);
+        --signal-success-strong: #14532d;
+        --signal-warning: #b7791f;
+        --signal-warning-soft: rgba(255, 245, 217, 0.95);
+        --signal-warning-strong: #8a5a00;
+        --signal-danger: #b22b2b;
+        --signal-danger-soft: rgba(255, 235, 235, 0.95);
+        --signal-danger-strong: #9f1f1f;
+        --signal-target: #2f6bff;
+        --signal-target-soft: #dcecff;
         --module-max-width: 1440px;
         --module-gap: 22px;
         --module-card-gap: 14px;
         --module-card-padding-y: 18px;
         --module-card-padding-x: 20px;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --svg-stave: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%20192%22%20preserveAspectRatio%3D%22none%20slice%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%2224%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%2224%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%2224%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%2224%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%2224%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
-          --svg-stave-header: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Estave-header%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2248%22%20x2%3D%22192%22%20y2%3D%2248%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2272%22%20x2%3D%22192%22%20y2%3D%2272%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%2296%22%20x2%3D%22192%22%20y2%3D%2296%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22120%22%20x2%3D%22192%22%20y2%3D%22120%22%2F%3E%3Cline%20class%3D%22cls-1%22%20y1%3D%22144%22%20x2%3D%22192%22%20y2%3D%22144%22%2F%3E%3C%2Fsvg%3E");
-          --svg-bar-line: url("data:image/svg+xml,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2098%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3Anone%3Bstroke%3A%23fff%3Bstroke-miterlimit%3A10%3Bstroke-width%3A2px%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Ebar-line%3C%2Ftitle%3E%3Cline%20class%3D%22cls-1%22%20x1%3D%2211%22%20x2%3D%2211%22%20y2%3D%2298%22%2F%3E%3C%2Fsvg%3E");
-          --bg: #0f1218;
-          --surface: #0f1218;
-          --surface-soft: rgba(15, 18, 24, 0.96);
-          --surface-muted: rgba(15, 18, 24, 0.9);
-          --border: #323845;
-          --text: #f3f5f7;
-          --text-soft: #b7bec8;
-          --text-muted: #98a2b3;
-          --staff-ink: #ffffff;
-          --tooltip-bg: #20252f;
-          --tooltip-text: #f3f5f7;
-          --keyboard-bg: #1b2028;
-        }
       }
 
       * {
@@ -274,44 +265,59 @@
         inset: 2px 14px 18px;
         z-index: 1;
         pointer-events: none;
-        display: grid;
-        place-items: end center;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        overflow: visible;
       }
 
       .home-module-illustration {
-        width: 86%;
-        height: 86%;
+        --home-illustration-max-width: 86%;
+        --home-illustration-max-height: 86%;
+        max-width: var(--home-illustration-max-width);
+        max-height: var(--home-illustration-max-height);
+        width: auto;
+        height: auto;
         object-fit: contain;
         object-position: center bottom;
         display: block;
+        flex: 0 1 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .home-module[data-theme="notes"] .home-module-illustration {
-        width: 84%;
-        height: 84%;
+        --home-illustration-max-width: 84%;
+        --home-illustration-max-height: 84%;
       }
 
       #home-module-notes .home-module-illustration {
-        width: 78%;
-        height: 78%;
+        --home-illustration-max-width: 78%;
+        --home-illustration-max-height: 78%;
         object-position: center 70%;
       }
 
       #home-module-ice-cream .home-module-illustration {
-        width: 76%;
-        height: 76%;
+        --home-illustration-max-width: 76%;
+        --home-illustration-max-height: 76%;
         object-position: center 72%;
       }
 
       #home-module-tutor .home-module-illustration {
-        width: 76%;
-        height: 76%;
+        --home-illustration-max-width: 76%;
+        --home-illustration-max-height: 76%;
         object-position: center 68%;
       }
 
+      #home-module-management .home-module-illustration {
+        --home-illustration-max-width: 84%;
+        --home-illustration-max-height: 84%;
+        object-position: center 64%;
+      }
+
       #home-module-bookworm .home-module-illustration {
-        width: 74%;
-        height: 74%;
+        --home-illustration-max-width: 74%;
+        --home-illustration-max-height: 74%;
         object-position: center 72%;
       }
 
@@ -852,11 +858,11 @@
       }
 
       .management-status[data-state="error"] {
-        color: #b22b2b;
+        color: var(--signal-danger);
       }
 
       .management-status[data-state="success"] {
-        color: #1d7a3c;
+        color: var(--signal-success);
       }
 
       @media (max-width: 1024px) {
@@ -1588,11 +1594,11 @@
       }
 
       .auth-status[data-state="error"] {
-        color: #b22b2b;
+        color: var(--signal-danger);
       }
 
       .auth-status[data-state="success"] {
-        color: #1d7a3c;
+        color: var(--signal-success);
       }
 
       .auth-subscription {
@@ -1889,11 +1895,11 @@
       }
 
       .school-status[data-state="error"] {
-        color: #b22b2b;
+        color: var(--signal-danger);
       }
 
       .school-status[data-state="success"] {
-        color: #1d7a3c;
+        color: var(--signal-success);
       }
 
       .school-summary {
@@ -2002,18 +2008,18 @@
       }
 
       .level-indicator[data-signal="low"] {
-        border-color: #d95c5c;
-        background: rgba(255, 235, 235, 0.95);
+        border-color: var(--signal-danger);
+        background: var(--signal-danger-soft);
       }
 
       .level-indicator[data-signal="mid"] {
-        border-color: #d9a43b;
-        background: rgba(255, 245, 217, 0.95);
+        border-color: var(--signal-warning);
+        background: var(--signal-warning-soft);
       }
 
       .level-indicator[data-signal="high"] {
-        border-color: #3eaf63;
-        background: rgba(231, 250, 236, 0.95);
+        border-color: var(--signal-success);
+        background: var(--signal-success-soft);
       }
 
       .level-indicator.is-hidden {
@@ -2031,17 +2037,17 @@
 
       .level-indicator[data-signal="low"] .level-indicator-label,
       .level-indicator[data-signal="low"] .level-indicator-value {
-        color: #9f1f1f;
+        color: var(--signal-danger-strong);
       }
 
       .level-indicator[data-signal="mid"] .level-indicator-label,
       .level-indicator[data-signal="mid"] .level-indicator-value {
-        color: #8a5a00;
+        color: var(--signal-warning-strong);
       }
 
       .level-indicator[data-signal="high"] .level-indicator-label,
       .level-indicator[data-signal="high"] .level-indicator-value {
-        color: #1d7a3c;
+        color: var(--signal-success-strong);
       }
 
       .level-indicator-value {
@@ -2053,42 +2059,36 @@
       }
 
       .session-timer {
-        width: 70px;
-        min-width: 70px;
-        height: 70px;
+        flex: 0 0 46px;
+        width: 46px;
+        min-width: 46px;
+        max-width: 46px;
+        height: 46px;
+        min-height: 46px;
+        max-height: 46px;
         border: 1px solid var(--border);
         border-radius: 999px;
-        background:
-          radial-gradient(circle at 30% 30%, rgba(47, 107, 255, 0.14), transparent 58%),
-          var(--surface);
+        background: var(--surface);
         display: grid;
         place-items: center;
-        padding: 8px;
+        padding: 0;
         text-align: center;
-        box-shadow: 0 10px 24px rgba(17, 17, 17, 0.06);
+        box-shadow: none;
       }
 
       .session-timer.is-hidden {
         display: none;
       }
 
-      .session-timer-label {
-        display: block;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--text-soft);
-      }
-
       .session-timer-value {
         display: block;
-        margin-top: 3px;
-        font-size: 18px;
+        margin-top: 0;
+        font-size: 12px;
         font-weight: 800;
         line-height: 1;
         color: var(--text);
         font-variant-numeric: tabular-nums;
+        letter-spacing: -0.04em;
       }
 
       .toolbar-button {
@@ -2416,11 +2416,11 @@
       }
 
       .sheet-note-letter[data-signal="correct"] {
-        background: rgba(29, 155, 57, 0.96);
+        background: color-mix(in srgb, var(--signal-success) 88%, transparent);
       }
 
       .sheet-note-letter[data-signal="wrong"] {
-        background: rgba(214, 36, 36, 0.94);
+        background: color-mix(in srgb, var(--signal-danger) 86%, transparent);
       }
 
       .sheet-note-letter.is-hidden {
@@ -2515,11 +2515,11 @@
       }
 
       .practice-homework-status[data-state="error"] {
-        color: #b22b2b;
+        color: var(--signal-danger);
       }
 
       .practice-homework-status[data-state="success"] {
-        color: #1d7a3c;
+        color: var(--signal-success);
       }
 
       .foundation-panel {
@@ -3026,12 +3026,6 @@
         transform: translateX(-50%);
       }
 
-      @media (prefers-color-scheme: dark) {
-        .sheet-music-double::before {
-          border-left-color: rgba(255, 255, 255, 0.28);
-        }
-      }
-
       .sheet-music-double.is-hidden {
         display: none;
       }
@@ -3167,8 +3161,8 @@
 
       .note-slot-current-bar {
         position: absolute;
-        top: 1.4em;
-        bottom: 1.4em;
+        top: 2.35em;
+        bottom: 2.35em;
         left: 50%;
         width: 4.5em;
         transform: translateX(-50%);
@@ -3210,11 +3204,11 @@
       }
 
       .note-slot-current-bar[data-signal="correct"] {
-        background: rgba(29, 155, 57, 0.18);
+        background: color-mix(in srgb, var(--signal-success) 22%, transparent);
       }
 
       .note-slot-current-bar[data-signal="wrong"] {
-        background: rgba(214, 36, 36, 0.18);
+        background: color-mix(in srgb, var(--signal-danger) 22%, transparent);
       }
 
       .note-badge {
@@ -3343,21 +3337,21 @@
       }
 
       .note.is-correct {
-        --note-color: #1d9b39;
+        --note-color: var(--signal-success);
       }
 
       .note.is-correct ~ .ledger-line,
       .ledger-line.is-correct {
-        --ledger-color: #1d9b39;
+        --ledger-color: var(--signal-success);
       }
 
       .note.is-wrong {
-        --note-color: #d62424;
+        --note-color: var(--signal-danger);
       }
 
       .note.is-wrong ~ .ledger-line,
       .ledger-line.is-wrong {
-        --ledger-color: #d62424;
+        --ledger-color: var(--signal-danger);
       }
 
       .midi-indicator {
@@ -3406,7 +3400,7 @@
       }
 
       .midi-tooltip[data-state="error"] {
-        background: #b22b2b;
+        background: var(--signal-danger);
         color: #ffffff;
       }
 
@@ -3753,15 +3747,15 @@
       }
 
       .white-key.is-target {
-        background: #dcecff;
+        background: var(--signal-target-soft);
       }
 
       .white-key.is-correct {
-        background: #d9f5df;
+        background: color-mix(in srgb, var(--signal-success) 26%, #ffffff);
       }
 
       .white-key.is-wrong {
-        background: #ffdede;
+        background: color-mix(in srgb, var(--signal-danger) 26%, #ffffff);
       }
 
       .black-keys {
@@ -3841,15 +3835,15 @@
       }
 
       .black-key.is-target {
-        background: #4c8df6;
+        background: var(--signal-target);
       }
 
       .black-key.is-correct {
-        background: #2ea44f;
+        background: var(--signal-success);
       }
 
       .black-key.is-wrong {
-        background: #d84f4f;
+        background: var(--signal-danger);
       }
 
       .target-description {
@@ -3884,21 +3878,6 @@
 
       .target-description-prompt {
         font-size: inherit;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        .debug-console {
-          background: rgba(0, 0, 0, 0.56);
-        }
-
-        .white-key {
-          border-right-color: #4b5260;
-          background: #f3f4f6;
-        }
-
-        .white-key.is-in-range {
-          box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.4);
-        }
       }
 
       .trainer-info.is-hidden {
@@ -3961,7 +3940,6 @@
             <span class="level-indicator-value" id="level-indicator-value">1 / 5</span>
           </div>
           <div class="session-timer is-hidden" id="session-timer" aria-live="polite">
-            <span class="session-timer-label">Session</span>
             <span class="session-timer-value" id="session-timer-value">00:00</span>
           </div>
         </div>
@@ -4763,10 +4741,10 @@
         adaptiveJumpHistory: 2
       };
       const trainerUiConfig = {
-        fastAdvanceMs: 220,
-        fastWrongResetMs: 140,
-        fastRoundResetMs: 260,
-        hiddenAnswerRevealMs: 560
+        fastAdvanceMs: 140,
+        fastWrongResetMs: 90,
+        fastRoundResetMs: 150,
+        hiddenAnswerRevealMs: 220
       };
       // SUPABASE KISUM
       const SUPABASE_PROJECT_REF = "ontusfifjfbzwlvligrx";
