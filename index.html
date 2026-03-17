@@ -13736,7 +13736,7 @@
       });
       schoolSaveButton.addEventListener("click", () => saveTutorLesson());
       schoolModeSelect.addEventListener("change", () => updateSchoolModeFields());
-      homeModuleNotes.addEventListener("click", () => {
+      homeModuleNotes.addEventListener("click", async () => {
         isFoundationModeActive = false;
         resetNotesSessionTimer();
         resetSheetLetterReveal();
@@ -13746,6 +13746,9 @@
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
         isLibraryVisible = false;
+        if (authUser) {
+          await loadRemoteProgress();
+        }
         resumeSrsProgressForNotesMode();
         updateModeUi();
         generateRound();
