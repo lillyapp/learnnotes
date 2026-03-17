@@ -8552,8 +8552,8 @@
         }
 
         isRemoteStateApplying = true;
-        srsStates = record.srs_states || { treble: null, bass: null };
         noteStats = record.note_stats || { treble: {}, bass: {} };
+        srsStates = normalizePersistedSrsStates(record.srs_states || null);
         foundationChapterCompletions = record.foundation_progress || {};
         activityLog = record.activity_log || {};
         timingStats = record.timing_stats || {
@@ -9148,6 +9148,49 @@
           return false;
         }
         return notes.every((noteName) => noteIsSecure(mode, noteName));
+      }
+
+      function inferredSrsLevelFromNoteStats(mode) {
+        const ranges = levelRangesForMode(mode);
+        if (!mode || !ranges.length) {
+          return 1;
+        }
+
+        let inferredLevel = 1;
+        for (let level = 1; level < ranges.length; level += 1) {
+          const trainingRange = srsTrainingRangeFromState(mode, { level: inferredLevel });
+          if (!rangeReadyForExpansion(mode, trainingRange)) {
+            break;
+          }
+          inferredLevel += 1;
+        }
+
+        return Math.max(1, Math.min(ranges.length, inferredLevel));
+      }
+
+      function normalizeSrsState(mode, rawState) {
+        const inferredLevel = inferredSrsLevelFromNoteStats(mode);
+        const hasStoredState = Boolean(rawState && typeof rawState === "object");
+        if (!hasStoredState && inferredLevel <= 1) {
+          return null;
+        }
+
+        const nextState = rawState && typeof rawState === "object"
+          ? { ...createInitialSrsState(mode), ...rawState }
+          : createInitialSrsState(mode);
+
+        const storedLevel = Math.max(1, Number(nextState.level) || 1);
+        nextState.level = Math.max(storedLevel, inferredLevel);
+        nextState.attempts = Array.isArray(nextState.attempts) ? nextState.attempts : [];
+        nextState.newNotes = Array.isArray(nextState.newNotes) ? nextState.newNotes : [];
+        return nextState;
+      }
+
+      function normalizePersistedSrsStates(states) {
+        return {
+          treble: normalizeSrsState("treble", states?.treble || null),
+          bass: normalizeSrsState("bass", states?.bass || null)
+        };
       }
 
       function queueContrastDrill(mode, targetNoteName, playedNoteName) {
