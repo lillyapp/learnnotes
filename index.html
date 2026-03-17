@@ -10599,6 +10599,116 @@
         }, Math.max(isFoundationModeActive ? 350 : trainerUiConfig.fastWrongResetMs, revealDelay));
       }
 
+      function normalizeKeyboardPitchLetter(key) {
+        const letter = String(key || "").trim().toUpperCase();
+        if (letter === "H") {
+          return "B";
+        }
+        if (["A", "B", "C", "D", "E", "F", "G"].includes(letter)) {
+          return letter;
+        }
+        return "";
+      }
+
+      function isTypingIntoField(target) {
+        if (!target || !(target instanceof Element)) {
+          return false;
+        }
+        const tagName = String(target.tagName || "").toUpperCase();
+        return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(tagName);
+      }
+
+      function noteMatchesKeyboardLetter(noteName, keyboardLetter) {
+        return String(noteName || "").toUpperCase().startsWith(keyboardLetter);
+      }
+
+      function nearestNoteForKeyboardLetter(notes, keyboardLetter, targetMidi = null) {
+        const matches = (Array.isArray(notes) ? notes : []).filter((note) =>
+          note && noteMatchesKeyboardLetter(note.name, keyboardLetter)
+        );
+
+        if (!matches.length) {
+          return null;
+        }
+
+        if (targetMidi === null) {
+          return matches[0];
+        }
+
+        return matches.reduce((best, note) => {
+          if (!best) {
+            return note;
+          }
+          const bestDistance = Math.abs(Number(best.midi) - targetMidi);
+          const noteDistance = Math.abs(Number(note.midi) - targetMidi);
+          return noteDistance < bestDistance ? note : best;
+        }, null);
+      }
+
+      function activeKeyboardSimulationCandidates() {
+        if (isDoubleModeEnabled) {
+          const bassNote = doubleRound.bass[activeIndex] && !doublePairState[activeIndex]?.bassDone
+            ? doubleRound.bass[activeIndex]
+            : null;
+          const trebleNote = doubleRound.treble[activeIndex] && !doublePairState[activeIndex]?.trebleDone
+            ? doubleRound.treble[activeIndex]
+            : null;
+          return [bassNote, trebleNote].filter(Boolean);
+        }
+
+        if (isFoundationModeActive && isFoundationChordPhase()) {
+          return currentNotes.filter((note) => note.state !== "correct");
+        }
+
+        const activeNote = currentNotes[activeIndex];
+        return activeNote ? [activeNote] : [];
+      }
+
+      function fallbackKeyboardSimulationRange() {
+        if (isDoubleModeEnabled) {
+          const bassRange = buildRange(activeDoubleRange("bass")[0], activeDoubleRange("bass")[1], clefConfigs.bass.reference);
+          const trebleRange = buildRange(activeDoubleRange("treble")[0], activeDoubleRange("treble")[1], clefConfigs.treble.reference);
+          return [...bassRange, ...trebleRange];
+        }
+
+        if (isFoundationModeActive) {
+          const chapter = currentFoundationChapter();
+          const chapterRange = foundationChapterRange(chapter);
+          return buildRange(chapterRange[0], chapterRange[1], clefConfigs[chapter.mode].reference, {
+            includeBlack: Boolean(chapter?.includeBlack)
+          });
+        }
+
+        return activeNoteRange();
+      }
+
+      function simulateKeyboardPitch(letter) {
+        const keyboardLetter = normalizeKeyboardPitchLetter(letter);
+        if (!keyboardLetter) {
+          return false;
+        }
+
+        const activeCandidates = activeKeyboardSimulationCandidates();
+        const exactActiveMatch = activeCandidates.find((note) => noteMatchesKeyboardLetter(note.name, keyboardLetter));
+        const targetMidi = exactActiveMatch
+          ? Number(exactActiveMatch.midi)
+          : (activeCandidates[0] ? Number(activeCandidates[0].midi) : null);
+
+        const fallbackNote = nearestNoteForKeyboardLetter(
+          fallbackKeyboardSimulationRange(),
+          keyboardLetter,
+          targetMidi
+        );
+
+        const noteToPlay = exactActiveMatch || fallbackNote;
+        if (!noteToPlay || !Number.isFinite(Number(noteToPlay.midi))) {
+          return false;
+        }
+
+        handlePlayedMidi(Number(noteToPlay.midi));
+        return true;
+      }
+
       function parseNoteName(name) {
         const match = name.match(/^([A-G])(#?)(\d)$/);
         if (!match) {
@@ -13883,6 +13993,24 @@
           return;
         }
         handleMobileNoteChoice(button.dataset.letter || "");
+      });
+      window.addEventListener("keydown", (event) => {
+        if (event.defaultPrevented || event.repeat || event.ctrlKey || event.metaKey || event.altKey) {
+          return;
+        }
+        if (isTypingIntoField(event.target)) {
+          return;
+        }
+        if (isAuthPanelVisible || isHomeViewVisible || isRhythmViewVisible || isTutorViewVisible || isStudentCalendarViewVisible || isManagementViewVisible || isLibraryVisible) {
+          return;
+        }
+        if (!currentNotes.length && !isDoubleModeEnabled) {
+          return;
+        }
+
+        if (simulateKeyboardPitch(event.key)) {
+          event.preventDefault();
+        }
       });
       managementRefreshButton.addEventListener("click", async () => {
         try {
