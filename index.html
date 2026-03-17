@@ -5207,6 +5207,10 @@
         fastRoundResetMs: 150,
         hiddenAnswerRevealMs: 220
       };
+      const secureNoteTargets = {
+        accuracy: 0.95,
+        responseMs: 500
+      };
       const rhythmConfig = {
         bpm: 80,
         noteCount: 4,
@@ -8925,12 +8929,21 @@
         return baseScore * noteRetentionFactor(stat);
       }
 
-      function noteIsSecure(mode, noteName) {
+      function noteMeetsSecureTargets(mode, noteName) {
         const stat = noteStatFor(mode, noteName);
         if (!stat || Number(stat.attempts || 0) < 4) {
           return false;
         }
-        return noteMasteryScore(mode, noteName) >= 0.82;
+
+        const accuracy = noteAccuracy(stat);
+        const averageMs = noteAverageResponseMs(stat);
+        return accuracy >= secureNoteTargets.accuracy
+          && averageMs !== null
+          && averageMs <= secureNoteTargets.responseMs;
+      }
+
+      function noteIsSecure(mode, noteName) {
+        return noteMeetsSecureTargets(mode, noteName);
       }
 
       function signalStateForNote(mode, noteName, noteState = "idle") {
@@ -8945,7 +8958,7 @@
         if (!stat || Number(stat.attempts || 0) === 0) {
           return "unknown";
         }
-        if (noteMasteryScore(mode, noteName) >= 0.82) {
+        if (noteIsSecure(mode, noteName)) {
           return "secure";
         }
         return "learning";
