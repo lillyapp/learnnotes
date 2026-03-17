@@ -9155,16 +9155,17 @@
       }
 
       function createLibrarySummary() {
-        const eta = masteryEta(80);
+        const targetPercent = Math.round(secureNoteTargets.accuracy * 100);
+        const eta = masteryEta(targetPercent);
         const summary = document.createElement("section");
         summary.className = "library-summary";
 
         const cards = [
           {
-            label: "80% Ziel",
+            label: `${targetPercent}% Ziel`,
             value: `${eta.secureNotes}/${eta.totalNotes}`,
             copy: eta.isComplete
-              ? "Alle Noten liegen bereits bei mindestens 80% Sicherheit."
+              ? `Alle Noten liegen bereits bei mindestens ${targetPercent}% Sicherheit.`
               : `${eta.remainingNotes} Noten muessen noch stabilisiert werden.`
           },
           {
@@ -9172,7 +9173,7 @@
             value: eta.etaLabel,
             copy: eta.isComplete
               ? "Aktueller Stand erreicht das Ziel bereits."
-              : `Bei deinem aktuellen Tempo bis alle Noten bei 80% liegen.`
+              : `Bei deinem aktuellen Tempo bis alle Noten bei ${targetPercent}% liegen.`
           },
           {
             label: "Naechste Arbeit",
@@ -10827,7 +10828,7 @@
 
           if (!stat || Number(stat.attempts || 0) === 0) {
             bar.dataset.state = "unknown";
-          } else if (strength >= 80) {
+          } else if (noteIsSecure(mode, noteName)) {
             bar.dataset.state = "secure";
           } else if (activeNotes.has(noteName)) {
             bar.dataset.state = "focus";
@@ -10861,7 +10862,7 @@
         const legendItems = [
           { state: "unknown", label: "noch nicht gelernt" },
           { state: "learning", label: "im Aufbau" },
-          { state: "secure", label: "80%+ sicher" },
+          { state: "secure", label: "95% + <=0,5s sicher" },
           { state: "focus", label: "aktuelle Fokuszone" }
         ];
 
