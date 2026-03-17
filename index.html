@@ -13847,7 +13847,7 @@
         await loadTutorContext();
         updateModeUi();
       });
-      homeModuleLibrary.addEventListener("click", () => {
+      homeModuleLibrary.addEventListener("click", async () => {
         isFoundationModeActive = false;
         isHomeViewVisible = false;
         isRhythmViewVisible = false;
@@ -13855,6 +13855,12 @@
         isStudentCalendarViewVisible = false;
         isManagementViewVisible = false;
         isLibraryVisible = true;
+        if (libraryPanel) {
+          libraryPanel.textContent = "Bibliothek wird geladen...";
+        }
+        if (authUser) {
+          await loadRemoteProgress();
+        }
         renderLibraryPanel();
         updateLibraryUi();
       });
