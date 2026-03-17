@@ -2091,6 +2091,44 @@
         letter-spacing: -0.04em;
       }
 
+      .session-metric {
+        min-width: 86px;
+        height: 46px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        padding: 4px 10px;
+        text-align: center;
+        box-shadow: none;
+      }
+
+      .session-metric.is-hidden {
+        display: none;
+      }
+
+      .session-metric-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .session-metric-value {
+        display: block;
+        margin-top: 3px;
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+
       .toolbar-button {
         flex: 0 0 46px;
         width: 46px;
@@ -4191,7 +4229,8 @@
         }
 
         .level-indicator,
-        .session-timer {
+        .session-timer,
+        .session-metric {
           display: none !important;
         }
 
@@ -4339,6 +4378,10 @@
           </div>
           <div class="session-timer is-hidden" id="session-timer" aria-live="polite">
             <span class="session-timer-value" id="session-timer-value">00:00</span>
+          </div>
+          <div class="session-metric is-hidden" id="notes-accuracy" aria-live="polite">
+            <span class="session-metric-label">Quote</span>
+            <span class="session-metric-value" id="notes-accuracy-value">--</span>
           </div>
         </div>
         <div class="auth-panel is-hidden" id="auth-panel" aria-label="Supabase Anmeldung">
@@ -5154,6 +5197,8 @@
       const levelIndicatorValue = document.getElementById("level-indicator-value");
       const sessionTimer = document.getElementById("session-timer");
       const sessionTimerValue = document.getElementById("session-timer-value");
+      const notesAccuracy = document.getElementById("notes-accuracy");
+      const notesAccuracyValue = document.getElementById("notes-accuracy-value");
       const trainerInfo = document.getElementById("trainer-info");
       const mobileNotePicker = document.getElementById("mobile-note-picker");
       const mobileNotePickerGrid = document.getElementById("mobile-note-picker-grid");
@@ -5692,6 +5737,8 @@
       let notesSessionElapsedMs = 0;
       let notesSessionStartedAt = 0;
       let notesSessionTimerHandle = null;
+      let notesSessionAttempts = 0;
+      let notesSessionCorrectAttempts = 0;
       let currentPromptStartedAt = 0;
       let homeworkRangePickerTarget = "treble:start";
       let activeHomeworkRangeDrag = null;
@@ -6277,6 +6324,35 @@
         sessionTimerValue.textContent = formatSessionTimer(currentNotesSessionElapsedMs());
       }
 
+      function notesSessionAccuracyPercent() {
+        if (!notesSessionAttempts) {
+          return null;
+        }
+        return Math.round((notesSessionCorrectAttempts / notesSessionAttempts) * 100);
+      }
+
+      function renderNotesAccuracy() {
+        if (!notesAccuracyValue) {
+          return;
+        }
+
+        const accuracy = notesSessionAccuracyPercent();
+        notesAccuracyValue.textContent = accuracy === null ? "--" : `${Math.max(0, Math.min(100, accuracy))}%`;
+      }
+
+      function recordNotesSessionAttempt(correctCount = 0, attemptCount = 1) {
+        const safeAttempts = Math.max(0, Number(attemptCount) || 0);
+        const safeCorrect = Math.max(0, Math.min(safeAttempts, Number(correctCount) || 0));
+
+        if (safeAttempts === 0) {
+          return;
+        }
+
+        notesSessionAttempts += safeAttempts;
+        notesSessionCorrectAttempts += safeCorrect;
+        renderNotesAccuracy();
+      }
+
       function stopNotesSessionTimer() {
         if (notesSessionStartedAt) {
           notesSessionElapsedMs = currentNotesSessionElapsedMs();
@@ -6304,11 +6380,14 @@
       function resetNotesSessionTimer() {
         notesSessionElapsedMs = 0;
         notesSessionStartedAt = 0;
+        notesSessionAttempts = 0;
+        notesSessionCorrectAttempts = 0;
         if (notesSessionTimerHandle) {
           window.clearInterval(notesSessionTimerHandle);
           notesSessionTimerHandle = null;
         }
         renderSessionTimer();
+        renderNotesAccuracy();
       }
 
       function syncNotesSessionTimer(isVisible) {
@@ -6321,6 +6400,13 @@
           return;
         }
         stopNotesSessionTimer();
+      }
+
+      function syncNotesAccuracy(isVisible) {
+        if (!notesAccuracy) {
+          return;
+        }
+        notesAccuracy.classList.toggle("is-hidden", !isVisible);
       }
 
       function syncHomeworkAttentionUi() {
@@ -8816,6 +8902,7 @@
         trainerInfo.classList.toggle("is-hidden", hidesTrainerContent || (!isInfoVisible && !isHomeworkMode));
         mobileNotePicker?.classList.toggle("is-hidden", !isMobileNotePickerVisible);
         keyboard.classList.toggle("is-hidden", hidesTrainerContent || (!isKeyboardVisible && !isFoundationMode));
+        syncNotesAccuracy(isStandardTrainerVisible);
         if (hidesTrainerContent || !isFoundationMode) {
           clearFoundationLoopTimer();
         }
@@ -12345,6 +12432,9 @@
           const rangeChanged = recordSrsAttempt(true);
           const state = activeSrsState();
           recordNoteStat(activeNote.clef, activeNote.name, true, { responseMs });
+          if (!isFoundationModeActive) {
+            recordNotesSessionAttempt(1, 1);
+          }
           maybeAdvanceFoundationChapter();
           void maybeUnlockHomeworkFreePractice();
           if (activeNote.isNew && state) {
@@ -12382,6 +12472,9 @@
         const rangeChanged = recordSrsAttempt(false);
         const playedNoteName = midiNumberToName(midiNote);
         recordNoteStat(activeNote.clef, activeNote.name, false, { responseMs, playedNoteName });
+        if (!isFoundationModeActive) {
+          recordNotesSessionAttempt(0, 1);
+        }
         queueContrastDrill(activeNote.clef, activeNote.name, deriveClefForNote(playedNoteName) === activeNote.clef ? playedNoteName : "");
         queuePriorityNote(activeNote.clef, activeNote.name);
         rememberPromptedNote(activeNote.clef, activeNote.name);
@@ -12415,11 +12508,13 @@
         }
 
         let matched = false;
+        let matchedCount = 0;
 
         if (!pairState.bassDone && midiNote === bassNote.midi) {
           rememberPromptedNote("bass", bassNote.name);
           const responseMs = recordResponseTiming();
           matched = true;
+          matchedCount += 1;
           pairState.bassDone = true;
           bassNote.state = "correct";
           correctMidiNotes.add(midiNote);
@@ -12430,6 +12525,7 @@
           rememberPromptedNote("treble", trebleNote.name);
           const responseMs = recordResponseTiming();
           matched = true;
+          matchedCount += 1;
           pairState.trebleDone = true;
           trebleNote.state = "correct";
           correctMidiNotes.add(midiNote);
@@ -12437,6 +12533,9 @@
         }
 
         if (matched) {
+          if (!isFoundationModeActive && matchedCount > 0) {
+            recordNotesSessionAttempt(matchedCount, matchedCount);
+          }
           if (pairState.bassDone && pairState.trebleDone) {
             maybeAdvanceFoundationChapter();
             void maybeUnlockHomeworkFreePractice();
@@ -12459,6 +12558,7 @@
 
         const responseMs = recordResponseTiming();
         const playedNoteName = midiNumberToName(midiNote);
+        const unresolvedCount = (pairState.bassDone ? 0 : 1) + (pairState.trebleDone ? 0 : 1);
         if (!pairState.bassDone) {
           bassNote.state = "wrong";
           recordNoteStat("bass", bassNote.name, false, { responseMs, playedNoteName });
@@ -12473,6 +12573,10 @@
           queueContrastDrill("treble", trebleNote.name, deriveClefForNote(playedNoteName) === "treble" ? playedNoteName : "");
           queuePriorityNote("treble", trebleNote.name);
           rememberPromptedNote("treble", trebleNote.name);
+        }
+
+        if (!isFoundationModeActive && unresolvedCount > 0) {
+          recordNotesSessionAttempt(0, unresolvedCount);
         }
 
         renderDoubleNotes();
