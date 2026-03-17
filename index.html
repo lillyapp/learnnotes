@@ -5253,8 +5253,9 @@
         hiddenAnswerRevealMs: 220
       };
       const secureNoteTargets = {
-        accuracy: 0.95,
-        responseMs: 1000
+        accuracy: 0.85,
+        responseMsBase: 1000,
+        responseMsStep: 250
       };
       const rhythmConfig = {
         bpm: 80,
@@ -9016,6 +9017,28 @@
         return baseScore * noteRetentionFactor(stat);
       }
 
+      function levelForNote(mode, noteName) {
+        const ranges = levelRangesForMode(mode);
+        if (!mode || !noteName || !ranges.length) {
+          return 1;
+        }
+
+        const noteMidi = semitoneValue(noteName);
+        for (let index = 0; index < ranges.length; index += 1) {
+          const [startNote, endNote] = ranges[index];
+          if (noteMidi >= semitoneValue(startNote) && noteMidi <= semitoneValue(endNote)) {
+            return index + 1;
+          }
+        }
+
+        return ranges.length;
+      }
+
+      function secureResponseMsForNote(mode, noteName) {
+        const level = levelForNote(mode, noteName);
+        return secureNoteTargets.responseMsBase + Math.max(0, level - 1) * secureNoteTargets.responseMsStep;
+      }
+
       function noteMeetsSecureTargets(mode, noteName) {
         const stat = noteStatFor(mode, noteName);
         if (!stat || Number(stat.attempts || 0) < 4) {
@@ -9026,7 +9049,7 @@
         const averageMs = noteAverageResponseMs(stat);
         return accuracy >= secureNoteTargets.accuracy
           && averageMs !== null
-          && averageMs <= secureNoteTargets.responseMs;
+          && averageMs <= secureResponseMsForNote(mode, noteName);
       }
 
       function noteIsSecure(mode, noteName) {
@@ -9295,8 +9318,8 @@
             label: `${targetPercent}% Ziel`,
             value: `${eta.secureNotes}/${eta.totalNotes}`,
             copy: eta.isComplete
-              ? `Alle ${eta.totalNotes} Noten gelten bereits als sicher: mindestens ${targetPercent}% richtig, im Schnitt <=1,0s und mit genug Wiederholungen.`
-              : `${eta.secureNotes} von ${eta.totalNotes} Noten sind aktuell sicher. ${eta.remainingNotes} fehlen noch bis zum Ziel. Sicher bedeutet: mindestens ${targetPercent}% richtig, im Schnitt <=1,0s und mindestens 4 Versuche.`
+              ? `Alle ${eta.totalNotes} Noten gelten bereits als sicher: mindestens ${targetPercent}% richtig, mit genug Wiederholungen und innerhalb des Zeitfensters des jeweiligen Levels.`
+              : `${eta.secureNotes} von ${eta.totalNotes} Noten sind aktuell sicher. ${eta.remainingNotes} fehlen noch bis zum Ziel. Sicher bedeutet: mindestens ${targetPercent}% richtig, mindestens 4 Versuche und je nach Level etwa 1,0 bis 1,75 Sekunden Zeit.`
           },
           {
             label: "Geschaetzte Zeit",
@@ -11102,7 +11125,7 @@
         const legendItems = [
           { state: "unknown", label: "noch nicht gelernt" },
           { state: "learning", label: "im Aufbau" },
-          { state: "secure", label: "95% + <=1,0s sicher" },
+          { state: "secure", label: "85% + levelabhaengige Zeit sicher" },
           { state: "focus", label: "aktuelle Fokuszone" }
         ];
 
