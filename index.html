@@ -9295,20 +9295,20 @@
             label: `${targetPercent}% Ziel`,
             value: `${eta.secureNotes}/${eta.totalNotes}`,
             copy: eta.isComplete
-              ? `Alle Noten liegen bereits bei mindestens ${targetPercent}% Sicherheit.`
-              : `${eta.remainingNotes} Noten muessen noch stabilisiert werden.`
+              ? `Alle ${eta.totalNotes} Noten gelten bereits als sicher: mindestens ${targetPercent}% richtig, im Schnitt <=1,0s und mit genug Wiederholungen.`
+              : `${eta.secureNotes} von ${eta.totalNotes} Noten sind aktuell sicher. ${eta.remainingNotes} fehlen noch bis zum Ziel. Sicher bedeutet: mindestens ${targetPercent}% richtig, im Schnitt <=1,0s und mindestens 4 Versuche.`
           },
           {
             label: "Geschaetzte Zeit",
             value: eta.etaLabel,
             copy: eta.isComplete
               ? "Aktueller Stand erreicht das Ziel bereits."
-              : `Bei deinem aktuellen Tempo bis alle Noten bei ${targetPercent}% liegen.`
+              : `Wenn du in deinem aktuellen Tempo weiteruebst, ist das die geschaetzte Restzeit, bis alle ${eta.totalNotes} Noten das Sicherheitsziel erreichen.`
           },
           {
             label: "Naechste Arbeit",
             value: `${eta.remainingAttempts} Antworten`,
-            copy: `Prognose aus Trefferquote, Reaktionszeit und Verwechslungen.`
+            copy: `Das ist die grob geschaetzte Zahl an weiteren Antworten bis zum Ziel. Die Prognose nutzt Trefferquote, Reaktionszeit, Verwechslungen und Erinnerungsstabilitaet.`
           }
         ];
 
