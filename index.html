@@ -5279,8 +5279,8 @@
       const HABITS_AUTO_LOG_MARKER_PREFIX = "kisum-habit-autolog";
       const srsConfig = {
         minimumWindowSize: 5,
-        sampleSize: 20,
-        growThreshold: 0.98,
+        sampleSize: 32,
+        growThreshold: 0.99,
         shrinkThreshold: 0.7
       };
       const keyboardRange = { start: 21, end: 108 };
@@ -11529,14 +11529,7 @@
 
       function srsTrainingRangeFromState(mode, state) {
         const focusRange = srsRangeFromState(mode, state);
-        const previousLevel = Math.max(1, (state?.level || 1) - 1);
-
-        if (previousLevel === (state?.level || 1)) {
-          return focusRange;
-        }
-
-        const previousRange = srsRangeFromState(mode, { ...state, level: previousLevel });
-        return mergedRange(previousRange, focusRange, mode);
+        return focusRange;
       }
 
       function notesInRange(mode, range) {
