@@ -295,6 +295,99 @@
       stroke-width: 2.25;
     }
 
+    .debug-console {
+      position: fixed;
+      right: clamp(16px, 2vw, 24px);
+      bottom: clamp(16px, 2vw, 24px);
+      width: min(520px, calc(100vw - 32px));
+      height: min(320px, 46vh);
+      background: rgba(13, 14, 20, 0.96);
+      color: #f5f7ff;
+      border: 3px solid var(--ink);
+      border-radius: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 10px;
+      padding: 14px 14px 12px;
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.97);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .debug-console.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .debug-console-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .debug-console-title {
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .debug-console-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .debug-console-button {
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: inherit;
+      font: inherit;
+      font-size: 0.74rem;
+      line-height: 1;
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    .debug-console-button:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.32);
+    }
+
+    .debug-console-button:active {
+      transform: scale(0.97);
+    }
+
+    .debug-console-status {
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.7rem 0.85rem;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: rgba(245, 247, 255, 0.82);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .debug-console-output {
+      margin: 0;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.9rem;
+      overflow: auto;
+      font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     .panel-star {
       position: absolute;
       top: -3.35rem;
@@ -442,7 +535,7 @@
 
     .panel h1 {
       margin: 0;
-      font-size: clamp(2.25rem, 3.35vw, 3.35rem);
+      font-size: clamp(2.48rem, 3.69vw, 3.69rem);
       line-height: 1.05;
       color: #ffffff;
       letter-spacing: -0.04em;
@@ -1522,7 +1615,7 @@
       }
 
       .panel h1 {
-        font-size: clamp(1.9rem, 2.86vw, 2.64rem);
+        font-size: clamp(2.09rem, 3.15vw, 2.9rem);
       }
 
       .panel-star {
@@ -1631,10 +1724,18 @@
         height: min(704px, 100%);
         transform: none;
       }
+
+      .debug-console {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+        height: min(300px, 40vh);
+      }
     }
   </style>
 </head>
-<body data-state="0" class="is-no-admin">
+<body data-state="0" class="is-no-admin is-keyboard-open">
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
@@ -1685,15 +1786,15 @@
           <div class="panel-expander-panel">
             <div class="panel-expander-icons" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scissors" aria-label="Cut-Modus umschalten" class="lucide lucide-scissors panel-expander-icon is-action" id="panel-cut-trigger"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="Klavier einblenden" class="lucide lucide-keyboard-music panel-expander-icon is-action" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-hidden="true" class="lucide lucide-message-circle-question-mark panel-expander-icon"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="false" class="lucide lucide-eye panel-expander-icon is-action" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="Klavier einblenden" class="lucide lucide-keyboard-music panel-expander-icon is-action is-active" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-label="Debug-Konsole umschalten" aria-pressed="false" class="lucide lucide-message-circle-question-mark panel-expander-icon is-action" id="panel-debug-toggle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="true" class="lucide lucide-eye panel-expander-icon is-action is-active" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
           </div>
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:06</div>
+          <div class="panel-star-time" id="panel-star-time">00:17</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1711,7 +1812,7 @@
           <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
         </svg>
       </div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="D4" style="--offset: 5em;"></div></div></div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="D4" style="--offset: 5em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 5em;">D</div></div></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
         </div>
@@ -1774,20 +1875,31 @@
         </div>
       </div>
     </section>
-    <div class="keyboard-stage" id="keyboard-stage" aria-hidden="true">
+    <div class="keyboard-stage" id="keyboard-stage" aria-hidden="false" style="--keyboard-stage-left: 35.39990459818736px; --keyboard-stage-width: 1002.2001908036252px;">
       <div class="keyboard" id="keyboard" aria-label="Virtuelles Klavier">
         <div class="keyboard-keys" id="keyboard-keys">
-          <div class="white-keys" id="white-keys"><div class="white-key" data-midi="21" data-note="A0"></div><div class="white-key" data-midi="23" data-note="B0"></div><div class="white-key" data-midi="24" data-note="C1"></div><div class="white-key" data-midi="26" data-note="D1"></div><div class="white-key" data-midi="28" data-note="E1"></div><div class="white-key" data-midi="29" data-note="F1"></div><div class="white-key" data-midi="31" data-note="G1"></div><div class="white-key" data-midi="33" data-note="A1"></div><div class="white-key" data-midi="35" data-note="B1"></div><div class="white-key" data-midi="36" data-note="C2"></div><div class="white-key" data-midi="38" data-note="D2"></div><div class="white-key" data-midi="40" data-note="E2"></div><div class="white-key" data-midi="41" data-note="F2"></div><div class="white-key" data-midi="43" data-note="G2"></div><div class="white-key" data-midi="45" data-note="A2"></div><div class="white-key" data-midi="47" data-note="B2"></div><div class="white-key" data-midi="48" data-note="C3"></div><div class="white-key" data-midi="50" data-note="D3"></div><div class="white-key" data-midi="52" data-note="E3"></div><div class="white-key" data-midi="53" data-note="F3"></div><div class="white-key" data-midi="55" data-note="G3"></div><div class="white-key" data-midi="57" data-note="A3"></div><div class="white-key" data-midi="59" data-note="B3"></div><div class="white-key" data-midi="60" data-note="C4"></div><div class="white-key" data-midi="62" data-note="D4"></div><div class="white-key" data-midi="64" data-note="E4"></div><div class="white-key" data-midi="65" data-note="F4"></div><div class="white-key" data-midi="67" data-note="G4"></div><div class="white-key" data-midi="69" data-note="A4"></div><div class="white-key" data-midi="71" data-note="B4"></div><div class="white-key" data-midi="72" data-note="C5"></div><div class="white-key" data-midi="74" data-note="D5"></div><div class="white-key" data-midi="76" data-note="E5"></div><div class="white-key" data-midi="77" data-note="F5"></div><div class="white-key" data-midi="79" data-note="G5"></div><div class="white-key" data-midi="81" data-note="A5"></div><div class="white-key" data-midi="83" data-note="B5"></div><div class="white-key" data-midi="84" data-note="C6"></div><div class="white-key" data-midi="86" data-note="D6"></div><div class="white-key" data-midi="88" data-note="E6"></div><div class="white-key" data-midi="89" data-note="F6"></div><div class="white-key" data-midi="91" data-note="G6"></div><div class="white-key" data-midi="93" data-note="A6"></div><div class="white-key" data-midi="95" data-note="B6"></div><div class="white-key" data-midi="96" data-note="C7"></div><div class="white-key" data-midi="98" data-note="D7"></div><div class="white-key" data-midi="100" data-note="E7"></div><div class="white-key" data-midi="101" data-note="F7"></div><div class="white-key" data-midi="103" data-note="G7"></div><div class="white-key" data-midi="105" data-note="A7"></div><div class="white-key" data-midi="107" data-note="B7"></div><div class="white-key" data-midi="108" data-note="C8"></div></div>
-          <div class="black-keys" id="black-keys"><div class="black-key" data-midi="22" data-note="A#0" style="left: calc(1.92308%);"></div><div class="black-key" data-midi="25" data-note="C#1" style="left: calc(5.76923%);"></div><div class="black-key" data-midi="27" data-note="D#1" style="left: calc(7.69231%);"></div><div class="black-key" data-midi="30" data-note="F#1" style="left: calc(11.5385%);"></div><div class="black-key" data-midi="32" data-note="G#1" style="left: calc(13.4615%);"></div><div class="black-key" data-midi="34" data-note="A#1" style="left: calc(15.3846%);"></div><div class="black-key" data-midi="37" data-note="C#2" style="left: calc(19.2308%);"></div><div class="black-key" data-midi="39" data-note="D#2" style="left: calc(21.1538%);"></div><div class="black-key" data-midi="42" data-note="F#2" style="left: calc(25%);"></div><div class="black-key" data-midi="44" data-note="G#2" style="left: calc(26.9231%);"></div><div class="black-key" data-midi="46" data-note="A#2" style="left: calc(28.8462%);"></div><div class="black-key" data-midi="49" data-note="C#3" style="left: calc(32.6923%);"></div><div class="black-key" data-midi="51" data-note="D#3" style="left: calc(34.6154%);"></div><div class="black-key" data-midi="54" data-note="F#3" style="left: calc(38.4615%);"></div><div class="black-key" data-midi="56" data-note="G#3" style="left: calc(40.3846%);"></div><div class="black-key" data-midi="58" data-note="A#3" style="left: calc(42.3077%);"></div><div class="black-key" data-midi="61" data-note="C#4" style="left: calc(46.1538%);"></div><div class="black-key" data-midi="63" data-note="D#4" style="left: calc(48.0769%);"></div><div class="black-key" data-midi="66" data-note="F#4" style="left: calc(51.9231%);"></div><div class="black-key" data-midi="68" data-note="G#4" style="left: calc(53.8462%);"></div><div class="black-key" data-midi="70" data-note="A#4" style="left: calc(55.7692%);"></div><div class="black-key" data-midi="73" data-note="C#5" style="left: calc(59.6154%);"></div><div class="black-key" data-midi="75" data-note="D#5" style="left: calc(61.5385%);"></div><div class="black-key" data-midi="78" data-note="F#5" style="left: calc(65.3846%);"></div><div class="black-key" data-midi="80" data-note="G#5" style="left: calc(67.3077%);"></div><div class="black-key" data-midi="82" data-note="A#5" style="left: calc(69.2308%);"></div><div class="black-key" data-midi="85" data-note="C#6" style="left: calc(73.0769%);"></div><div class="black-key" data-midi="87" data-note="D#6" style="left: calc(75%);"></div><div class="black-key" data-midi="90" data-note="F#6" style="left: calc(78.8462%);"></div><div class="black-key" data-midi="92" data-note="G#6" style="left: calc(80.7692%);"></div><div class="black-key" data-midi="94" data-note="A#6" style="left: calc(82.6923%);"></div><div class="black-key" data-midi="97" data-note="C#7" style="left: calc(86.5385%);"></div><div class="black-key" data-midi="99" data-note="D#7" style="left: calc(88.4615%);"></div><div class="black-key" data-midi="102" data-note="F#7" style="left: calc(92.3077%);"></div><div class="black-key" data-midi="104" data-note="G#7" style="left: calc(94.2308%);"></div><div class="black-key" data-midi="106" data-note="A#7" style="left: calc(96.1538%);"></div></div>
+          <div class="white-keys" id="white-keys"><div class="white-key" data-midi="21" data-note="A0"></div><div class="white-key" data-midi="23" data-note="B0"></div><div class="white-key" data-midi="24" data-note="C1"></div><div class="white-key" data-midi="26" data-note="D1"></div><div class="white-key" data-midi="28" data-note="E1"></div><div class="white-key" data-midi="29" data-note="F1"></div><div class="white-key" data-midi="31" data-note="G1"></div><div class="white-key" data-midi="33" data-note="A1"></div><div class="white-key" data-midi="35" data-note="B1"></div><div class="white-key" data-midi="36" data-note="C2"></div><div class="white-key" data-midi="38" data-note="D2"></div><div class="white-key" data-midi="40" data-note="E2"></div><div class="white-key" data-midi="41" data-note="F2"></div><div class="white-key" data-midi="43" data-note="G2"></div><div class="white-key" data-midi="45" data-note="A2"></div><div class="white-key" data-midi="47" data-note="B2"></div><div class="white-key" data-midi="48" data-note="C3"></div><div class="white-key" data-midi="50" data-note="D3"></div><div class="white-key" data-midi="52" data-note="E3"></div><div class="white-key" data-midi="53" data-note="F3"></div><div class="white-key" data-midi="55" data-note="G3"></div><div class="white-key" data-midi="57" data-note="A3"></div><div class="white-key" data-midi="59" data-note="B3"></div><div class="white-key is-in-range is-range-start" data-midi="60" data-note="C4"></div><div class="white-key is-in-range is-target" data-midi="62" data-note="D4"></div><div class="white-key is-in-range" data-midi="64" data-note="E4"></div><div class="white-key is-in-range" data-midi="65" data-note="F4"></div><div class="white-key is-in-range is-range-end" data-midi="67" data-note="G4"></div><div class="white-key" data-midi="69" data-note="A4"></div><div class="white-key" data-midi="71" data-note="B4"></div><div class="white-key" data-midi="72" data-note="C5"></div><div class="white-key" data-midi="74" data-note="D5"></div><div class="white-key" data-midi="76" data-note="E5"></div><div class="white-key" data-midi="77" data-note="F5"></div><div class="white-key" data-midi="79" data-note="G5"></div><div class="white-key" data-midi="81" data-note="A5"></div><div class="white-key" data-midi="83" data-note="B5"></div><div class="white-key" data-midi="84" data-note="C6"></div><div class="white-key" data-midi="86" data-note="D6"></div><div class="white-key" data-midi="88" data-note="E6"></div><div class="white-key" data-midi="89" data-note="F6"></div><div class="white-key" data-midi="91" data-note="G6"></div><div class="white-key" data-midi="93" data-note="A6"></div><div class="white-key" data-midi="95" data-note="B6"></div><div class="white-key" data-midi="96" data-note="C7"></div><div class="white-key" data-midi="98" data-note="D7"></div><div class="white-key" data-midi="100" data-note="E7"></div><div class="white-key" data-midi="101" data-note="F7"></div><div class="white-key" data-midi="103" data-note="G7"></div><div class="white-key" data-midi="105" data-note="A7"></div><div class="white-key" data-midi="107" data-note="B7"></div><div class="white-key" data-midi="108" data-note="C8"></div></div>
+          <div class="black-keys" id="black-keys"><div class="black-key" data-midi="22" data-note="A#0" style="left: calc(1.92308%);"></div><div class="black-key" data-midi="25" data-note="C#1" style="left: calc(5.76923%);"></div><div class="black-key" data-midi="27" data-note="D#1" style="left: calc(7.69231%);"></div><div class="black-key" data-midi="30" data-note="F#1" style="left: calc(11.5385%);"></div><div class="black-key" data-midi="32" data-note="G#1" style="left: calc(13.4615%);"></div><div class="black-key" data-midi="34" data-note="A#1" style="left: calc(15.3846%);"></div><div class="black-key" data-midi="37" data-note="C#2" style="left: calc(19.2308%);"></div><div class="black-key" data-midi="39" data-note="D#2" style="left: calc(21.1538%);"></div><div class="black-key" data-midi="42" data-note="F#2" style="left: calc(25%);"></div><div class="black-key" data-midi="44" data-note="G#2" style="left: calc(26.9231%);"></div><div class="black-key" data-midi="46" data-note="A#2" style="left: calc(28.8462%);"></div><div class="black-key" data-midi="49" data-note="C#3" style="left: calc(32.6923%);"></div><div class="black-key" data-midi="51" data-note="D#3" style="left: calc(34.6154%);"></div><div class="black-key" data-midi="54" data-note="F#3" style="left: calc(38.4615%);"></div><div class="black-key" data-midi="56" data-note="G#3" style="left: calc(40.3846%);"></div><div class="black-key" data-midi="58" data-note="A#3" style="left: calc(42.3077%);"></div><div class="black-key is-in-range" data-midi="61" data-note="C#4" style="left: calc(46.1538%);"></div><div class="black-key is-in-range" data-midi="63" data-note="D#4" style="left: calc(48.0769%);"></div><div class="black-key is-in-range" data-midi="66" data-note="F#4" style="left: calc(51.9231%);"></div><div class="black-key" data-midi="68" data-note="G#4" style="left: calc(53.8462%);"></div><div class="black-key" data-midi="70" data-note="A#4" style="left: calc(55.7692%);"></div><div class="black-key" data-midi="73" data-note="C#5" style="left: calc(59.6154%);"></div><div class="black-key" data-midi="75" data-note="D#5" style="left: calc(61.5385%);"></div><div class="black-key" data-midi="78" data-note="F#5" style="left: calc(65.3846%);"></div><div class="black-key" data-midi="80" data-note="G#5" style="left: calc(67.3077%);"></div><div class="black-key" data-midi="82" data-note="A#5" style="left: calc(69.2308%);"></div><div class="black-key" data-midi="85" data-note="C#6" style="left: calc(73.0769%);"></div><div class="black-key" data-midi="87" data-note="D#6" style="left: calc(75%);"></div><div class="black-key" data-midi="90" data-note="F#6" style="left: calc(78.8462%);"></div><div class="black-key" data-midi="92" data-note="G#6" style="left: calc(80.7692%);"></div><div class="black-key" data-midi="94" data-note="A#6" style="left: calc(82.6923%);"></div><div class="black-key" data-midi="97" data-note="C#7" style="left: calc(86.5385%);"></div><div class="black-key" data-midi="99" data-note="D#7" style="left: calc(88.4615%);"></div><div class="black-key" data-midi="102" data-note="F#7" style="left: calc(92.3077%);"></div><div class="black-key" data-midi="104" data-note="G#7" style="left: calc(94.2308%);"></div><div class="black-key" data-midi="106" data-note="A#7" style="left: calc(96.1538%);"></div></div>
         </div>
         <div class="keyboard-range-overlay" aria-hidden="true">
-          <div class="range-window" id="range-window"></div>
-          <div class="range-bracket range-bracket-start" id="range-bracket-start"></div>
-          <div class="range-bracket range-bracket-end" id="range-bracket-end"></div>
+          <div class="range-window" id="range-window" style="left: 498.506px; width: 84.3047px; display: none;"></div>
+          <div class="range-bracket range-bracket-start" id="range-bracket-start" data-note="C" style="left: 498.506px; display: none;"></div>
+          <div class="range-bracket range-bracket-end" id="range-bracket-end" data-note="G" style="left: 582.811px; display: none;"></div>
         </div>
       </div>
     </div>
   </main>
+  <aside class="debug-console" id="debug-console" aria-hidden="true">
+    <div class="debug-console-header">
+      <strong class="debug-console-title">Debug-Konsole</strong>
+      <div class="debug-console-actions">
+        <button class="debug-console-button" id="debug-console-clear" type="button">Leeren</button>
+        <button class="debug-console-button" id="debug-console-close" type="button" aria-label="Debug-Konsole schließen">Schließen</button>
+      </div>
+    </div>
+    <div class="debug-console-status" id="debug-console-status">Kein MIDI-Keyboard gefunden | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
+    <pre class="debug-console-output" id="debug-console-output">[09:52:31] UI: Debug-Konsole geleert</pre>
+  </aside>
   <script>
     const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
     const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -1852,14 +1964,10 @@
     const timerElement = document.getElementById("panel-star-time");
     const screenElement = document.querySelector(".screen");
     const adminHintElement = document.querySelector(".admin-hint");
-    const adminHintIconElement = document.querySelector(".admin-hint-icon");
     const adminHintTextElement = document.querySelector(".admin-hint-text");
     const panelElement = document.querySelector(".panel");
     const leftStackElement = document.querySelector(".left-stack");
     const cornerButton = document.getElementById("panel-corner-button");
-    const panelCutTrigger = document.getElementById("panel-cut-trigger");
-    const panelMidiTrigger = document.getElementById("panel-midi-trigger");
-    const panelRevealToggle = document.getElementById("panel-reveal-toggle");
     const authStage = document.getElementById("auth-stage");
     const authTitle = document.getElementById("auth-title");
     const authMeta = document.getElementById("auth-meta");
@@ -1889,6 +1997,11 @@
     const rangeWindow = document.getElementById("range-window");
     const rangeBracketStart = document.getElementById("range-bracket-start");
     const rangeBracketEnd = document.getElementById("range-bracket-end");
+    const debugConsoleElement = document.getElementById("debug-console");
+    const debugConsoleStatus = document.getElementById("debug-console-status");
+    const debugConsoleOutput = document.getElementById("debug-console-output");
+    const debugConsoleClearButton = document.getElementById("debug-console-clear");
+    const debugConsoleCloseButton = document.getElementById("debug-console-close");
     const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key";
 
     let currentState = 0;
@@ -1929,6 +2042,9 @@
     let midiAccessRef = null;
     let midiInitScheduled = false;
     let activeRangeDrag = null;
+    let debugConsoleOpen = false;
+    let midiStatusMessage = "Noch keine MIDI-Aktivität.";
+    let lastFeedbackSignature = "";
     let srsStates = {
       treble: createInitialSrsState("treble"),
       bass: createInitialSrsState("bass")
@@ -1943,6 +2059,7 @@
     };
     const recentPromptHistory = [];
     const adminCalendarEvents = new Map();
+    const debugLogEntries = [];
 
     function createInitialSrsState(mode) {
       const firstRange = levelRangesByMode[mode]?.[0];
@@ -1957,47 +2074,204 @@
       return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     }
 
-    function resolveAdminAccess(user) {
-      if (!user || typeof user !== "object") {
-        return false;
+    function currentAdminHintIconElement() {
+      return document.querySelector(".admin-hint-icon");
+    }
+
+    function currentPanelCutTrigger() {
+      return document.getElementById("panel-cut-trigger");
+    }
+
+    function currentPanelMidiTrigger() {
+      return document.getElementById("panel-midi-trigger");
+    }
+
+    function currentPanelRevealToggle() {
+      return document.getElementById("panel-reveal-toggle");
+    }
+
+    function currentPanelDebugToggle() {
+      return document.getElementById("panel-debug-toggle");
+    }
+
+    function formatDebugTimestamp(value = Date.now()) {
+      const stamp = new Date(value);
+      return stamp.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+    }
+
+    function describeMidiPort(port) {
+      if (!port) {
+        return "unbekannt";
+      }
+      return {
+        name: port.name || null,
+        manufacturer: port.manufacturer || null,
+        state: port.state || null,
+        connection: port.connection || null,
+        type: port.type || null
+      };
+    }
+
+    function formatDebugDetails(value) {
+      if (value === undefined) {
+        return "";
+      }
+      if (typeof value === "string") {
+        return value;
+      }
+      try {
+        return JSON.stringify(value);
+      } catch (error) {
+        void error;
+        return String(value);
+      }
+    }
+
+    function midiMessageLabel(status, velocity) {
+      const messageType = Number(status) & 0xf0;
+      if (messageType === 0x90) {
+        return Number(velocity) > 0 ? "note-on" : "note-off";
+      }
+      if (messageType === 0x80) {
+        return "note-off";
+      }
+      return `0x${messageType.toString(16).padStart(2, "0")}`;
+    }
+
+    function currentMidiSnapshot() {
+      const inputPorts = listMidiInputs(midiAccessRef).map(describeMidiPort);
+      const outputPorts = listMidiOutputs(midiAccessRef).map(describeMidiPort);
+      return {
+        status: midiStatusMessage,
+        viewerBridge: hasViewerMidiBridge,
+        connecting: isMidiConnecting,
+        connected: midiConnected,
+        authReady,
+        isAuthenticated,
+        currentTarget: currentNote ? { name: currentNote.name, midi: currentNote.midi } : null,
+        inputs: inputPorts,
+        outputs: outputPorts
+      };
+    }
+
+    function updateDebugConsoleStatus() {
+      const snapshot = currentMidiSnapshot();
+      const inputSummary = snapshot.inputs.length
+        ? snapshot.inputs.map((port) => `${port.name || "Input"}:${port.state || "?"}`).join(", ")
+        : "keine";
+      const outputSummary = snapshot.outputs.length
+        ? snapshot.outputs.map((port) => `${port.name || "Output"}:${port.state || "?"}`).join(", ")
+        : "keine";
+      debugConsoleStatus.textContent = [
+        snapshot.status,
+        `Bridge: ${snapshot.viewerBridge ? "ja" : "nein"}`,
+        `Auth: ${snapshot.isAuthenticated ? "ja" : "nein"}`,
+        `Inputs: ${inputSummary}`,
+        `Outputs: ${outputSummary}`
+      ].join(" | ");
+    }
+
+    function renderDebugConsole() {
+      debugConsoleElement.classList.toggle("is-open", debugConsoleOpen);
+      debugConsoleElement.setAttribute("aria-hidden", debugConsoleOpen ? "false" : "true");
+      debugConsoleOutput.textContent = debugLogEntries.join("\n");
+      debugConsoleOutput.scrollTop = debugConsoleOutput.scrollHeight;
+      updateDebugConsoleStatus();
+      const debugToggle = currentPanelDebugToggle();
+      debugToggle?.classList.toggle("is-active", debugConsoleOpen);
+      debugToggle?.setAttribute("aria-pressed", debugConsoleOpen ? "true" : "false");
+    }
+
+    function setDebugConsoleOpen(isOpen) {
+      debugConsoleOpen = Boolean(isOpen);
+      renderDebugConsole();
+    }
+
+    function clearDebugConsole() {
+      debugLogEntries.length = 0;
+      renderDebugConsole();
+    }
+
+    function logDebug(scope, message, details) {
+      const line = `[${formatDebugTimestamp()}] ${scope}: ${message}${details === undefined ? "" : ` ${formatDebugDetails(details)}`}`;
+      debugLogEntries.push(line);
+      if (debugLogEntries.length > 180) {
+        debugLogEntries.splice(0, debugLogEntries.length - 180);
+      }
+      if (debugConsoleOpen) {
+        renderDebugConsole();
+        return;
+      }
+      updateDebugConsoleStatus();
+    }
+
+    function normalizeStudentRef(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    async function ensureUserProfile() {
+      if (!supabaseClient || !authUser) {
+        currentUserProfile = null;
+        userRole = null;
+        return null;
       }
 
-      const roleCandidates = [
-        user.role,
-        user.roles,
-        user.user_metadata?.role,
-        user.user_metadata?.roles,
-        user.user_metadata?.access,
-        user.user_metadata?.permissions,
-        user.app_metadata?.role,
-        user.app_metadata?.roles,
-        user.app_metadata?.access,
-        user.app_metadata?.permissions
-      ].flatMap((value) => Array.isArray(value) ? value : [value])
-        .filter(Boolean)
-        .map((value) => String(value).trim().toLowerCase());
+      const { data: existingProfile, error: selectError } = await supabaseClient
+        .from("user_profiles")
+        .select("*")
+        .eq("user_id", authUser.id)
+        .maybeSingle();
 
-      if (user.is_admin === true || user.admin === true) {
-        return true;
-      }
-      if (user.user_metadata?.is_admin === true || user.user_metadata?.admin === true) {
-        return true;
-      }
-      if (user.app_metadata?.is_admin === true || user.app_metadata?.admin === true) {
-        return true;
+      if (selectError) {
+        console.error("[Auth] Profil laden fehlgeschlagen", selectError);
+        setAuthStatus(`Profil laden fehlgeschlagen: ${selectError.message}`, "error");
+        currentUserProfile = null;
+        userRole = "student";
+        return null;
       }
 
-      return roleCandidates.some((role) =>
-        ["admin", "owner", "superadmin", "manager", "teacher", "tutor"].includes(role)
-      );
+      if (existingProfile) {
+        currentUserProfile = existingProfile;
+        userRole = existingProfile.role || "student";
+        return existingProfile;
+      }
+
+      const email = String(authUser.email || "").trim().toLowerCase();
+      const { data: insertedProfile, error: insertError } = await supabaseClient
+        .from("user_profiles")
+        .insert({
+          user_id: authUser.id,
+          email,
+          userName: normalizeStudentRef(email.split("@")[0]),
+          role: "student"
+        })
+        .select("*")
+        .maybeSingle();
+
+      if (insertError) {
+        console.error("[Auth] Profil anlegen fehlgeschlagen", insertError);
+        setAuthStatus(`Profil anlegen fehlgeschlagen: ${insertError.message}`, "error");
+        currentUserProfile = null;
+        userRole = "student";
+        return null;
+      }
+
+      currentUserProfile = insertedProfile;
+      userRole = insertedProfile?.role || "student";
+      return insertedProfile;
     }
 
     function updateAdminAccessUi() {
-      hasAdminAccess = resolveAdminAccess(authUser);
+      hasAdminAccess = userRole === "tutor";
       document.body.classList.toggle("is-no-admin", !hasAdminAccess);
       if (!hasAdminAccess && isAdminMode) {
         exitAdminMode();
       }
+      updateDebugConsoleStatus();
     }
 
     function authFallbackStorage() {
@@ -2438,10 +2712,12 @@
 
     function syncKeyboardUi() {
       const shouldShowKeyboard = isKeyboardVisible && isAuthenticated && !isAdminMode;
+      const panelMidiTrigger = currentPanelMidiTrigger();
+      const panelCutTrigger = currentPanelCutTrigger();
       document.body.classList.toggle("is-keyboard-open", shouldShowKeyboard);
       keyboardStage.setAttribute("aria-hidden", shouldShowKeyboard ? "false" : "true");
-      panelMidiTrigger.classList.toggle("is-active", shouldShowKeyboard);
-      panelCutTrigger.classList.toggle("is-active", isRangeSelectorVisible);
+      panelMidiTrigger?.classList.toggle("is-active", shouldShowKeyboard);
+      panelCutTrigger?.classList.toggle("is-active", isRangeSelectorVisible);
       if (!shouldShowKeyboard) {
         return;
       }
@@ -2947,8 +3223,9 @@
     }
 
     function updateRevealToggleUi() {
-      panelRevealToggle.classList.toggle("is-active", revealNoteNames);
-      panelRevealToggle.setAttribute("aria-pressed", revealNoteNames ? "true" : "false");
+      const panelRevealToggle = currentPanelRevealToggle();
+      panelRevealToggle?.classList.toggle("is-active", revealNoteNames);
+      panelRevealToggle?.setAttribute("aria-pressed", revealNoteNames ? "true" : "false");
     }
 
     function updateClefUi() {
@@ -3152,8 +3429,13 @@
     }
 
     function setFeedback(message, state = "waiting") {
-      void message;
-      void state;
+      midiStatusMessage = message || (state === "success" ? "MIDI aktiv" : "Warte auf MIDI");
+      const signature = `${state}:${midiStatusMessage}`;
+      if (signature !== lastFeedbackSignature) {
+        lastFeedbackSignature = signature;
+        logDebug("MIDI-Status", midiStatusMessage, { state });
+      }
+      updateDebugConsoleStatus();
     }
 
     function updateMidiUi(isConnected, message = "") {
@@ -3163,18 +3445,21 @@
 
     window._callback_addSource = (...args) => {
       console.log("[WebMIDIViewer] _callback_addSource", ...args);
+      logDebug("WebMIDIViewer", "_callback_addSource", args);
       hasViewerMidiBridge = true;
       updateMidiUi(true);
     };
 
     window._callback_addDestination = (...args) => {
       console.log("[WebMIDIViewer] _callback_addDestination", ...args);
+      logDebug("WebMIDIViewer", "_callback_addDestination", args);
       hasViewerMidiBridge = true;
       updateMidiUi(true);
     };
 
     window._callback_receiveMIDIMessage = (...args) => {
       console.log("[WebMIDIViewer] _callback_receiveMIDIMessage", ...args);
+      logDebug("WebMIDIViewer", "_callback_receiveMIDIMessage", args);
       hasViewerMidiBridge = true;
       updateMidiUi(true);
 
@@ -3185,6 +3470,7 @@
       );
 
       if (!dataArg) {
+        logDebug("WebMIDIViewer", "Keine verwertbaren MIDI-Daten im Callback gefunden");
         return;
       }
 
@@ -3192,11 +3478,13 @@
       try {
         data = Array.from(dataArg);
       } catch (error) {
+        logDebug("WebMIDIViewer", "MIDI-Daten konnten nicht gelesen werden", error?.message || String(error));
         void error;
         return;
       }
 
       if (data.length < 3) {
+        logDebug("WebMIDIViewer", "MIDI-Paket zu kurz", data);
         return;
       }
 
@@ -3207,7 +3495,14 @@
 
       if (messageType === 0x90 && velocity > 0) {
         handlePlayedMidi(noteNumber);
+        return;
       }
+      logDebug("WebMIDIViewer", "Nicht als Note-On verarbeitet", {
+        data,
+        messageType: midiMessageLabel(status, velocity),
+        noteNumber,
+        velocity
+      });
     };
 
     function midiPortsToArray(portCollection) {
@@ -3263,6 +3558,7 @@
     function bindMidiOutputs(midiAccess) {
       midiOutputsRef = [];
       if (!midiAccess) {
+        logDebug("MIDI", "Keine MIDI-Outputs zum Binden vorhanden");
         return;
       }
       for (const output of listMidiOutputs(midiAccess)) {
@@ -3270,17 +3566,24 @@
           midiOutputsRef.push(output);
         }
       }
+      logDebug("MIDI", "Outputs gebunden", midiOutputsRef.map(describeMidiPort));
     }
 
     function sendMidiToOutputs(data) {
       if (!Array.isArray(data) && !(data instanceof Uint8Array)) {
+        logDebug("MIDI", "Output-Send verworfen, Datenformat unbekannt", String(data));
         return;
       }
+      logDebug("MIDI", "Sende Daten an Outputs", Array.from(data));
       for (const output of midiOutputsRef) {
         try {
           output.send(data);
         } catch (error) {
           console.warn("[MIDI] Output senden fehlgeschlagen", output.name, error);
+          logDebug("MIDI", "Output senden fehlgeschlagen", {
+            output: output.name || null,
+            error: error?.message || String(error)
+          });
         }
       }
     }
@@ -3291,13 +3594,25 @@
 
     function handlePlayedMidi(midiNote) {
       if (!isAuthenticated || !currentNote) {
+        logDebug("MIDI", "Eingehende Note ignoriert", {
+          midiNote,
+          noteName: midiNumberToName(midiNote),
+          isAuthenticated,
+          currentTarget: currentNote ? currentNote.name : null
+        });
         return;
       }
 
       clearPendingReset();
       const responseMs = recordResponseMs();
+      const playedNoteName = midiNumberToName(midiNote);
 
       if (midiNote === currentNote.midi) {
+        logDebug("MIDI", "Note korrekt erkannt", {
+          played: playedNoteName,
+          target: currentNote.name,
+          responseMs
+        });
         currentNote.state = "correct";
         renderPracticeUi();
         recordNoteStat(currentNote.mode, currentNote.name, true, { responseMs });
@@ -3317,7 +3632,11 @@
 
       currentNote.state = "wrong";
       renderPracticeUi();
-      const playedNoteName = midiNumberToName(midiNote);
+      logDebug("MIDI", "Falsche Note erkannt", {
+        played: playedNoteName,
+        target: currentNote.name,
+        responseMs
+      });
       recordNoteStat(currentNote.mode, currentNote.name, false, {
         responseMs,
         playedNoteName
@@ -3337,19 +3656,38 @@
     }
 
     function onMidiMessage(event) {
-      const [status, noteNumber, velocity] = event.data;
+      const data = Array.from(event.data || []);
+      const [status, noteNumber, velocity] = data;
       const messageType = status & 0xf0;
-      sendMidiToOutputs(Array.from(event.data));
+      logDebug("Web MIDI", "Nachricht empfangen", {
+        data,
+        messageType: midiMessageLabel(status, velocity),
+        noteNumber,
+        velocity
+      });
+      sendMidiToOutputs(data);
       if (messageType === 0x90 && velocity > 0) {
         handlePlayedMidi(noteNumber);
+        return;
       }
+      logDebug("Web MIDI", "Nicht als Note-On verarbeitet", {
+        data,
+        messageType: midiMessageLabel(status, velocity),
+        noteNumber,
+        velocity
+      });
     }
 
     function bindMidiInputs(midiAccess) {
+      if (!midiAccess) {
+        logDebug("MIDI", "bindMidiInputs ohne MIDI-Access aufgerufen");
+        return;
+      }
       for (const input of listMidiInputs(midiAccess)) {
         input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
       }
       bindMidiOutputs(midiAccess);
+      logDebug("MIDI", "Inputs gebunden", listMidiInputs(midiAccess).map(describeMidiPort));
       updateMidiUi(
         hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess),
         hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden"
@@ -3357,14 +3695,18 @@
     }
 
     async function initMidi() {
+      logDebug("MIDI", "Initialisierung gestartet", currentMidiSnapshot());
       if (isMidiConnecting) {
+        logDebug("MIDI", "Initialisierung übersprungen, Verbindung läuft bereits");
         return;
       }
       if (hasViewerMidiBridge) {
+        logDebug("MIDI", "Viewer-Bridge erkannt, Web MIDI wird nicht erneut angefragt");
         updateMidiUi(true);
         return;
       }
       if (!("requestMIDIAccess" in navigator)) {
+        logDebug("MIDI", "requestMIDIAccess ist nicht verfügbar");
         updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfuegbar");
         return;
       }
@@ -3372,26 +3714,41 @@
       updateMidiUi(false, "MIDI wird verbunden...");
       try {
         midiAccessRef = await navigator.requestMIDIAccess();
+        logDebug("MIDI", "requestMIDIAccess erfolgreich", {
+          inputs: listMidiInputs(midiAccessRef).map(describeMidiPort),
+          outputs: listMidiOutputs(midiAccessRef).map(describeMidiPort)
+        });
         bindMidiInputs(midiAccessRef);
-        midiAccessRef.onstatechange = () => bindMidiInputs(midiAccessRef);
+        midiAccessRef.onstatechange = () => {
+          logDebug("MIDI", "Port-Status geändert", {
+            inputs: listMidiInputs(midiAccessRef).map(describeMidiPort),
+            outputs: listMidiOutputs(midiAccessRef).map(describeMidiPort)
+          });
+          bindMidiInputs(midiAccessRef);
+        };
         updateMidiUi(
           hasConnectedMidiInput(midiAccessRef) || hasConnectedMidiOutput(midiAccessRef),
           hasConnectedMidiInput(midiAccessRef) || hasConnectedMidiOutput(midiAccessRef) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden"
         );
       } catch (error) {
+        logDebug("MIDI", "Initialisierung fehlgeschlagen", error?.message || String(error));
         updateMidiUi(false, error?.message || "MIDI-Freigabe fehlgeschlagen");
       } finally {
         isMidiConnecting = false;
+        updateDebugConsoleStatus();
       }
     }
 
     function scheduleMidiInit() {
       if (midiInitScheduled) {
+        logDebug("MIDI", "scheduleMidiInit übersprungen, bereits geplant");
         return;
       }
       midiInitScheduled = true;
+      logDebug("MIDI", "Initialisierung für window.load eingeplant");
       const runMidiInit = () => {
         window.removeEventListener("load", runMidiInit);
+        logDebug("MIDI", "window.load erreicht, MIDI-Init wird gestartet");
         void initMidi();
       };
       if (document.readyState === "complete") {
@@ -3421,9 +3778,14 @@
       authUser = user;
       isAuthenticated = true;
       authReady = true;
+      logDebug("Auth", "User angemeldet", {
+        userId: user?.id || null,
+        email: user?.email || null
+      });
       if (session) {
         persistFallbackSession(session);
       }
+      await ensureUserProfile();
       timerStartedAt = Date.now();
       loadProgress();
       updateRevealToggleUi();
@@ -3436,7 +3798,10 @@
     }
 
     function handleSignedOut() {
+      logDebug("Auth", "User abgemeldet");
       authUser = null;
+      userRole = null;
+      currentUserProfile = null;
       isAuthenticated = false;
       hasAdminAccess = false;
       authReady = true;
@@ -3447,6 +3812,7 @@
       updateAdminAccessUi();
       renderAuthUi();
       syncKeyboardUi();
+      updateDebugConsoleStatus();
       focusAuthInput();
     }
 
@@ -3534,11 +3900,16 @@
           return;
         }
         if (data.session?.user) {
+          logDebug("Auth", "Session beim Laden gefunden", {
+            userId: data.session.user.id,
+            email: data.session.user.email || null
+          });
           await handleSignedInUser(data.session.user, data.session);
           return;
         }
         const fallbackSession = readFallbackSession();
         if (fallbackSession?.access_token && fallbackSession?.refresh_token) {
+          logDebug("Auth", "Fallback-Session wird wiederhergestellt");
           const { data: restoredData, error: restoredError } = await client.auth.setSession({
             access_token: fallbackSession.access_token,
             refresh_token: fallbackSession.refresh_token
@@ -3599,6 +3970,7 @@
       if (!isAuthenticated || isAdminMode || !hasAdminAccess) {
         return;
       }
+      const adminHintIconElement = currentAdminHintIconElement();
       isAdminMode = true;
       document.body.classList.add("is-admin");
       titleElement.classList.remove("is-exiting", "is-entering");
@@ -3611,9 +3983,11 @@
       closeCalendarDetail();
       closeAdminTools();
       adminHintElement.classList.add("is-returning");
-      adminHintIconElement.setAttribute("data-lucide", "drum");
+      adminHintIconElement?.setAttribute("data-lucide", "drum");
       adminHintTextElement.textContent = "Hier gehts zurück zum spielen";
       lucide.createIcons();
+      updateRevealToggleUi();
+      renderDebugConsole();
       syncKeyboardUi();
     }
 
@@ -3621,15 +3995,18 @@
       if (!isAdminMode) {
         return;
       }
+      const adminHintIconElement = currentAdminHintIconElement();
       isAdminMode = false;
       document.body.classList.remove("is-admin");
       titleElement.textContent = titles[currentState];
       closeCalendarDetail();
       closeAdminTools();
       adminHintElement.classList.remove("is-returning");
-      adminHintIconElement.setAttribute("data-lucide", "wrench");
+      adminHintIconElement?.setAttribute("data-lucide", "wrench");
       adminHintTextElement.textContent = "Hier entlang zur Verwaltung.";
       lucide.createIcons();
+      updateRevealToggleUi();
+      renderDebugConsole();
       syncPracticeMode();
       syncKeyboardUi();
     }
@@ -3807,27 +4184,50 @@
       cornerButton.setAttribute("aria-pressed", nextExpanded ? "true" : "false");
     });
 
-    panelMidiTrigger.addEventListener("click", () => {
-      if (isAuthenticated) {
-        toggleKeyboardVisibility();
+    panelElement.addEventListener("click", (event) => {
+      const revealToggle = event.target.closest("#panel-reveal-toggle");
+      if (revealToggle) {
+        if (!isAuthenticated) {
+          return;
+        }
+        revealNoteNames = !revealNoteNames;
+        updateRevealToggleUi();
+        renderPracticeUi();
+        saveProgress();
+        return;
+      }
+
+      const midiTrigger = event.target.closest("#panel-midi-trigger");
+      if (midiTrigger) {
+        if (isAuthenticated) {
+          toggleKeyboardVisibility();
+        }
+        return;
+      }
+
+      const cutTrigger = event.target.closest("#panel-cut-trigger");
+      if (cutTrigger) {
+        if (!isAuthenticated) {
+          return;
+        }
+        toggleCutMode();
+        return;
+      }
+
+      const debugToggle = event.target.closest("#panel-debug-toggle");
+      if (debugToggle) {
+        setDebugConsoleOpen(!debugConsoleOpen);
+        logDebug("UI", "Debug-Konsole umgeschaltet", { open: debugConsoleOpen });
       }
     });
 
-    panelCutTrigger.addEventListener("click", () => {
-      if (!isAuthenticated) {
-        return;
-      }
-      toggleCutMode();
+    debugConsoleClearButton.addEventListener("click", () => {
+      clearDebugConsole();
+      logDebug("UI", "Debug-Konsole geleert");
     });
 
-    panelRevealToggle.addEventListener("click", () => {
-      if (!isAuthenticated) {
-        return;
-      }
-      revealNoteNames = !revealNoteNames;
-      updateRevealToggleUi();
-      renderPracticeUi();
-      saveProgress();
+    debugConsoleCloseButton.addEventListener("click", () => {
+      setDebugConsoleOpen(false);
     });
 
     authFlowInput.addEventListener("input", () => {
@@ -3868,6 +4268,15 @@
       }
     });
 
+    window.addEventListener("keydown", (event) => {
+      if (!(event.metaKey || event.ctrlKey) || !event.shiftKey || event.key.toLowerCase() !== "d") {
+        return;
+      }
+      event.preventDefault();
+      setDebugConsoleOpen(!debugConsoleOpen);
+      logDebug("UI", "Debug-Konsole per Tastatur umgeschaltet", { open: debugConsoleOpen });
+    });
+
     rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("move", event));
     rangeBracketStart.addEventListener("pointerdown", (event) => beginRangeDrag("start", event));
     rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("end", event));
@@ -3892,6 +4301,8 @@ async function boot() {
   updateAdminAccessUi();
   window.setInterval(updateTimer, 1000);
   lucide.createIcons();
+  renderDebugConsole();
+  logDebug("System", "Debug-Konsole bereit");
 
   scheduleMidiInit();
   await initAuth();
@@ -3900,7 +4311,14 @@ async function boot() {
   }
 }
 
-// Ganz am Ende steht bei dir:
+window.learnnotesDebug = {
+  open: () => setDebugConsoleOpen(true),
+  close: () => setDebugConsoleOpen(false),
+  clear: () => clearDebugConsole(),
+  snapshot: () => currentMidiSnapshot(),
+  logs: () => [...debugLogEntries]
+};
+
 boot();
   </script>
 
