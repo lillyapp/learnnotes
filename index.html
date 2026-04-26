@@ -33,6 +33,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-weight: 700;
       overflow: hidden;
+      --ui-scale: 1.1;
     }
 
     body[data-state="0"] {
@@ -63,8 +64,10 @@
       position: relative;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      width: 100vw;
-      height: 100vh;
+      width: calc(100vw / var(--ui-scale));
+      height: calc(100vh / var(--ui-scale));
+      transform: scale(var(--ui-scale));
+      transform-origin: top left;
       touch-action: none;
       user-select: none;
     }
@@ -125,18 +128,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 5vw;
+      padding: 5.5vw;
     }
 
     .left-stack {
-      width: min(520px, 100%);
+      width: min(572px, 100%);
       position: relative;
       display: block;
     }
 
     .panel {
       width: 100%;
-      height: 680px;
+      height: 748px;
       background: var(--panel-bg);
       border-radius: 28px;
       border: 3px solid var(--ink);
@@ -146,7 +149,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 40px;
+      padding: 44px;
       position: relative;
       gap: 28px;
       overflow: hidden;
@@ -422,7 +425,7 @@
 
     .panel h1 {
       margin: 0;
-      font-size: clamp(2rem, 3vw, 3rem);
+      font-size: clamp(2.25rem, 3.35vw, 3.35rem);
       line-height: 1.05;
       color: #ffffff;
       letter-spacing: -0.04em;
@@ -476,13 +479,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 5vw;
+      padding: 5.5vw;
       position: relative;
     }
 
     .notation {
-      width: min(560px, 100%);
-      min-height: 680px;
+      width: min(616px, 100%);
+      min-height: 748px;
       background: transparent;
       border-radius: 28px;
       border: none;
@@ -516,9 +519,9 @@
     }
 
     .auth-card {
-      width: min(680px, 100%);
-      height: min(680px, 100%);
-      padding: 40px;
+      width: min(748px, 100%);
+      height: min(748px, 100%);
+      padding: 44px;
       border: 3px solid #111111;
       border-radius: 28px;
       background: #ffffff;
@@ -529,7 +532,7 @@
     }
 
     .auth-card-inner {
-      width: min(420px, 100%);
+      width: min(462px, 100%);
       display: grid;
       gap: 18px;
     }
@@ -546,7 +549,7 @@
     .auth-title {
       margin: 0;
       color: #111111;
-      font-size: clamp(2.1rem, 4vw, 3rem);
+      font-size: clamp(2.35rem, 4.35vw, 3.3rem);
       line-height: 0.95;
       letter-spacing: -0.05em;
     }
@@ -657,8 +660,8 @@
     }
 
     .admin-calendar-shell {
-      width: min(680px, 100%);
-      height: min(680px, 100%);
+      width: min(748px, 100%);
+      height: min(748px, 100%);
       background: #ffffff;
       border: 3px solid var(--ink);
       border-radius: 28px;
@@ -1249,20 +1252,20 @@
 
       .left-side,
       .right-side {
-        padding: clamp(24px, 3vw, 36px);
+        padding: clamp(24px, 3vw, 40px);
       }
 
       .left-stack {
-        width: min(430px, 100%);
+        width: min(473px, 100%);
       }
 
       .panel {
-        height: min(620px, 72vh);
-        padding: 32px;
+        height: min(682px, 72vh);
+        padding: 35px;
       }
 
       .panel h1 {
-        font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+        font-size: clamp(1.9rem, 2.86vw, 2.64rem);
       }
 
       .panel-star {
@@ -1287,8 +1290,8 @@
       }
 
       .notation {
-        width: min(470px, 100%);
-        min-height: 560px;
+        width: min(517px, 100%);
+        min-height: 616px;
       }
 
       .sheet-note-group {
@@ -1301,8 +1304,8 @@
       }
 
       .admin-calendar-shell {
-        width: min(620px, 100%);
-        height: min(620px, 100%);
+        width: min(682px, 100%);
+        height: min(682px, 100%);
         transform: translateX(-1vw);
       }
 
@@ -1314,6 +1317,7 @@
     @media (max-width: 900px) {
       body {
         overflow: auto;
+        --ui-scale: 1;
       }
 
       .screen {
@@ -1342,11 +1346,11 @@
       .panel {
         width: 100%;
         height: auto;
-        min-height: 520px;
+        min-height: 572px;
       }
 
       .notation {
-        min-height: 560px;
+        min-height: 616px;
       }
 
       .sheet-note-group {
@@ -1367,7 +1371,7 @@
 
       .admin-calendar-shell {
         width: 100%;
-        height: min(640px, 100%);
+        height: min(704px, 100%);
         transform: none;
       }
     }
@@ -1380,7 +1384,7 @@
       <span class="admin-hint-text">Hier entlang zur Verwaltung.</span>
     </div>
     <section class="left-side">
-      <div class="left-stack is-expanded">
+      <div class="left-stack">
         <article class="panel">
           <div class="panel-fluid" aria-hidden="true">
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -1397,7 +1401,7 @@
             </g>
           </svg>
           </div>
-          <button class="panel-corner-button is-active" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="true">
+          <button class="panel-corner-button" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="false">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-left" class="lucide lucide-arrow-up-left panel-corner-icon panel-corner-icon-up" aria-hidden="true"><path d="M7 17V7h10"></path><path d="M17 17 7 7"></path></svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-down-right" class="lucide lucide-arrow-down-right panel-corner-icon panel-corner-icon-down" aria-hidden="true"><path d="m7 7 10 10"></path><path d="M17 7v10H7"></path></svg>
           </button>
@@ -1414,7 +1418,7 @@
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">03:47</div>
+          <div class="panel-star-time" id="panel-star-time">00:00</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1423,21 +1427,25 @@
     </section>
 
     <section class="right-side">
-      <div class="auth-stage" id="auth-stage" aria-live="polite">
+      <div class="auth-stage" id="auth-stage" aria-live="polite" aria-hidden="true">
         <div class="auth-card">
           <div class="auth-card-inner">
             <p class="auth-kicker">Learnnotes</p>
-            <h2 class="auth-title" id="auth-title">Login</h2>
-            <p class="auth-meta" id="auth-meta">Melde dich mit deiner E-Mail an.</p>
+            <h2 class="auth-title" id="auth-title">Passwort</h2>
+            <p class="auth-meta" id="auth-meta">diejakobs@icloud.com</p>
             <div class="auth-inline-form">
-              <input class="auth-input" id="auth-flow-input" type="email" inputmode="email" autocomplete="email" placeholder="E-Mailadresse">
-              <button class="auth-step-button" id="auth-step-button" type="button" aria-label="Weiter"></button>
+              <input class="auth-input" id="auth-flow-input" type="password" inputmode="text" autocomplete="current-password" placeholder="Passwort">
+              <button class="auth-step-button" id="auth-step-button" type="button" aria-label="Einloggen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+      </button>
             </div>
-            <p class="auth-status" id="auth-status" aria-live="polite"></p>
+            <p class="auth-status" id="auth-status" aria-live="polite" data-state=""></p>
           </div>
         </div>
       </div>
-      <div class="notation">
+      <div class="notation" aria-hidden="false">
         <div class="sheet-note-group">
           <div class="bar">
             <div class="stave-header"></div>
@@ -1446,7 +1454,7 @@
           <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
         </svg>
       </div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="D4" style="--offset: 5em;"></div></div></div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="F4" style="--offset: 3em;"></div></div></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
         </div>
@@ -1468,7 +1476,7 @@
             <div class="admin-calendar-weekday">So</div>
           </div>
           <div class="admin-calendar-stage">
-            <div class="admin-calendar-grid" id="admin-calendar-grid" data-rows="5"><div class="admin-calendar-cell is-empty" data-row="0" data-column="0" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="0" data-column="1" aria-hidden="true"></div><div class="admin-calendar-cell" data-row="0" data-column="2" data-year="2026" data-month="3" data-day="1" data-date-key="2026-04-01"><span class="admin-calendar-day">1</span></div><div class="admin-calendar-cell" data-row="0" data-column="3" data-year="2026" data-month="3" data-day="2" data-date-key="2026-04-02"><span class="admin-calendar-day">2</span></div><div class="admin-calendar-cell" data-row="0" data-column="4" data-year="2026" data-month="3" data-day="3" data-date-key="2026-04-03"><span class="admin-calendar-day">3</span></div><div class="admin-calendar-cell" data-row="0" data-column="5" data-year="2026" data-month="3" data-day="4" data-date-key="2026-04-04"><span class="admin-calendar-day">4</span></div><div class="admin-calendar-cell" data-row="0" data-column="6" data-year="2026" data-month="3" data-day="5" data-date-key="2026-04-05"><span class="admin-calendar-day">5</span></div><div class="admin-calendar-cell" data-row="1" data-column="0" data-year="2026" data-month="3" data-day="6" data-date-key="2026-04-06"><span class="admin-calendar-day">6</span></div><div class="admin-calendar-cell" data-row="1" data-column="1" data-year="2026" data-month="3" data-day="7" data-date-key="2026-04-07"><span class="admin-calendar-day">7</span></div><div class="admin-calendar-cell" data-row="1" data-column="2" data-year="2026" data-month="3" data-day="8" data-date-key="2026-04-08"><span class="admin-calendar-day">8</span></div><div class="admin-calendar-cell" data-row="1" data-column="3" data-year="2026" data-month="3" data-day="9" data-date-key="2026-04-09"><span class="admin-calendar-day">9</span></div><div class="admin-calendar-cell" data-row="1" data-column="4" data-year="2026" data-month="3" data-day="10" data-date-key="2026-04-10"><span class="admin-calendar-day">10</span></div><div class="admin-calendar-cell" data-row="1" data-column="5" data-year="2026" data-month="3" data-day="11" data-date-key="2026-04-11"><span class="admin-calendar-day">11</span></div><div class="admin-calendar-cell" data-row="1" data-column="6" data-year="2026" data-month="3" data-day="12" data-date-key="2026-04-12"><span class="admin-calendar-day">12</span></div><div class="admin-calendar-cell" data-row="2" data-column="0" data-year="2026" data-month="3" data-day="13" data-date-key="2026-04-13"><span class="admin-calendar-day">13</span></div><div class="admin-calendar-cell" data-row="2" data-column="1" data-year="2026" data-month="3" data-day="14" data-date-key="2026-04-14"><span class="admin-calendar-day">14</span></div><div class="admin-calendar-cell" data-row="2" data-column="2" data-year="2026" data-month="3" data-day="15" data-date-key="2026-04-15"><span class="admin-calendar-day">15</span></div><div class="admin-calendar-cell" data-row="2" data-column="3" data-year="2026" data-month="3" data-day="16" data-date-key="2026-04-16"><span class="admin-calendar-day">16</span></div><div class="admin-calendar-cell" data-row="2" data-column="4" data-year="2026" data-month="3" data-day="17" data-date-key="2026-04-17"><span class="admin-calendar-day">17</span></div><div class="admin-calendar-cell" data-row="2" data-column="5" data-year="2026" data-month="3" data-day="18" data-date-key="2026-04-18"><span class="admin-calendar-day">18</span></div><div class="admin-calendar-cell" data-row="2" data-column="6" data-year="2026" data-month="3" data-day="19" data-date-key="2026-04-19"><span class="admin-calendar-day">19</span></div><div class="admin-calendar-cell" data-row="3" data-column="0" data-year="2026" data-month="3" data-day="20" data-date-key="2026-04-20"><span class="admin-calendar-day">20</span></div><div class="admin-calendar-cell" data-row="3" data-column="1" data-year="2026" data-month="3" data-day="21" data-date-key="2026-04-21"><span class="admin-calendar-day">21</span></div><div class="admin-calendar-cell" data-row="3" data-column="2" data-year="2026" data-month="3" data-day="22" data-date-key="2026-04-22"><span class="admin-calendar-day">22</span></div><div class="admin-calendar-cell" data-row="3" data-column="3" data-year="2026" data-month="3" data-day="23" data-date-key="2026-04-23"><span class="admin-calendar-day">23</span></div><div class="admin-calendar-cell" data-row="3" data-column="4" data-year="2026" data-month="3" data-day="24" data-date-key="2026-04-24"><span class="admin-calendar-day">24</span></div><div class="admin-calendar-cell is-today" data-row="3" data-column="5" data-year="2026" data-month="3" data-day="25" data-date-key="2026-04-25"><span class="admin-calendar-day">25</span><span class="admin-calendar-pill">Heute</span></div><div class="admin-calendar-cell" data-row="3" data-column="6" data-year="2026" data-month="3" data-day="26" data-date-key="2026-04-26"><span class="admin-calendar-day">26</span></div><div class="admin-calendar-cell" data-row="4" data-column="0" data-year="2026" data-month="3" data-day="27" data-date-key="2026-04-27"><span class="admin-calendar-day">27</span></div><div class="admin-calendar-cell" data-row="4" data-column="1" data-year="2026" data-month="3" data-day="28" data-date-key="2026-04-28"><span class="admin-calendar-day">28</span></div><div class="admin-calendar-cell" data-row="4" data-column="2" data-year="2026" data-month="3" data-day="29" data-date-key="2026-04-29"><span class="admin-calendar-day">29</span></div><div class="admin-calendar-cell" data-row="4" data-column="3" data-year="2026" data-month="3" data-day="30" data-date-key="2026-04-30"><span class="admin-calendar-day">30</span></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="4" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="5" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="6" aria-hidden="true"></div></div>
+            <div class="admin-calendar-grid" id="admin-calendar-grid" data-rows="5"><div class="admin-calendar-cell is-empty" data-row="0" data-column="0" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="0" data-column="1" aria-hidden="true"></div><div class="admin-calendar-cell" data-row="0" data-column="2" data-year="2026" data-month="3" data-day="1" data-date-key="2026-04-01"><span class="admin-calendar-day">1</span></div><div class="admin-calendar-cell" data-row="0" data-column="3" data-year="2026" data-month="3" data-day="2" data-date-key="2026-04-02"><span class="admin-calendar-day">2</span></div><div class="admin-calendar-cell" data-row="0" data-column="4" data-year="2026" data-month="3" data-day="3" data-date-key="2026-04-03"><span class="admin-calendar-day">3</span></div><div class="admin-calendar-cell" data-row="0" data-column="5" data-year="2026" data-month="3" data-day="4" data-date-key="2026-04-04"><span class="admin-calendar-day">4</span></div><div class="admin-calendar-cell" data-row="0" data-column="6" data-year="2026" data-month="3" data-day="5" data-date-key="2026-04-05"><span class="admin-calendar-day">5</span></div><div class="admin-calendar-cell" data-row="1" data-column="0" data-year="2026" data-month="3" data-day="6" data-date-key="2026-04-06"><span class="admin-calendar-day">6</span></div><div class="admin-calendar-cell" data-row="1" data-column="1" data-year="2026" data-month="3" data-day="7" data-date-key="2026-04-07"><span class="admin-calendar-day">7</span></div><div class="admin-calendar-cell" data-row="1" data-column="2" data-year="2026" data-month="3" data-day="8" data-date-key="2026-04-08"><span class="admin-calendar-day">8</span></div><div class="admin-calendar-cell" data-row="1" data-column="3" data-year="2026" data-month="3" data-day="9" data-date-key="2026-04-09"><span class="admin-calendar-day">9</span></div><div class="admin-calendar-cell" data-row="1" data-column="4" data-year="2026" data-month="3" data-day="10" data-date-key="2026-04-10"><span class="admin-calendar-day">10</span></div><div class="admin-calendar-cell" data-row="1" data-column="5" data-year="2026" data-month="3" data-day="11" data-date-key="2026-04-11"><span class="admin-calendar-day">11</span></div><div class="admin-calendar-cell" data-row="1" data-column="6" data-year="2026" data-month="3" data-day="12" data-date-key="2026-04-12"><span class="admin-calendar-day">12</span></div><div class="admin-calendar-cell" data-row="2" data-column="0" data-year="2026" data-month="3" data-day="13" data-date-key="2026-04-13"><span class="admin-calendar-day">13</span></div><div class="admin-calendar-cell" data-row="2" data-column="1" data-year="2026" data-month="3" data-day="14" data-date-key="2026-04-14"><span class="admin-calendar-day">14</span></div><div class="admin-calendar-cell" data-row="2" data-column="2" data-year="2026" data-month="3" data-day="15" data-date-key="2026-04-15"><span class="admin-calendar-day">15</span></div><div class="admin-calendar-cell" data-row="2" data-column="3" data-year="2026" data-month="3" data-day="16" data-date-key="2026-04-16"><span class="admin-calendar-day">16</span></div><div class="admin-calendar-cell" data-row="2" data-column="4" data-year="2026" data-month="3" data-day="17" data-date-key="2026-04-17"><span class="admin-calendar-day">17</span></div><div class="admin-calendar-cell" data-row="2" data-column="5" data-year="2026" data-month="3" data-day="18" data-date-key="2026-04-18"><span class="admin-calendar-day">18</span></div><div class="admin-calendar-cell" data-row="2" data-column="6" data-year="2026" data-month="3" data-day="19" data-date-key="2026-04-19"><span class="admin-calendar-day">19</span></div><div class="admin-calendar-cell" data-row="3" data-column="0" data-year="2026" data-month="3" data-day="20" data-date-key="2026-04-20"><span class="admin-calendar-day">20</span></div><div class="admin-calendar-cell" data-row="3" data-column="1" data-year="2026" data-month="3" data-day="21" data-date-key="2026-04-21"><span class="admin-calendar-day">21</span></div><div class="admin-calendar-cell" data-row="3" data-column="2" data-year="2026" data-month="3" data-day="22" data-date-key="2026-04-22"><span class="admin-calendar-day">22</span></div><div class="admin-calendar-cell" data-row="3" data-column="3" data-year="2026" data-month="3" data-day="23" data-date-key="2026-04-23"><span class="admin-calendar-day">23</span></div><div class="admin-calendar-cell" data-row="3" data-column="4" data-year="2026" data-month="3" data-day="24" data-date-key="2026-04-24"><span class="admin-calendar-day">24</span></div><div class="admin-calendar-cell" data-row="3" data-column="5" data-year="2026" data-month="3" data-day="25" data-date-key="2026-04-25"><span class="admin-calendar-day">25</span></div><div class="admin-calendar-cell is-today" data-row="3" data-column="6" data-year="2026" data-month="3" data-day="26" data-date-key="2026-04-26"><span class="admin-calendar-day">26</span><span class="admin-calendar-pill">Heute</span></div><div class="admin-calendar-cell" data-row="4" data-column="0" data-year="2026" data-month="3" data-day="27" data-date-key="2026-04-27"><span class="admin-calendar-day">27</span></div><div class="admin-calendar-cell" data-row="4" data-column="1" data-year="2026" data-month="3" data-day="28" data-date-key="2026-04-28"><span class="admin-calendar-day">28</span></div><div class="admin-calendar-cell" data-row="4" data-column="2" data-year="2026" data-month="3" data-day="29" data-date-key="2026-04-29"><span class="admin-calendar-day">29</span></div><div class="admin-calendar-cell" data-row="4" data-column="3" data-year="2026" data-month="3" data-day="30" data-date-key="2026-04-30"><span class="admin-calendar-day">30</span></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="4" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="5" aria-hidden="true"></div><div class="admin-calendar-cell is-empty" data-row="4" data-column="6" aria-hidden="true"></div></div>
             <div class="admin-calendar-detail" id="admin-calendar-detail" aria-hidden="true">
               <div class="admin-calendar-detail-head">
                 <div>
@@ -1511,9 +1519,32 @@
     </section>
   </main>
   <script>
-    const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challange"];
+    const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
     const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
+    const SUPABASE_URL = window.SUPABASE_URL || "https://ontusfifjfbzwlvligrx.supabase.co";
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udHVzZmlmamZiendsdmxpZ3J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTM1NzUsImV4cCI6MjA4ODcyOTU3NX0.Yl3Z3DlJP7_7DsND_H0c6TdFRIcBHGxCO92Z05aQrgY";
+    const LOCAL_PROGRESS_PREFIX = "learnnotes-srs-v1";
+    const AUTH_COOKIE_NAME = "learnnotes_auth_session";
+    const srsConfig = {
+      sampleSize: 20,
+      growThreshold: 0.98,
+      shrinkThreshold: 0.7
+    };
+    const levelRangesByMode = {
+      treble: [
+        ["C4", "G4"],
+        ["C4", "C5"],
+        ["C4", "F5"],
+        ["C4", "A5"]
+      ],
+      bass: [
+        ["C2", "G2"],
+        ["C2", "C3"],
+        ["C2", "F3"],
+        ["C2", "B3"]
+      ]
+    };
     const clefSvgMarkup = {
       treble: `
         <svg viewBox="0 0 88 192" aria-hidden="true">
@@ -1532,6 +1563,20 @@
       treble: { label: "Violinschlüssel", reference: "B4", range: ["C4", "A5"] },
       bass: { label: "Bassschlüssel", reference: "D3", range: ["C2", "B3"] }
     };
+    const iconMarkup = {
+      arrowRight: `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      `,
+      check: `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+      `
+    };
+
     const titleElement = document.getElementById("title");
     const timerElement = document.getElementById("panel-star-time");
     const screenElement = document.querySelector(".screen");
@@ -1543,6 +1588,13 @@
     const cornerButton = document.getElementById("panel-corner-button");
     const panelMidiTrigger = document.getElementById("panel-midi-trigger");
     const panelRevealToggle = document.getElementById("panel-reveal-toggle");
+    const authStage = document.getElementById("auth-stage");
+    const authTitle = document.getElementById("auth-title");
+    const authMeta = document.getElementById("auth-meta");
+    const authFlowInput = document.getElementById("auth-flow-input");
+    const authStepButton = document.getElementById("auth-step-button");
+    const authStatus = document.getElementById("auth-status");
+    const notationElement = document.querySelector(".notation");
     const clefSymbol = document.getElementById("clef-symbol");
     const notesContainer = document.getElementById("bar-notes");
     const adminCalendarGrid = document.getElementById("admin-calendar-grid");
@@ -1557,10 +1609,16 @@
     const adminCalendarInputNote = document.getElementById("admin-calendar-input-note");
     const adminTools = document.getElementById("admin-tools");
     const adminToolsButton = document.getElementById("admin-tools-button");
-    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button";
+    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button";
 
     let currentState = 0;
-    let isAdminMode = false;
+    let currentNote = null;
+    let currentResetTimeout = null;
+    let currentPracticeMode = "treble";
+    let timerStartedAt = Date.now();
+    let promptStartedAt = 0;
+    let selectedCalendarCell = null;
+    let selectedCalendarDateKey = null;
     let pointerId = null;
     let startX = null;
     let startY = null;
@@ -1568,18 +1626,76 @@
     let touchStartX = null;
     let touchStartY = null;
     let animating = false;
-    let selectedCalendarCell = null;
-    let selectedCalendarDateKey = null;
-    let midiAccessRef = null;
+    let isAdminMode = false;
     let isMidiConnecting = false;
-    let currentNote = null;
-    let currentResetTimeout = null;
-    let lastPlayedMidi = null;
     let midiConnected = false;
     let revealNoteNames = false;
-    const adminCalendarEvents = new Map();
-    const timerStartedAt = Date.now();
+    let isAuthenticated = false;
+    let authBusy = false;
+    let authStep = "email";
+    let authEmailDraft = "";
+    let authUser = null;
+    let supabaseClient = null;
+    let authSubscription = null;
+    let dailyModeFlip = false;
+    let midiAccessRef = null;
+    let srsStates = {
+      treble: createInitialSrsState("treble"),
+      bass: createInitialSrsState("bass")
+    };
+    let noteStats = {
+      treble: {},
+      bass: {}
+    };
     const recentPromptHistory = [];
+    const adminCalendarEvents = new Map();
+
+    function createInitialSrsState(mode) {
+      const firstRange = levelRangesByMode[mode]?.[0];
+      return {
+        level: 1,
+        attempts: [],
+        newNotes: firstRange ? notesInRange(mode, firstRange) : []
+      };
+    }
+
+    function isSupabaseConfigured() {
+      return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+    }
+
+    function setAuthCookie(user) {
+      if (!user) {
+        return;
+      }
+      const payload = {
+        id: user.id || "",
+        email: user.email || "",
+        ts: Date.now()
+      };
+      const expires = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)).toUTCString();
+      document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(payload))}; expires=${expires}; path=/; SameSite=Lax`;
+    }
+
+    function getAuthCookie() {
+      const prefix = `${AUTH_COOKIE_NAME}=`;
+      const cookie = document.cookie
+        .split(";")
+        .map((part) => part.trim())
+        .find((part) => part.startsWith(prefix));
+      if (!cookie) {
+        return null;
+      }
+      try {
+        return JSON.parse(decodeURIComponent(cookie.slice(prefix.length)));
+      } catch (error) {
+        void error;
+        return null;
+      }
+    }
+
+    function clearAuthCookie() {
+      document.cookie = `${AUTH_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+    }
 
     function formatTimer(totalSeconds) {
       const minutes = Math.floor(totalSeconds / 60);
@@ -1590,6 +1706,43 @@
     function updateTimer() {
       const elapsedSeconds = Math.floor((Date.now() - timerStartedAt) / 1000);
       timerElement.textContent = formatTimer(elapsedSeconds);
+    }
+
+    function setAuthStatus(message = "", state = "") {
+      authStatus.textContent = message;
+      authStatus.dataset.state = state || "";
+    }
+
+    function focusAuthInput() {
+      requestAnimationFrame(() => {
+        authFlowInput.focus({ preventScroll: true });
+      });
+    }
+
+    function resetAuthFlow(clearEmail = false) {
+      authStep = "email";
+      if (clearEmail) {
+        authEmailDraft = "";
+      }
+      authFlowInput.value = clearEmail ? "" : authEmailDraft;
+    }
+
+    function renderAuthUi() {
+      document.body.classList.toggle("is-auth-view", !isAuthenticated);
+      authStage.setAttribute("aria-hidden", isAuthenticated ? "true" : "false");
+      notationElement.setAttribute("aria-hidden", isAuthenticated ? "false" : "true");
+      authFlowInput.disabled = authBusy;
+      authStepButton.disabled = authBusy;
+      authStepButton.innerHTML = authStep === "password" ? iconMarkup.check : iconMarkup.arrowRight;
+      authTitle.textContent = authStep === "password" ? "Passwort" : "Login";
+      authMeta.textContent = authStep === "password"
+        ? authEmailDraft || "Passwort eingeben."
+        : "Melde dich mit deiner E-Mail an.";
+      authFlowInput.type = authStep === "password" ? "password" : "email";
+      authFlowInput.inputMode = authStep === "password" ? "text" : "email";
+      authFlowInput.placeholder = authStep === "password" ? "Passwort" : "E-Mailadresse";
+      authFlowInput.autocomplete = authStep === "password" ? "current-password" : "email";
+      authStepButton.setAttribute("aria-label", authStep === "password" ? "Einloggen" : "Weiter");
     }
 
     function shouldIgnoreSwipeTarget(target) {
@@ -1607,19 +1760,17 @@
       return new Intl.DateTimeFormat("de-DE", {
         weekday: "short",
         day: "2-digit",
-        month: "long",
+        month: "long"
       }).format(date);
     }
 
     function renderCalendarEvents(cell, dateKey) {
       cell.querySelectorAll(".admin-calendar-event").forEach((eventElement) => eventElement.remove());
       const events = adminCalendarEvents.get(dateKey) ?? [];
-
       if (!events.length) {
         cell.classList.remove("has-event");
         return;
       }
-
       const eventElement = document.createElement("div");
       eventElement.className = "admin-calendar-event";
       eventElement.textContent = events[0].time ? `${events[0].time} ${events[0].title}` : events[0].title;
@@ -1631,7 +1782,6 @@
       if (selectedCalendarCell) {
         selectedCalendarCell.classList.remove("is-selected");
       }
-
       selectedCalendarCell = null;
       selectedCalendarDateKey = null;
       adminCalendarDetail.classList.remove("is-open", "is-above", "is-below");
@@ -1654,78 +1804,20 @@
       touchStartY = null;
     }
 
-    function commitSwipe(deltaX, deltaY) {
-      const threshold = 60;
-
-      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold) {
-        if (deltaY > 0) {
-          enterAdminMode();
-        } else {
-          exitAdminMode();
-        }
-        return;
-      }
-
-      if (!isAdminMode && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
-        const nextState = deltaX < 0 ? (currentState + 1) % titles.length : (currentState - 1 + titles.length) % titles.length;
-        setTitle(nextState, deltaX);
-      }
-    }
-
-    function openCalendarDetail(cell) {
-      const year = Number(cell.dataset.year);
-      const month = Number(cell.dataset.month);
-      const day = Number(cell.dataset.day);
-      const rowIndex = Number(cell.dataset.row);
-      const totalRows = Number(adminCalendarGrid.dataset.rows);
-      const date = new Date(year, month, day);
-      const dateKey = formatCalendarDateKey(date);
-      const isAbove = rowIndex >= Math.ceil(totalRows / 2);
-
-      if (selectedCalendarCell && selectedCalendarCell !== cell) {
-        selectedCalendarCell.classList.remove("is-selected");
-      }
-
-      selectedCalendarCell = cell;
-      selectedCalendarDateKey = dateKey;
-      cell.classList.add("is-selected");
-
-      adminCalendarDetailDate.textContent = formatCalendarDateLabel(date);
-      adminCalendarDetail.classList.add("is-open");
-      adminCalendarDetail.classList.toggle("is-above", isAbove);
-      adminCalendarDetail.classList.toggle("is-below", !isAbove);
-      adminCalendarDetail.setAttribute("aria-hidden", "false");
-      adminCalendarStage.classList.toggle("is-detail-above", isAbove);
-      adminCalendarStage.classList.toggle("is-detail-below", !isAbove);
-
-      const existingEvent = (adminCalendarEvents.get(dateKey) ?? [])[0];
-      adminCalendarInputTitle.value = existingEvent?.title ?? "";
-      adminCalendarInputTime.value = existingEvent?.time ?? "";
-      adminCalendarInputNote.value = existingEvent?.note ?? "";
-
-      requestAnimationFrame(() => {
-        adminCalendarInputTitle.focus({ preventScroll: true });
-      });
-    }
-
     function buildAdminCalendar(referenceDate = new Date()) {
       const year = referenceDate.getFullYear();
       const month = referenceDate.getMonth();
       const today = new Date();
-      const monthLabel = new Intl.DateTimeFormat("de-DE", {
+      adminCalendarTitle.textContent = new Intl.DateTimeFormat("de-DE", {
         month: "long",
-        year: "numeric",
+        year: "numeric"
       }).format(new Date(year, month, 1));
-
-      adminCalendarTitle.textContent = monthLabel;
       adminCalendarGrid.innerHTML = "";
-      adminCalendarGrid.dataset.rows = "0";
       closeCalendarDetail();
 
       const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7;
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
-      const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
       const totalRows = totalCells / 7;
       adminCalendarGrid.dataset.rows = String(totalRows);
 
@@ -1739,30 +1831,35 @@
         if (dayNumber < 1 || dayNumber > daysInMonth) {
           cell.classList.add("is-empty");
           cell.setAttribute("aria-hidden", "true");
-        } else {
-          const currentDate = new Date(year, month, dayNumber);
-          const dateKey = formatCalendarDateKey(currentDate);
-          cell.dataset.year = String(year);
-          cell.dataset.month = String(month);
-          cell.dataset.day = String(dayNumber);
-          cell.dataset.dateKey = dateKey;
-
-          const dayElement = document.createElement("span");
-          dayElement.className = "admin-calendar-day";
-          dayElement.textContent = String(dayNumber);
-          cell.appendChild(dayElement);
-
-          if (isCurrentMonth && dayNumber === today.getDate()) {
-            cell.classList.add("is-today");
-            const pill = document.createElement("span");
-            pill.className = "admin-calendar-pill";
-            pill.textContent = "Heute";
-            cell.appendChild(pill);
-          }
-
-          renderCalendarEvents(cell, dateKey);
+          adminCalendarGrid.appendChild(cell);
+          continue;
         }
 
+        const currentDate = new Date(year, month, dayNumber);
+        const dateKey = formatCalendarDateKey(currentDate);
+        cell.dataset.year = String(year);
+        cell.dataset.month = String(month);
+        cell.dataset.day = String(dayNumber);
+        cell.dataset.dateKey = dateKey;
+
+        const dayElement = document.createElement("span");
+        dayElement.className = "admin-calendar-day";
+        dayElement.textContent = String(dayNumber);
+        cell.appendChild(dayElement);
+
+        if (
+          today.getFullYear() === year &&
+          today.getMonth() === month &&
+          today.getDate() === dayNumber
+        ) {
+          cell.classList.add("is-today");
+          const pill = document.createElement("span");
+          pill.className = "admin-calendar-pill";
+          pill.textContent = "Heute";
+          cell.appendChild(pill);
+        }
+
+        renderCalendarEvents(cell, dateKey);
         adminCalendarGrid.appendChild(cell);
       }
     }
@@ -1783,10 +1880,9 @@
     }
 
     function displayNoteName(name) {
-      if (String(name || "").startsWith("B")) {
-        return `H${String(name).slice(1)}`;
-      }
-      return String(name || "");
+      return String(name || "").startsWith("B")
+        ? `H${String(name).slice(1)}`
+        : String(name || "");
     }
 
     function diatonicValue(name) {
@@ -1814,50 +1910,232 @@
         if (isBlackKey(midi)) {
           continue;
         }
-
         const name = midiNumberToName(midi);
         const clef = forcedClef || deriveClefForNote(name);
         notes.push({
           name,
           midi,
           clef,
-          step: diatonicValue(name) - diatonicValue(clefConfigs[clef].reference),
-          state: "idle"
+          step: diatonicValue(name) - diatonicValue(clefConfigs[clef].reference)
         });
       }
       return notes;
     }
 
-    function activeModeId() {
-      return currentState === 0 ? "treble" : currentState === 1 ? "bass" : "daily";
-    }
-
-    function activeNotePool() {
-      const mode = activeModeId();
-      if (mode === "daily") {
-        return [
-          ...buildRange("C2", "B3", "bass"),
-          ...buildRange("C4", "A5", "treble")
-        ];
-      }
+    function srsRangeOptionsForMode(mode) {
       const config = clefConfigs[mode];
-      return buildRange(config.range[0], config.range[1], mode);
+      return config ? buildRange(config.range[0], config.range[1], mode) : [];
     }
 
-    function rememberPromptedNote(noteName) {
-      recentPromptHistory.unshift(noteName);
-      if (recentPromptHistory.length > 6) {
-        recentPromptHistory.length = 6;
+    function notesInRange(mode, range) {
+      const allNotes = srsRangeOptionsForMode(mode).map((entry) => entry.name);
+      const startIndex = allNotes.indexOf(range[0]);
+      const endIndex = allNotes.indexOf(range[1]);
+      if (startIndex === -1 || endIndex === -1) {
+        return [];
       }
+      return allNotes.slice(startIndex, endIndex + 1);
+    }
+
+    function mergedRange(leftRange, rightRange, mode) {
+      const notes = srsRangeOptionsForMode(mode).map((entry) => entry.name);
+      const indexes = [
+        notes.indexOf(leftRange[0]),
+        notes.indexOf(leftRange[1]),
+        notes.indexOf(rightRange[0]),
+        notes.indexOf(rightRange[1])
+      ].filter((value) => value >= 0);
+      if (!indexes.length) {
+        return rightRange;
+      }
+      return [notes[Math.min(...indexes)], notes[Math.max(...indexes)]];
+    }
+
+    function srsRangeFromState(mode, state) {
+      const ranges = levelRangesByMode[mode] || [];
+      const levelIndex = Math.max(0, Math.min(ranges.length - 1, (state?.level || 1) - 1));
+      return ranges[levelIndex] || clefConfigs[mode].range;
+    }
+
+    function srsTrainingRangeFromState(mode, state) {
+      const focusRange = srsRangeFromState(mode, state);
+      const previousLevel = Math.max(1, (state?.level || 1) - 1);
+      if (previousLevel === (state?.level || 1)) {
+        return focusRange;
+      }
+      const previousRange = srsRangeFromState(mode, { ...state, level: previousLevel });
+      return mergedRange(previousRange, focusRange, mode);
+    }
+
+    function noteStatFor(mode, noteName) {
+      return noteStats[mode]?.[noteName] || null;
+    }
+
+    function noteAccuracy(stat) {
+      const attempts = Number(stat?.attempts || 0);
+      return attempts ? Number(stat.correct || 0) / attempts : 0;
+    }
+
+    function noteAverageResponseMs(stat) {
+      const attempts = Number(stat?.attempts || 0);
+      return attempts ? Number(stat.total_ms || 0) / attempts : null;
+    }
+
+    function daysSinceIso(isoText) {
+      if (!isoText) {
+        return 0;
+      }
+      const timestamp = new Date(isoText).getTime();
+      if (!Number.isFinite(timestamp)) {
+        return 0;
+      }
+      return Math.max(0, (Date.now() - timestamp) / (24 * 60 * 60 * 1000));
+    }
+
+    function noteRetentionFactor(stat) {
+      if (!stat?.last_seen_at) {
+        return 1;
+      }
+      const daysSinceSeen = daysSinceIso(stat.last_seen_at);
+      const attempts = Number(stat.attempts || 0);
+      const accuracy = noteAccuracy(stat);
+      const streak = Number(stat.streak || 0);
+      const graceDays =
+        0.85 +
+        Math.min(4.5, attempts / 4) +
+        Math.max(0, (accuracy - 0.6) * 3.2) +
+        Math.min(2.2, streak / 2.2);
+
+      if (daysSinceSeen <= graceDays) {
+        return 1;
+      }
+
+      const overdueDays = daysSinceSeen - graceDays;
+      const dailyDecay = accuracy >= 0.88 ? 0.08 : accuracy >= 0.75 ? 0.12 : 0.18;
+      return Math.max(0.42, Math.exp(-overdueDays * dailyDecay));
+    }
+
+    function noteMasteryScore(mode, noteName) {
+      const stat = noteStatFor(mode, noteName);
+      if (!stat || !stat.attempts) {
+        return 0;
+      }
+      const accuracyScore = Math.min(1, noteAccuracy(stat) / 0.92);
+      const speedMs = noteAverageResponseMs(stat);
+      const speedScore = speedMs === null ? 0 : Math.max(0, Math.min(1, (3200 - speedMs) / 1700));
+      const streakScore = Math.max(0, Math.min(1, Number(stat.streak || 0) / 4));
+      const repetitionScore = Math.max(0, Math.min(1, Number(stat.attempts || 0) / 6));
+      const baseScore =
+        (accuracyScore * 0.42) +
+        (speedScore * 0.23) +
+        (streakScore * 0.2) +
+        (repetitionScore * 0.15);
+      return baseScore * noteRetentionFactor(stat);
+    }
+
+    function noteIsSecure(mode, noteName) {
+      const stat = noteStatFor(mode, noteName);
+      if (!stat || Number(stat.attempts || 0) < 4) {
+        return false;
+      }
+      return noteMasteryScore(mode, noteName) >= 0.82;
+    }
+
+    function rangeReadyForExpansion(mode, range) {
+      const rangeNotes = notesInRange(mode, range);
+      return rangeNotes.length > 0 && rangeNotes.every((noteName) => noteIsSecure(mode, noteName));
+    }
+
+    function srsProgressScore(state) {
+      if (!state) {
+        return -1;
+      }
+      const level = Math.max(1, Number(state.level) || 1);
+      const attempts = Array.isArray(state.attempts) ? state.attempts.length : 0;
+      const newNotes = Array.isArray(state.newNotes) ? state.newNotes.length : 0;
+      return ((level - 1) * 1000) + attempts + (newNotes * 10);
+    }
+
+    function rememberPromptedNote(mode, noteName) {
+      recentPromptHistory.unshift(`${mode}:${noteName}`);
+      if (recentPromptHistory.length > 10) {
+        recentPromptHistory.length = 10;
+      }
+    }
+
+    function isRecentlyPrompted(mode, noteName) {
+      return recentPromptHistory.includes(`${mode}:${noteName}`);
+    }
+
+    function noteSelectionWeight(mode, noteName, isNew = false) {
+      const stat = noteStatFor(mode, noteName);
+      if (!stat || Number(stat.attempts || 0) === 0) {
+        return isNew ? 12 : 8;
+      }
+      const accuracy = noteAccuracy(stat);
+      const masteryGap = 1 - noteMasteryScore(mode, noteName);
+      const attempts = Number(stat.attempts || 0);
+      const confusionTotal = Object.values(stat.confusions || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+      const retentionPenalty = 1 + Math.max(0, 1 - noteRetentionFactor(stat)) * 4;
+      const freshnessBoost = Math.max(0.8, 1.8 - Math.min(attempts, 20) / 20);
+      const confusionBoost = 1 + Math.min(2, confusionTotal / 3);
+      const accuracyPenalty = 1 + Math.max(0, 0.9 - accuracy) * 5;
+      const newNoteBoost = isNew ? 1.6 : 1;
+      const recentPenalty = isRecentlyPrompted(mode, noteName) ? 0.2 : 1;
+      return Math.max(0.25, (1 + masteryGap * 5) * freshnessBoost * confusionBoost * accuracyPenalty * retentionPenalty * newNoteBoost * recentPenalty);
+    }
+
+    function pickWeightedNote(entries, mode, state) {
+      const weights = entries.map((entry) =>
+        noteSelectionWeight(mode, entry.name, Boolean(state?.newNotes?.includes(entry.name)))
+      );
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      let threshold = Math.random() * (total || 1);
+      for (let index = 0; index < entries.length; index += 1) {
+        threshold -= weights[index];
+        if (threshold <= 0) {
+          return entries[index];
+        }
+      }
+      return entries[entries.length - 1];
+    }
+
+    function resolvePracticeModeForRound() {
+      if (currentState === 0) {
+        return "treble";
+      }
+      if (currentState === 1) {
+        return "bass";
+      }
+      const trebleScore = srsProgressScore(srsStates.treble);
+      const bassScore = srsProgressScore(srsStates.bass);
+      if (trebleScore === bassScore) {
+        dailyModeFlip = !dailyModeFlip;
+        return dailyModeFlip ? "treble" : "bass";
+      }
+      return trebleScore <= bassScore ? "treble" : "bass";
+    }
+
+    function applySrsRange(mode) {
+      const state = srsStates[mode] || createInitialSrsState(mode);
+      return srsTrainingRangeFromState(mode, state);
     }
 
     function pickNextNote() {
-      const pool = activeNotePool();
-      const candidates = pool.filter((entry) => !recentPromptHistory.includes(entry.name));
-      const source = candidates.length ? candidates : pool;
-      const picked = source[Math.floor(Math.random() * source.length)];
-      rememberPromptedNote(picked.name);
-      return { ...picked, state: "idle" };
+      const mode = resolvePracticeModeForRound();
+      currentPracticeMode = mode;
+      const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
+      const range = applySrsRange(mode);
+      const allowedNotes = new Set(notesInRange(mode, range));
+      const entries = srsRangeOptionsForMode(mode).filter((entry) => allowedNotes.has(entry.name));
+      const picked = pickWeightedNote(entries, mode, state);
+      rememberPromptedNote(mode, picked.name);
+      return {
+        ...picked,
+        mode,
+        state: "idle",
+        isNew: Boolean(state.newNotes?.includes(picked.name))
+      };
     }
 
     function noteOffset(step) {
@@ -1877,7 +2155,6 @@
         }
         return steps;
       }
-
       if (step >= 6) {
         const steps = [];
         const highestLedgerStep = step % 2 === 0 ? step : step - 1;
@@ -1886,7 +2163,6 @@
         }
         return steps;
       }
-
       return [];
     }
 
@@ -1912,14 +2188,12 @@
       noteElement.style.setProperty("--offset", noteOffset(note.step));
       noteElement.setAttribute("role", "img");
       noteElement.setAttribute("aria-label", note.name);
-
       if (note.state === "correct") {
         noteElement.classList.add("is-correct");
       }
       if (note.state === "wrong") {
         noteElement.classList.add("is-wrong");
       }
-
       slot.appendChild(noteElement);
 
       if (String(note.name).includes("#")) {
@@ -1951,24 +2225,91 @@
       notesContainer.replaceChildren(fragment);
     }
 
-    function setFeedback(message, state = "waiting") {
-      void message;
-      void state;
-    }
-
     function updateRevealToggleUi() {
       panelRevealToggle.classList.toggle("is-active", revealNoteNames);
       panelRevealToggle.setAttribute("aria-pressed", revealNoteNames ? "true" : "false");
     }
 
     function updateClefUi() {
-      const nextClef = currentNote?.clef || (activeModeId() === "bass" ? "bass" : "treble");
+      const nextClef = currentNote?.clef || (currentPracticeMode === "bass" ? "bass" : "treble");
       clefSymbol.innerHTML = clefSvgMarkup[nextClef] || "";
     }
 
     function renderPracticeUi() {
       updateClefUi();
       renderNotes();
+    }
+
+    function localProgressKey() {
+      return authUser?.id ? `${LOCAL_PROGRESS_PREFIX}:${authUser.id}` : "";
+    }
+
+    function serializeProgress() {
+      return {
+        currentState,
+        revealNoteNames,
+        srsStates,
+        noteStats
+      };
+    }
+
+    function saveProgress() {
+      if (!authUser) {
+        return;
+      }
+      const key = localProgressKey();
+      if (!key) {
+        return;
+      }
+      try {
+        localStorage.setItem(key, JSON.stringify(serializeProgress()));
+      } catch (error) {
+        console.warn("[Progress] Speichern fehlgeschlagen", error);
+      }
+    }
+
+    function applyProgressRecord(record) {
+      if (!record || typeof record !== "object") {
+        return;
+      }
+      currentState = Number.isInteger(record.currentState) ? Math.max(0, Math.min(titles.length - 1, record.currentState)) : currentState;
+      revealNoteNames = Boolean(record.revealNoteNames);
+      srsStates = {
+        treble: record.srsStates?.treble || createInitialSrsState("treble"),
+        bass: record.srsStates?.bass || createInitialSrsState("bass")
+      };
+      noteStats = {
+        treble: record.noteStats?.treble || {},
+        bass: record.noteStats?.bass || {}
+      };
+      noteStats.treble = noteStats.treble || {};
+      noteStats.bass = noteStats.bass || {};
+    }
+
+    function loadProgress() {
+      if (!authUser) {
+        return;
+      }
+      const key = localProgressKey();
+      if (!key) {
+        return;
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+          srsStates = {
+            treble: createInitialSrsState("treble"),
+            bass: createInitialSrsState("bass")
+          };
+          noteStats = { treble: {}, bass: {} };
+          revealNoteNames = false;
+          currentState = 0;
+          return;
+        }
+        applyProgressRecord(JSON.parse(raw));
+      } catch (error) {
+        console.warn("[Progress] Laden fehlgeschlagen", error);
+      }
     }
 
     function clearPendingReset() {
@@ -1978,28 +2319,115 @@
       }
     }
 
+    function recordResponseMs() {
+      if (!promptStartedAt) {
+        return null;
+      }
+      return Math.max(0, Date.now() - promptStartedAt);
+    }
+
+    function recordNoteStat(mode, noteName, isCorrect, { responseMs = null, playedNoteName = "" } = {}) {
+      if (!mode || !noteName) {
+        return;
+      }
+      noteStats[mode] = noteStats[mode] || {};
+      const stats = noteStats[mode][noteName] || {
+        attempts: 0,
+        correct: 0,
+        streak: 0,
+        total_ms: 0,
+        fastest_ms: null,
+        slowest_ms: null,
+        confusions: {},
+        last_seen_at: null,
+        last_correct_at: null
+      };
+      stats.attempts += 1;
+      stats.last_seen_at = new Date().toISOString();
+      if (isCorrect) {
+        stats.correct += 1;
+        stats.streak = Number(stats.streak || 0) + 1;
+        stats.last_correct_at = stats.last_seen_at;
+      } else {
+        stats.streak = 0;
+        if (playedNoteName && playedNoteName !== noteName) {
+          stats.confusions = stats.confusions || {};
+          stats.confusions[playedNoteName] = Number(stats.confusions[playedNoteName] || 0) + 1;
+        }
+      }
+      if (responseMs !== null && Number.isFinite(responseMs)) {
+        stats.total_ms = Number(stats.total_ms || 0) + responseMs;
+        stats.fastest_ms = stats.fastest_ms === null ? responseMs : Math.min(Number(stats.fastest_ms || responseMs), responseMs);
+        stats.slowest_ms = stats.slowest_ms === null ? responseMs : Math.max(Number(stats.slowest_ms || responseMs), responseMs);
+      }
+      noteStats[mode][noteName] = stats;
+      saveProgress();
+    }
+
+    function maybeAdjustSrsRange(mode) {
+      const state = srsStates[mode];
+      if (!state || state.attempts.length < srsConfig.sampleSize) {
+        return false;
+      }
+
+      const accuracy = state.attempts.filter(Boolean).length / state.attempts.length;
+      const ranges = levelRangesByMode[mode] || [];
+      const canGrow = state.level < ranges.length;
+      const canShrink = state.level > 1;
+      const currentRange = srsTrainingRangeFromState(mode, state);
+      const readyForExpansion = rangeReadyForExpansion(mode, currentRange);
+
+      if (accuracy >= srsConfig.growThreshold && canGrow && readyForExpansion) {
+        const previousRange = currentRange;
+        state.level += 1;
+        state.attempts = [];
+        const nextRange = srsTrainingRangeFromState(mode, state);
+        const previousNotes = new Set(notesInRange(mode, previousRange));
+        state.newNotes = notesInRange(mode, nextRange).filter((noteName) => !previousNotes.has(noteName));
+        saveProgress();
+        return true;
+      }
+
+      if (accuracy < srsConfig.shrinkThreshold && canShrink) {
+        state.level -= 1;
+        state.attempts = [];
+        state.newNotes = [];
+        saveProgress();
+        return true;
+      }
+
+      return false;
+    }
+
+    function recordSrsAttempt(mode, isCorrect) {
+      const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
+      state.attempts.push(isCorrect);
+      if (state.attempts.length > srsConfig.sampleSize) {
+        state.attempts.shift();
+      }
+      const changedRange = maybeAdjustSrsRange(mode);
+      saveProgress();
+      return changedRange;
+    }
+
     function generateRound() {
+      if (!isAuthenticated || isAdminMode) {
+        return;
+      }
       clearPendingReset();
       currentNote = pickNextNote();
+      promptStartedAt = Date.now();
       renderPracticeUi();
-      setFeedback(midiConnected ? "Spiele die gezeigte Note." : "Warte auf MIDI", "waiting");
+    }
+
+    function setFeedback(message, state = "waiting") {
+      void message;
+      void state;
     }
 
     function updateMidiUi(isConnected, message = "") {
       midiConnected = isConnected;
-      if (isConnected) {
-        if (message) {
-          setFeedback(message, "waiting");
-        }
-        return;
-      }
-
-      if (message) {
-        setFeedback(message, "waiting");
-        return;
-      }
-
-      setFeedback("Warte auf MIDI", "waiting");
+      setFeedback(message || (isConnected ? "MIDI aktiv" : "Warte auf MIDI"), isConnected ? "success" : "waiting");
     }
 
     function midiPortsToArray(portCollection) {
@@ -2010,19 +2438,25 @@
         return portCollection;
       }
       if (typeof portCollection.values === "function") {
-        return Array.from(portCollection.values());
+        try {
+          return Array.from(portCollection.values());
+        } catch (error) {
+          void error;
+        }
       }
-      return Array.from(portCollection);
+      if (typeof portCollection.length === "number") {
+        return Array.from(portCollection);
+      }
+      return [];
     }
 
     function listMidiInputs(midiAccess) {
       if (!midiAccess) {
         return [];
       }
-      if (typeof midiAccess.inputs === "function") {
-        return midiPortsToArray(midiAccess.inputs());
-      }
-      return midiPortsToArray(midiAccess.inputs);
+      return typeof midiAccess.inputs === "function"
+        ? midiPortsToArray(midiAccess.inputs())
+        : midiPortsToArray(midiAccess.inputs);
     }
 
     function hasConnectedMidiInput(midiAccess) {
@@ -2030,31 +2464,48 @@
     }
 
     function handlePlayedMidi(midiNote) {
-      if (!currentNote) {
+      if (!isAuthenticated || !currentNote) {
         return;
       }
 
       clearPendingReset();
-      lastPlayedMidi = midiNote;
+      const responseMs = recordResponseMs();
 
       if (midiNote === currentNote.midi) {
         currentNote.state = "correct";
         renderPracticeUi();
-        setFeedback(`${displayNoteName(currentNote.name)} richtig`, "correct");
+        recordNoteStat(currentNote.mode, currentNote.name, true, { responseMs });
+        const rangeChanged = recordSrsAttempt(currentNote.mode, true);
+        const modeState = srsStates[currentNote.mode];
+        modeState.newNotes = (modeState.newNotes || []).filter((noteName) => noteName !== currentNote.name);
+        saveProgress();
         currentResetTimeout = window.setTimeout(() => {
+          if (rangeChanged) {
+            generateRound();
+            return;
+          }
           generateRound();
-        }, 700);
+        }, 550);
         return;
       }
 
       currentNote.state = "wrong";
       renderPracticeUi();
-      setFeedback(`${displayNoteName(midiNumberToName(midiNote))} statt ${displayNoteName(currentNote.name)}`, "wrong");
+      const playedNoteName = midiNumberToName(midiNote);
+      recordNoteStat(currentNote.mode, currentNote.name, false, {
+        responseMs,
+        playedNoteName
+      });
+      const rangeChanged = recordSrsAttempt(currentNote.mode, false);
       currentResetTimeout = window.setTimeout(() => {
+        if (rangeChanged) {
+          generateRound();
+          return;
+        }
         if (currentNote) {
           currentNote.state = "idle";
+          promptStartedAt = Date.now();
           renderPracticeUi();
-          setFeedback("Versuch es noch einmal.", "waiting");
         }
       }, 700);
     }
@@ -2071,7 +2522,6 @@
       for (const input of listMidiInputs(midiAccess)) {
         input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
       }
-
       const connected = hasConnectedMidiInput(midiAccess);
       updateMidiUi(connected, connected ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden");
     }
@@ -2080,19 +2530,17 @@
       if (isMidiConnecting) {
         return;
       }
-
       if (!("requestMIDIAccess" in navigator)) {
         updateMidiUi(false, "Web MIDI API ist in diesem Browser nicht verfuegbar");
         return;
       }
-
       isMidiConnecting = true;
       updateMidiUi(false, "MIDI wird verbunden...");
-
       try {
         midiAccessRef = await navigator.requestMIDIAccess();
         bindMidiInputs(midiAccessRef);
         midiAccessRef.onstatechange = () => bindMidiInputs(midiAccessRef);
+        updateMidiUi(hasConnectedMidiInput(midiAccessRef), hasConnectedMidiInput(midiAccessRef) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden");
       } catch (error) {
         updateMidiUi(false, error?.message || "MIDI-Freigabe fehlgeschlagen");
       } finally {
@@ -2100,37 +2548,166 @@
       }
     }
 
-    function syncPracticeMode(force = false) {
-      if (isAdminMode) {
+    async function ensureSupabaseClient() {
+      if (supabaseClient || !isSupabaseConfigured()) {
+        return supabaseClient;
+      }
+      const module = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+      supabaseClient = module.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return supabaseClient;
+    }
+
+    async function handleSignedInUser(user) {
+      authUser = user;
+      isAuthenticated = true;
+      setAuthCookie(user);
+      timerStartedAt = Date.now();
+      loadProgress();
+      updateRevealToggleUi();
+      document.body.dataset.state = String(currentState);
+      titleElement.textContent = titles[currentState];
+      renderAuthUi();
+      generateRound();
+    }
+
+    function handleSignedOut() {
+      authUser = null;
+      isAuthenticated = false;
+      clearAuthCookie();
+      currentNote = null;
+      resetAuthFlow(true);
+      setAuthStatus(isSupabaseConfigured() ? "" : "Supabase URL und Anon Key fehlen noch.", isSupabaseConfigured() ? "" : "error");
+      renderAuthUi();
+      focusAuthInput();
+    }
+
+    async function handleAuthPrimary() {
+      if (authBusy) {
         return;
       }
 
+      if (authStep === "email") {
+        const email = authFlowInput.value.trim().toLowerCase();
+        if (!email || !email.includes("@")) {
+          setAuthStatus("Bitte eine gueltige E-Mailadresse eingeben.", "error");
+          return;
+        }
+        authEmailDraft = email;
+        authStep = "password";
+        authFlowInput.value = "";
+        setAuthStatus("", "");
+        renderAuthUi();
+        focusAuthInput();
+        return;
+      }
+
+      if (!isSupabaseConfigured()) {
+        setAuthStatus("Supabase URL und Anon Key fehlen noch.", "error");
+        return;
+      }
+
+      const password = authFlowInput.value;
+      if (!password) {
+        setAuthStatus("Bitte dein Passwort eingeben.", "error");
+        return;
+      }
+
+      authBusy = true;
+      renderAuthUi();
+      setAuthStatus("Anmeldung wird geprueft...", "success");
+
+      try {
+        const client = await ensureSupabaseClient();
+        const { data, error } = await client.auth.signInWithPassword({
+          email: authEmailDraft,
+          password
+        });
+        if (error) {
+          setAuthStatus(error.message || "Login fehlgeschlagen.", "error");
+          return;
+        }
+        authFlowInput.value = "";
+        setAuthStatus("", "");
+        await handleSignedInUser(data.user || data.session?.user);
+      } catch (error) {
+        console.error("[Auth] Anmeldung fehlgeschlagen", error);
+        setAuthStatus(error?.message || "Login fehlgeschlagen.", "error");
+      } finally {
+        authBusy = false;
+        renderAuthUi();
+      }
+    }
+
+    async function initAuth() {
+      if (!isSupabaseConfigured()) {
+        renderAuthUi();
+        setAuthStatus("Supabase URL und Anon Key fehlen noch.", "error");
+        return;
+      }
+
+      try {
+        const client = await ensureSupabaseClient();
+        authSubscription = client.auth.onAuthStateChange((event, session) => {
+          if (session?.user) {
+            void handleSignedInUser(session.user);
+            return;
+          }
+          if (event === "SIGNED_OUT") {
+            handleSignedOut();
+          }
+        });
+        const { data, error } = await client.auth.getSession();
+        if (error) {
+          setAuthStatus(error.message || "Session konnte nicht geladen werden.", "error");
+          return;
+        }
+        if (data.session?.user) {
+          await handleSignedInUser(data.session.user);
+          return;
+        }
+        const localSession = getAuthCookie();
+        if (localSession?.email) {
+          await handleSignedInUser({
+            id: localSession.id || localSession.email,
+            email: localSession.email
+          });
+          return;
+        }
+      } catch (error) {
+        console.error("[Auth] Initialisierung fehlgeschlagen", error);
+        setAuthStatus(error?.message || "Supabase konnte nicht geladen werden.", "error");
+      }
+
+      handleSignedOut();
+    }
+
+    function syncPracticeMode(force = false) {
+      if (!isAuthenticated || isAdminMode) {
+        return;
+      }
       if (force || !currentNote) {
         generateRound();
         return;
       }
-
       renderPracticeUi();
     }
 
     function setTitle(nextState, direction) {
-      if (animating || isAdminMode || nextState === currentState) {
+      if (!isAuthenticated || animating || isAdminMode || nextState === currentState) {
         return;
       }
-
       animating = true;
       titleElement.classList.add("is-exiting");
       titleElement.style.transform = `translateX(${direction > 0 ? 18 : -18}px)`;
-
       window.setTimeout(() => {
         currentState = nextState;
         document.body.dataset.state = String(currentState);
         titleElement.textContent = titles[currentState];
+        saveProgress();
         syncPracticeMode(true);
         titleElement.classList.remove("is-exiting");
         titleElement.classList.add("is-entering");
         titleElement.style.transform = `translateX(${direction > 0 ? -18 : 18}px)`;
-
         requestAnimationFrame(() => {
           titleElement.classList.remove("is-entering");
           titleElement.style.transform = "";
@@ -2140,10 +2717,9 @@
     }
 
     function enterAdminMode() {
-      if (isAdminMode) {
+      if (!isAuthenticated || isAdminMode) {
         return;
       }
-
       isAdminMode = true;
       document.body.classList.add("is-admin");
       titleElement.classList.remove("is-exiting", "is-entering");
@@ -2165,7 +2741,6 @@
       if (!isAdminMode) {
         return;
       }
-
       isAdminMode = false;
       document.body.classList.remove("is-admin");
       titleElement.textContent = titles[currentState];
@@ -2178,8 +2753,29 @@
       syncPracticeMode();
     }
 
+    function commitSwipe(deltaX, deltaY) {
+      if (!isAuthenticated) {
+        return;
+      }
+      const threshold = 60;
+      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold) {
+        if (deltaY > 0) {
+          enterAdminMode();
+        } else {
+          exitAdminMode();
+        }
+        return;
+      }
+      if (!isAdminMode && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+        const nextState = deltaX < 0
+          ? (currentState + 1) % titles.length
+          : (currentState - 1 + titles.length) % titles.length;
+        setTitle(nextState, deltaX);
+      }
+    }
+
     screenElement.addEventListener("pointerdown", (event) => {
-      if (touchIdentifier !== null || shouldIgnoreSwipeTarget(event.target)) {
+      if (!isAuthenticated || touchIdentifier !== null || shouldIgnoreSwipeTarget(event.target)) {
         return;
       }
       pointerId = event.pointerId;
@@ -2201,15 +2797,13 @@
     });
 
     screenElement.addEventListener("touchstart", (event) => {
-      if (pointerId !== null || touchIdentifier !== null || shouldIgnoreSwipeTarget(event.target)) {
+      if (!isAuthenticated || pointerId !== null || touchIdentifier !== null || shouldIgnoreSwipeTarget(event.target)) {
         return;
       }
-
       const touch = event.changedTouches[0];
       if (!touch) {
         return;
       }
-
       touchIdentifier = touch.identifier;
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
@@ -2219,12 +2813,10 @@
       if (touchIdentifier === null) {
         return;
       }
-
       const touch = Array.from(event.changedTouches).find((item) => item.identifier === touchIdentifier);
       if (!touch) {
         return;
       }
-
       const deltaX = touch.clientX - touchStartX;
       const deltaY = touch.clientY - touchStartY;
       if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
@@ -2236,12 +2828,10 @@
       if (touchIdentifier === null) {
         return;
       }
-
       const touch = Array.from(event.changedTouches).find((item) => item.identifier === touchIdentifier);
       if (!touch) {
         return;
       }
-
       commitSwipe(touch.clientX - touchStartX, touch.clientY - touchStartY);
       resetSwipeState();
     }, { passive: true });
@@ -2251,16 +2841,43 @@
     });
 
     adminCalendarGrid.addEventListener("click", (event) => {
-      if (!isAdminMode) {
+      if (!isAuthenticated || !isAdminMode) {
         return;
       }
-
       const cell = event.target.closest(".admin-calendar-cell");
       if (!cell || cell.classList.contains("is-empty")) {
         return;
       }
+      const year = Number(cell.dataset.year);
+      const month = Number(cell.dataset.month);
+      const day = Number(cell.dataset.day);
+      const rowIndex = Number(cell.dataset.row);
+      const totalRows = Number(adminCalendarGrid.dataset.rows);
+      const date = new Date(year, month, day);
+      const isAbove = rowIndex >= Math.ceil(totalRows / 2);
+      const dateKey = formatCalendarDateKey(date);
 
-      openCalendarDetail(cell);
+      if (selectedCalendarCell && selectedCalendarCell !== cell) {
+        selectedCalendarCell.classList.remove("is-selected");
+      }
+      selectedCalendarCell = cell;
+      selectedCalendarDateKey = dateKey;
+      cell.classList.add("is-selected");
+      adminCalendarDetailDate.textContent = formatCalendarDateLabel(date);
+      adminCalendarDetail.classList.add("is-open");
+      adminCalendarDetail.classList.toggle("is-above", isAbove);
+      adminCalendarDetail.classList.toggle("is-below", !isAbove);
+      adminCalendarDetail.setAttribute("aria-hidden", "false");
+      adminCalendarStage.classList.toggle("is-detail-above", isAbove);
+      adminCalendarStage.classList.toggle("is-detail-below", !isAbove);
+
+      const existingEvent = (adminCalendarEvents.get(dateKey) ?? [])[0];
+      adminCalendarInputTitle.value = existingEvent?.title ?? "";
+      adminCalendarInputTime.value = existingEvent?.time ?? "";
+      adminCalendarInputNote.value = existingEvent?.note ?? "";
+      requestAnimationFrame(() => {
+        adminCalendarInputTitle.focus({ preventScroll: true });
+      });
     });
 
     adminCalendarDetailClose.addEventListener("click", () => {
@@ -2269,11 +2886,9 @@
 
     adminCalendarForm.addEventListener("submit", (event) => {
       event.preventDefault();
-
       if (!selectedCalendarDateKey || !selectedCalendarCell) {
         return;
       }
-
       const title = adminCalendarInputTitle.value.trim() || "Termin";
       const time = adminCalendarInputTime.value.trim();
       const note = adminCalendarInputNote.value.trim();
@@ -2288,6 +2903,9 @@
     });
 
     adminToolsButton.addEventListener("click", () => {
+      if (!isAuthenticated) {
+        return;
+      }
       const nextExpanded = !adminTools.classList.contains("is-expanded");
       adminTools.classList.toggle("is-expanded", nextExpanded);
       adminToolsButton.classList.toggle("is-active", nextExpanded);
@@ -2295,6 +2913,9 @@
     });
 
     cornerButton.addEventListener("click", () => {
+      if (!isAuthenticated) {
+        return;
+      }
       if (isAdminMode) {
         exitAdminMode();
         return;
@@ -2306,23 +2927,62 @@
     });
 
     panelMidiTrigger.addEventListener("click", () => {
-      initMidi();
+      if (isAuthenticated) {
+        initMidi();
+      }
     });
 
     panelRevealToggle.addEventListener("click", () => {
+      if (!isAuthenticated) {
+        return;
+      }
       revealNoteNames = !revealNoteNames;
       updateRevealToggleUi();
       renderPracticeUi();
+      saveProgress();
     });
 
-    document.body.dataset.state = "0";
-    updateTimer();
-    buildAdminCalendar();
-    syncPracticeMode(true);
-    updateMidiUi(false);
-    updateRevealToggleUi();
-    window.setInterval(updateTimer, 1000);
-    lucide.createIcons();
+    authFlowInput.addEventListener("input", () => {
+      if (authStatus.dataset.state === "error") {
+        setAuthStatus("", "");
+      }
+    });
+
+    authFlowInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        void handleAuthPrimary();
+        return;
+      }
+      if (event.key === "Escape" && authStep === "password") {
+        resetAuthFlow(false);
+        setAuthStatus("", "");
+        renderAuthUi();
+        focusAuthInput();
+      }
+    });
+
+    authStepButton.addEventListener("click", () => {
+      void handleAuthPrimary();
+    });
+
+async function boot() {
+  document.body.dataset.state = "0";
+  updateTimer();
+  buildAdminCalendar();
+  updateRevealToggleUi();
+  renderAuthUi();
+  updateAdminAccessUi();
+  focusAuthInput();
+  window.setInterval(updateTimer, 1000);
+  lucide.createIcons();
+
+  await initAuth();
+  void initMidi();
+}
+
+// Ganz am Ende steht bei dir:
+boot();
   </script>
 
 
