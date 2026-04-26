@@ -546,20 +546,21 @@
       letter-spacing: -0.04em;
       font-weight: 700;
       text-align: center;
-      transition: opacity 180ms ease, transform 180ms ease;
-      will-change: opacity, transform;
+      transition: opacity 180ms ease;
+      will-change: opacity;
       position: relative;
       z-index: 2;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+      backface-visibility: hidden;
     }
 
     .panel h1.is-exiting {
       opacity: 0;
-      transform: translateX(-18px);
     }
 
     .panel h1.is-entering {
       opacity: 0;
-      transform: translateX(18px);
     }
 
     body.is-admin .panel h1 {
@@ -1742,7 +1743,7 @@
     }
   </style>
 </head>
-<body data-state="1" class="is-no-admin">
+<body data-state="2" class="is-no-admin">
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
@@ -1767,7 +1768,7 @@
           </div>
         </div>
       </div>
-      <div class="left-stack">
+      <div class="left-stack is-expanded">
         <article class="panel">
           <div class="panel-fluid" aria-hidden="true">
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -1784,24 +1785,24 @@
             </g>
           </svg>
           </div>
-          <button class="panel-corner-button" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="false">
+          <button class="panel-corner-button is-active" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-left" class="lucide lucide-arrow-up-left panel-corner-icon panel-corner-icon-up" aria-hidden="true"><path d="M7 17V7h10"></path><path d="M17 17 7 7"></path></svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-down-right" class="lucide lucide-arrow-down-right panel-corner-icon panel-corner-icon-down" aria-hidden="true"><path d="m7 7 10 10"></path><path d="M17 7v10H7"></path></svg>
           </button>
-          <h1 id="title">Bassschlüssel</h1>
+          <h1 id="title">Daily Challenge</h1>
         <div class="panel-expander" id="panel-expander" aria-hidden="true">
           <div class="panel-expander-panel">
             <div class="panel-expander-icons" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scissors" aria-label="Cut-Modus umschalten" class="lucide lucide-scissors panel-expander-icon is-action" id="panel-cut-trigger"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="Klavier einblenden" class="lucide lucide-keyboard-music panel-expander-icon is-action" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-label="Debug-Konsole umschalten" aria-pressed="false" class="lucide lucide-message-circle-question-mark panel-expander-icon is-action" id="panel-debug-toggle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-label="Debug-Konsole umschalten" aria-pressed="true" class="lucide lucide-message-circle-question-mark panel-expander-icon is-action is-active" id="panel-debug-toggle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="true" class="lucide lucide-eye panel-expander-icon is-action is-active" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
           </div>
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:05</div>
+          <div class="panel-star-time" id="panel-star-time">00:17</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1815,13 +1816,11 @@
           <div class="bar">
             <div class="stave-header"></div>
             <div class="clef-symbol" id="clef-symbol">
-        <svg viewBox="0 0 512 512" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-          <path d="M176.014,0l-2.823,0.01C89.091,1.164,20.78,63.557,15.904,118.564c-3.125,35.072,4.693,63.941,22.568,83.494c16.307,17.803,39.765,26.836,69.727,26.836c31.095,0,61.603-29.77,61.603-60.106c0-30.803-25.076-55.869-55.888-55.869c-16.569,0-27.575,7.323-34.858,12.179c-2.853,1.892-5.796,3.854-7.121,3.854c-0.446,0-1.477-1.184-2.458-5.635c-3.399-15.335,1.902-33.644,14.212-48.98c10.399-12.978,34.858-34.726,81.876-34.726c65.67,0,101.833,52.894,101.833,148.952c0,192.852-165.703,271.845-216.483,291.459c-10.398,4.016-13.778,12.716-12.492,19.553C39.828,507.002,45.947,512,53.686,512c2.448,0,5.037-0.496,7.657-1.477l5.807-2.165C262.916,435.82,362.19,326.247,362.19,182.648C362.19,57.164,265.688,0,176.014,0z"></path>
-          <path d="M455.486,126.84c22.771,0,41.282-18.522,41.282-41.292c0-22.76-18.512-41.271-41.282-41.271c-22.759,0-41.281,18.511-41.281,41.271C414.205,108.318,432.726,126.84,455.486,126.84z"></path>
-          <path d="M455.486,211.365c-22.759,0-41.281,18.522-41.281,41.282c0,22.77,18.522,41.281,41.281,41.281c22.771,0,41.282-18.511,41.282-41.281C496.768,229.887,478.256,211.365,455.486,211.365z"></path>
+        <svg viewBox="0 0 88 192" aria-hidden="true">
+          <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
         </svg>
       </div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="ledger-line" style="--offset: 6em;"></div><div class="ledger-line" style="--offset: 8em;"></div><div class="note note-up" role="img" aria-label="C2" style="--offset: 8em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 8em;">C</div></div></div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="ledger-line" style="--offset: 6em;"></div><div class="note note-up" role="img" aria-label="C4" style="--offset: 6em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 6em;">C</div></div></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
         </div>
@@ -1898,7 +1897,7 @@
       </div>
     </div>
   </main>
-  <aside class="debug-console" id="debug-console" aria-hidden="true">
+  <aside class="debug-console is-open" id="debug-console" aria-hidden="false">
     <div class="debug-console-header">
       <strong class="debug-console-title">Debug-Konsole</strong>
       <div class="debug-console-actions">
@@ -1907,7 +1906,17 @@
       </div>
     </div>
     <div class="debug-console-status" id="debug-console-status">Kein MIDI-Keyboard gefunden | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
-    <pre class="debug-console-output" id="debug-console-output"></pre>
+    <pre class="debug-console-output" id="debug-console-output">[10:15:26] System: Debug-Konsole bereit
+[10:15:26] MIDI: Initialisierung gestartet {"status":"Noch keine MIDI-Aktivität.","viewerBridge":false,"connecting":false,"connected":false,"authReady":false,"isAuthenticated":false,"currentTarget":null,"inputs":[],"outputs":[]}
+[10:15:26] MIDI-Status: MIDI wird verbunden... {"state":"waiting"}
+[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
+[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
+[10:15:26] Auth: Session beim Laden gefunden {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
+[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
+[10:15:27] MIDI: requestMIDIAccess erfolgreich {"inputs":[],"outputs":[]}
+[10:15:27] MIDI: Inputs gebunden []
+[10:15:27] MIDI-Status: Kein MIDI-Keyboard gefunden {"state":"waiting"}
+[10:15:29] UI: Debug-Konsole umgeschaltet {"open":true}</pre>
   </aside>
   <script>
     const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
@@ -2050,8 +2059,6 @@
     let authSubscription = null;
     let dailyModeFlip = false;
     let midiAccessRef = null;
-    let midiLastPlayedNote = null;
-    let midiInitScheduled = false;
     let activeRangeDrag = null;
     let debugConsoleOpen = false;
     let midiStatusMessage = "Noch keine MIDI-Aktivität.";
@@ -2071,7 +2078,6 @@
     const recentPromptHistory = [];
     const adminCalendarEvents = new Map();
     const debugLogEntries = [];
-    const midiInputHandlerRefs = new WeakMap();
 
     function createInitialSrsState(mode) {
       const firstRange = levelRangesByMode[mode]?.[0];
@@ -3521,10 +3527,28 @@
       );
 
       if (!dataArg) {
-        logDebug("WebMIDIViewer", "Keine verwertbaren MIDI-Daten im Callback gefunden");
         return;
       }
-      processMidiPayload(dataArg, "WebMIDIViewer");
+      let data;
+      try {
+        data = Array.from(dataArg);
+      } catch (_error) {
+        return;
+      }
+
+      if (data.length < 3) {
+        return;
+      }
+
+      const [status, noteNumber, velocity] = data;
+      const messageType = status & 0xf0;
+      logDebug("WebMIDIViewer", "Nachricht empfangen", { data, noteNumber, velocity, messageType });
+
+      sendMidiToOutputs(data);
+
+      if (messageType === 0x90 && velocity > 0) {
+        handlePlayedMidi(noteNumber);
+      }
     };
 
     function midiPortsToArray(portCollection) {
@@ -3580,7 +3604,6 @@
     function bindMidiOutputs(midiAccess) {
       midiOutputsRef = [];
       if (!midiAccess) {
-        logDebug("MIDI", "Keine MIDI-Outputs zum Binden vorhanden");
         return;
       }
       for (const output of listMidiOutputs(midiAccess)) {
@@ -3588,24 +3611,17 @@
           midiOutputsRef.push(output);
         }
       }
-      logDebug("MIDI", "Outputs gebunden", midiOutputsRef.map(describeMidiPort));
     }
 
     function sendMidiToOutputs(data) {
       if (!Array.isArray(data) && !(data instanceof Uint8Array)) {
-        logDebug("MIDI", "Output-Send verworfen, Datenformat unbekannt", String(data));
         return;
       }
-      logDebug("MIDI", "Sende Daten an Outputs", Array.from(data));
       for (const output of midiOutputsRef) {
         try {
           output.send(data);
         } catch (error) {
           console.warn("[MIDI] Output senden fehlgeschlagen", output.name, error);
-          logDebug("MIDI", "Output senden fehlgeschlagen", {
-            output: output.name || null,
-            error: error?.message || String(error)
-          });
         }
       }
     }
@@ -3614,142 +3630,27 @@
       return listMidiInputs(midiAccess).some((input) => input.state === "connected");
     }
 
-    function parseMidiPayload(payload) {
-      if (Array.isArray(payload)) {
-        return payload;
-      }
-      if (payload instanceof Uint8Array) {
-        return Array.from(payload);
-      }
-      if (payload?.data instanceof Uint8Array || Array.isArray(payload?.data)) {
-        return Array.from(payload.data);
-      }
-      if (payload && typeof payload.length === "number" && typeof payload !== "string") {
-        try {
-          return Array.from(payload);
-        } catch (error) {
-          void error;
-        }
-      }
-      return [];
-    }
-
-    function processMidiPayload(payload, sourceLabel = "Web MIDI") {
-      const data = parseMidiPayload(payload);
-      if (data.length < 2) {
-        logDebug(sourceLabel, "MIDI-Paket ignoriert, zu kurz", data);
-        return;
-      }
-      const [status, noteNumber, velocity = 0] = data;
-      const messageType = Number(status) & 0xf0;
-      logDebug(sourceLabel, "Nachricht empfangen", {
-        data,
-        messageType: midiMessageLabel(status, velocity),
-        noteNumber,
-        velocity
-      });
-      sendMidiToOutputs(data);
-
-      if ((messageType === 0x90 || messageType === 0x80) && Number.isFinite(noteNumber)) {
-        midiLastPlayedNote = noteNumber;
-      }
-
-      if (messageType === 0x90 && velocity > 0) {
-        handlePlayedMidi(noteNumber);
-        return;
-      }
-
-      if (messageType === 0x80 || (messageType === 0x90 && velocity === 0)) {
-        logDebug(sourceLabel, "Note-Off erkannt", {
-          data,
-          noteNumber,
-          velocity
-        });
-        return;
-      }
-
-      if (Number.isFinite(noteNumber) && velocity > 0) {
-        logDebug(sourceLabel, "Fallback-Verarbeitung fuer unbekannten Message-Typ", {
-          data,
-          messageType: midiMessageLabel(status, velocity),
-          noteNumber,
-          velocity
-        });
-        handlePlayedMidi(noteNumber);
-        return;
-      }
-
-      logDebug(sourceLabel, "Nicht als spielbare MIDI-Nachricht verarbeitet", {
-        data,
-        messageType: midiMessageLabel(status, velocity),
-        noteNumber,
-        velocity
-      });
-    }
-
-    function attachMidiInputHandler(input) {
-      if (!input) {
-        return;
-      }
-      const previousHandler = midiInputHandlerRefs.get(input);
-      if (previousHandler && typeof input.removeEventListener === "function") {
-        try {
-          input.removeEventListener("midimessage", previousHandler);
-        } catch (error) {
-          void error;
-        }
-      }
-      const handler = (event) => processMidiPayload(event, `Web MIDI ${input.name || "Input"}`);
-      midiInputHandlerRefs.set(input, handler);
-      input.onmidimessage = input.state === "connected" ? handler : null;
-      if (input.state === "connected" && typeof input.addEventListener === "function") {
-        try {
-          input.addEventListener("midimessage", handler);
-        } catch (error) {
-          logDebug("MIDI", "addEventListener fuer Input fehlgeschlagen", {
-            input: input.name || null,
-            error: error?.message || String(error)
-          });
-        }
-      }
-      if (input.state === "connected" && typeof input.open === "function") {
-        try {
-          const openResult = input.open();
-          if (openResult && typeof openResult.catch === "function") {
-            openResult.catch((error) => {
-              logDebug("MIDI", "Input konnte nicht geoeffnet werden", {
-                input: input.name || null,
-                error: error?.message || String(error)
-              });
-            });
-          }
-        } catch (error) {
-          logDebug("MIDI", "Input.open() fehlgeschlagen", {
-            input: input.name || null,
-            error: error?.message || String(error)
-          });
-        }
-      }
-    }
-
     function handlePlayedMidi(midiNote) {
       if (!isAuthenticated || !currentNote) {
-        logDebug("MIDI", "Eingehende Note ignoriert", {
+        logDebug("handlePlayedMidi", isAuthenticated ? "ignored: no current note" : "ignored: unauthenticated", {
           midiNote,
-          noteName: midiNumberToName(midiNote),
-          isAuthenticated,
-          currentTarget: currentNote ? currentNote.name : null
+          noteName: midiNumberToName(midiNote)
         });
         return;
       }
 
       clearPendingReset();
-      midiLastPlayedNote = midiNote;
       const responseMs = recordResponseMs();
       const playedNoteName = midiNumberToName(midiNote);
 
+      logDebug("handlePlayedMidi", "Nachricht empfangen", {
+        midiNote,
+        noteName: playedNoteName,
+        target: currentNote.name
+      });
+
       if (midiNote === currentNote.midi) {
-        logDebug("MIDI", "Note korrekt erkannt", {
+        logDebug("handlePlayedMidi", "Note korrekt erkannt", {
           played: playedNoteName,
           target: currentNote.name,
           responseMs
@@ -3773,7 +3674,7 @@
 
       currentNote.state = "wrong";
       renderPracticeUi();
-      logDebug("MIDI", "Falsche Note erkannt", {
+      logDebug("handlePlayedMidi", "Falsche Note erkannt", {
         played: playedNoteName,
         target: currentNote.name,
         responseMs
@@ -3797,16 +3698,29 @@
     }
 
     function onMidiMessage(event) {
-      processMidiPayload(event, "Web MIDI");
+      const [status, noteNumber, velocity] = event.data;
+      const messageType = status & 0xf0;
+
+      logDebug("onMidiMessage", "Nachricht empfangen", {
+        data: Array.from(event.data),
+        noteNumber,
+        velocity,
+        messageType
+      });
+
+      sendMidiToOutputs(Array.from(event.data));
+
+      if (messageType === 0x90 && velocity > 0) {
+        handlePlayedMidi(noteNumber);
+      }
     }
 
     function bindMidiInputs(midiAccess) {
       if (!midiAccess) {
-        logDebug("MIDI", "bindMidiInputs ohne MIDI-Access aufgerufen");
         return;
       }
       for (const input of listMidiInputs(midiAccess)) {
-        attachMidiInputHandler(input);
+        input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
       }
       bindMidiOutputs(midiAccess);
       logDebug("MIDI", "Inputs gebunden", listMidiInputs(midiAccess).map(describeMidiPort));
@@ -3859,25 +3773,6 @@
         isMidiConnecting = false;
         updateDebugConsoleStatus();
       }
-    }
-
-    function scheduleMidiInit() {
-      if (midiInitScheduled) {
-        logDebug("MIDI", "scheduleMidiInit übersprungen, bereits geplant");
-        return;
-      }
-      midiInitScheduled = true;
-      logDebug("MIDI", "Initialisierung für window.load eingeplant");
-      const runMidiInit = () => {
-        window.removeEventListener("load", runMidiInit);
-        logDebug("MIDI", "window.load erreicht, MIDI-Init wird gestartet");
-        void initMidi();
-      };
-      if (document.readyState === "complete") {
-        runMidiInit();
-        return;
-      }
-      window.addEventListener("load", runMidiInit, { once: true });
     }
 
     async function ensureSupabaseClient() {
@@ -4068,9 +3963,9 @@
       if (!isAuthenticated || animating || isAdminMode || nextState === currentState) {
         return;
       }
+      void direction;
       animating = true;
       titleElement.classList.add("is-exiting");
-      titleElement.style.transform = `translateX(${direction > 0 ? 18 : -18}px)`;
       window.setTimeout(() => {
         currentState = nextState;
         document.body.dataset.state = String(currentState);
@@ -4079,10 +3974,8 @@
         syncPracticeMode(true);
         titleElement.classList.remove("is-exiting");
         titleElement.classList.add("is-entering");
-        titleElement.style.transform = `translateX(${direction > 0 ? -18 : 18}px)`;
         requestAnimationFrame(() => {
           titleElement.classList.remove("is-entering");
-          titleElement.style.transform = "";
           animating = false;
         });
       }, 180);
@@ -4096,7 +3989,6 @@
       isAdminMode = true;
       document.body.classList.add("is-admin");
       titleElement.classList.remove("is-exiting", "is-entering");
-      titleElement.style.transform = "";
       titleElement.textContent = "Verwaltung";
       leftStackElement.classList.remove("is-expanded");
       cornerButton.classList.remove("is-active");
@@ -4427,7 +4319,7 @@ async function boot() {
   renderDebugConsole();
   logDebug("System", "Debug-Konsole bereit");
 
-  scheduleMidiInit();
+  void initMidi();
   await initAuth();
   if (!isAuthenticated) {
     focusAuthInput();
