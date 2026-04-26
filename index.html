@@ -1,4 +1,4 @@
-<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="de" style="--notation-base-scale: 0.78;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neues Design</title>
@@ -10,6 +10,11 @@
       --panel-bg: #4f46e5;
       --note-badge-bg: #87ceeb;
       --note-badge-text: #111111;
+      --notation-base-scale: 1;
+      --notation-offset-x: 5rem;
+      --notation-offset-y: 0rem;
+      --notation-keyboard-offset-x: 2.6rem;
+      --notation-keyboard-offset-y: 0.35rem;
       --keyboard-stage-height: min(24vh, 220px);
       --ink: #111111;
       --muted: #6f6f6f;
@@ -607,7 +612,7 @@
       position: relative;
       display: grid;
       place-items: center;
-      overflow: hidden;
+      overflow: visible;
       padding: 0;
       transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
       will-change: transform, opacity;
@@ -1177,33 +1182,34 @@
       inset: 0;
       display: grid;
       place-items: center;
-      transform: translateX(5rem);
+      transform: translate(var(--notation-offset-x), var(--notation-offset-y)) scale(var(--notation-base-scale));
+      transform-origin: center;
       transition: transform 320ms ease;
     }
 
     body.is-keyboard-open .left-side,
     body.is-keyboard-open .right-side {
       align-items: flex-start;
-      padding-top: clamp(28px, 3vw, 44px);
-      padding-bottom: calc(var(--keyboard-stage-height) + 40px);
+      padding-top: clamp(24px, 2.4vw, 36px);
+      padding-bottom: calc(var(--keyboard-stage-height) + 12px);
     }
 
     body.is-keyboard-open .panel {
-      height: 374px;
+      height: 474px;
       justify-content: flex-start;
-      padding-top: 110px;
+      padding-top: 96px;
     }
 
     body.is-keyboard-open .notation {
-      min-height: 374px;
+      min-height: 748px;
     }
 
     body.is-keyboard-open .admin-calendar-shell {
-      height: 374px;
+      height: 474px;
     }
 
     body.is-keyboard-open .sheet-note-group {
-      transform: translate(5rem, -4.9rem);
+      transform: translate(var(--notation-keyboard-offset-x), var(--notation-keyboard-offset-y)) scale(var(--notation-base-scale));
     }
 
     .keyboard-stage {
@@ -1236,20 +1242,16 @@
       position: relative;
       width: 100%;
       height: 100%;
-      border: 3px solid var(--ink);
-      border-radius: 24px;
+      border: 0;
+      border-radius: 0;
       background: #fff3e2;
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.08);
+      box-shadow: none;
     }
 
     .keyboard-keys {
       position: absolute;
       inset: 0;
-    }
-
-    .keyboard-keys.is-cut-mode {
-      opacity: 0.62;
     }
 
     .keyboard-range-overlay {
@@ -1263,13 +1265,15 @@
       position: absolute;
       top: 8px;
       height: calc(100% - 16px);
-      border-top: 3px solid rgba(17, 17, 17, 0.92);
-      border-bottom: 3px solid rgba(17, 17, 17, 0.92);
-      background: rgba(17, 17, 17, 0.08);
+      border: 3px solid rgba(17, 17, 17, 0.92);
+      border-radius: 18px;
+      background: transparent;
+      box-shadow: 0 0 0 9999px rgba(17, 17, 17, 0.24);
       pointer-events: auto;
       touch-action: none;
       cursor: grab;
       display: none;
+      z-index: 4;
     }
 
     .range-window.is-dragging {
@@ -1288,6 +1292,7 @@
       touch-action: none;
       cursor: grab;
       display: none;
+      z-index: 5;
     }
 
     .range-bracket::after {
@@ -1351,7 +1356,7 @@
     }
 
     .white-key.is-target {
-      background: #dcecff;
+      background: color-mix(in srgb, var(--panel-bg) 20%, #ffffff);
     }
 
     .white-key.is-correct {
@@ -1373,7 +1378,7 @@
       width: calc(100% / 52 * 0.62);
       height: 62%;
       transform: translateX(-50%);
-      border-radius: 0 0 6px 6px;
+      border-radius: 0;
       background: #111111;
       cursor: pointer;
       transition: background-color 140ms ease;
@@ -1395,7 +1400,7 @@
     }
 
     .black-key.is-target {
-      background: #4c8df6;
+      background: color-mix(in srgb, var(--panel-bg) 78%, #111111);
     }
 
     .black-key.is-correct {
@@ -1549,10 +1554,10 @@
       height: 2.2em;
       display: grid;
       place-items: center;
-      border: 0.14em solid #111111;
+      border: 0;
       border-radius: 999px;
-      background: var(--note-badge-bg);
-      color: var(--note-badge-text);
+      background: var(--panel-bg);
+      color: #ffffff;
       transform: translate(-50%, calc(-50% + var(--offset)));
       font-size: 1.04em;
       font-weight: 900;
@@ -1561,7 +1566,7 @@
       user-select: none;
       pointer-events: none;
       z-index: 4;
-      box-shadow: 0 0 0 0.08em rgba(255, 255, 255, 0.4);
+      box-shadow: none;
     }
 
     .note-name-badge.note-up {
@@ -1794,7 +1799,7 @@
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:17</div>
+          <div class="panel-star-time" id="panel-star-time">00:11</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1812,7 +1817,7 @@
           <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
         </svg>
       </div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="D4" style="--offset: 5em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 5em;">D</div></div></div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="E4" style="--offset: 4em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 4em;">E</div></div></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
         </div>
@@ -1878,13 +1883,13 @@
     <div class="keyboard-stage" id="keyboard-stage" aria-hidden="false" style="--keyboard-stage-left: 35.39990459818736px; --keyboard-stage-width: 1002.2001908036252px;">
       <div class="keyboard" id="keyboard" aria-label="Virtuelles Klavier">
         <div class="keyboard-keys" id="keyboard-keys">
-          <div class="white-keys" id="white-keys"><div class="white-key" data-midi="21" data-note="A0"></div><div class="white-key" data-midi="23" data-note="B0"></div><div class="white-key" data-midi="24" data-note="C1"></div><div class="white-key" data-midi="26" data-note="D1"></div><div class="white-key" data-midi="28" data-note="E1"></div><div class="white-key" data-midi="29" data-note="F1"></div><div class="white-key" data-midi="31" data-note="G1"></div><div class="white-key" data-midi="33" data-note="A1"></div><div class="white-key" data-midi="35" data-note="B1"></div><div class="white-key" data-midi="36" data-note="C2"></div><div class="white-key" data-midi="38" data-note="D2"></div><div class="white-key" data-midi="40" data-note="E2"></div><div class="white-key" data-midi="41" data-note="F2"></div><div class="white-key" data-midi="43" data-note="G2"></div><div class="white-key" data-midi="45" data-note="A2"></div><div class="white-key" data-midi="47" data-note="B2"></div><div class="white-key" data-midi="48" data-note="C3"></div><div class="white-key" data-midi="50" data-note="D3"></div><div class="white-key" data-midi="52" data-note="E3"></div><div class="white-key" data-midi="53" data-note="F3"></div><div class="white-key" data-midi="55" data-note="G3"></div><div class="white-key" data-midi="57" data-note="A3"></div><div class="white-key" data-midi="59" data-note="B3"></div><div class="white-key is-in-range is-range-start" data-midi="60" data-note="C4"></div><div class="white-key is-in-range is-target" data-midi="62" data-note="D4"></div><div class="white-key is-in-range" data-midi="64" data-note="E4"></div><div class="white-key is-in-range" data-midi="65" data-note="F4"></div><div class="white-key is-in-range is-range-end" data-midi="67" data-note="G4"></div><div class="white-key" data-midi="69" data-note="A4"></div><div class="white-key" data-midi="71" data-note="B4"></div><div class="white-key" data-midi="72" data-note="C5"></div><div class="white-key" data-midi="74" data-note="D5"></div><div class="white-key" data-midi="76" data-note="E5"></div><div class="white-key" data-midi="77" data-note="F5"></div><div class="white-key" data-midi="79" data-note="G5"></div><div class="white-key" data-midi="81" data-note="A5"></div><div class="white-key" data-midi="83" data-note="B5"></div><div class="white-key" data-midi="84" data-note="C6"></div><div class="white-key" data-midi="86" data-note="D6"></div><div class="white-key" data-midi="88" data-note="E6"></div><div class="white-key" data-midi="89" data-note="F6"></div><div class="white-key" data-midi="91" data-note="G6"></div><div class="white-key" data-midi="93" data-note="A6"></div><div class="white-key" data-midi="95" data-note="B6"></div><div class="white-key" data-midi="96" data-note="C7"></div><div class="white-key" data-midi="98" data-note="D7"></div><div class="white-key" data-midi="100" data-note="E7"></div><div class="white-key" data-midi="101" data-note="F7"></div><div class="white-key" data-midi="103" data-note="G7"></div><div class="white-key" data-midi="105" data-note="A7"></div><div class="white-key" data-midi="107" data-note="B7"></div><div class="white-key" data-midi="108" data-note="C8"></div></div>
+          <div class="white-keys" id="white-keys"><div class="white-key" data-midi="21" data-note="A0"></div><div class="white-key" data-midi="23" data-note="B0"></div><div class="white-key" data-midi="24" data-note="C1"></div><div class="white-key" data-midi="26" data-note="D1"></div><div class="white-key" data-midi="28" data-note="E1"></div><div class="white-key" data-midi="29" data-note="F1"></div><div class="white-key" data-midi="31" data-note="G1"></div><div class="white-key" data-midi="33" data-note="A1"></div><div class="white-key" data-midi="35" data-note="B1"></div><div class="white-key" data-midi="36" data-note="C2"></div><div class="white-key" data-midi="38" data-note="D2"></div><div class="white-key" data-midi="40" data-note="E2"></div><div class="white-key" data-midi="41" data-note="F2"></div><div class="white-key" data-midi="43" data-note="G2"></div><div class="white-key" data-midi="45" data-note="A2"></div><div class="white-key" data-midi="47" data-note="B2"></div><div class="white-key" data-midi="48" data-note="C3"></div><div class="white-key" data-midi="50" data-note="D3"></div><div class="white-key" data-midi="52" data-note="E3"></div><div class="white-key" data-midi="53" data-note="F3"></div><div class="white-key" data-midi="55" data-note="G3"></div><div class="white-key" data-midi="57" data-note="A3"></div><div class="white-key" data-midi="59" data-note="B3"></div><div class="white-key is-in-range is-range-start" data-midi="60" data-note="C4"></div><div class="white-key is-in-range" data-midi="62" data-note="D4"></div><div class="white-key is-in-range is-target" data-midi="64" data-note="E4"></div><div class="white-key is-in-range" data-midi="65" data-note="F4"></div><div class="white-key is-in-range is-range-end" data-midi="67" data-note="G4"></div><div class="white-key" data-midi="69" data-note="A4"></div><div class="white-key" data-midi="71" data-note="B4"></div><div class="white-key" data-midi="72" data-note="C5"></div><div class="white-key" data-midi="74" data-note="D5"></div><div class="white-key" data-midi="76" data-note="E5"></div><div class="white-key" data-midi="77" data-note="F5"></div><div class="white-key" data-midi="79" data-note="G5"></div><div class="white-key" data-midi="81" data-note="A5"></div><div class="white-key" data-midi="83" data-note="B5"></div><div class="white-key" data-midi="84" data-note="C6"></div><div class="white-key" data-midi="86" data-note="D6"></div><div class="white-key" data-midi="88" data-note="E6"></div><div class="white-key" data-midi="89" data-note="F6"></div><div class="white-key" data-midi="91" data-note="G6"></div><div class="white-key" data-midi="93" data-note="A6"></div><div class="white-key" data-midi="95" data-note="B6"></div><div class="white-key" data-midi="96" data-note="C7"></div><div class="white-key" data-midi="98" data-note="D7"></div><div class="white-key" data-midi="100" data-note="E7"></div><div class="white-key" data-midi="101" data-note="F7"></div><div class="white-key" data-midi="103" data-note="G7"></div><div class="white-key" data-midi="105" data-note="A7"></div><div class="white-key" data-midi="107" data-note="B7"></div><div class="white-key" data-midi="108" data-note="C8"></div></div>
           <div class="black-keys" id="black-keys"><div class="black-key" data-midi="22" data-note="A#0" style="left: calc(1.92308%);"></div><div class="black-key" data-midi="25" data-note="C#1" style="left: calc(5.76923%);"></div><div class="black-key" data-midi="27" data-note="D#1" style="left: calc(7.69231%);"></div><div class="black-key" data-midi="30" data-note="F#1" style="left: calc(11.5385%);"></div><div class="black-key" data-midi="32" data-note="G#1" style="left: calc(13.4615%);"></div><div class="black-key" data-midi="34" data-note="A#1" style="left: calc(15.3846%);"></div><div class="black-key" data-midi="37" data-note="C#2" style="left: calc(19.2308%);"></div><div class="black-key" data-midi="39" data-note="D#2" style="left: calc(21.1538%);"></div><div class="black-key" data-midi="42" data-note="F#2" style="left: calc(25%);"></div><div class="black-key" data-midi="44" data-note="G#2" style="left: calc(26.9231%);"></div><div class="black-key" data-midi="46" data-note="A#2" style="left: calc(28.8462%);"></div><div class="black-key" data-midi="49" data-note="C#3" style="left: calc(32.6923%);"></div><div class="black-key" data-midi="51" data-note="D#3" style="left: calc(34.6154%);"></div><div class="black-key" data-midi="54" data-note="F#3" style="left: calc(38.4615%);"></div><div class="black-key" data-midi="56" data-note="G#3" style="left: calc(40.3846%);"></div><div class="black-key" data-midi="58" data-note="A#3" style="left: calc(42.3077%);"></div><div class="black-key is-in-range" data-midi="61" data-note="C#4" style="left: calc(46.1538%);"></div><div class="black-key is-in-range" data-midi="63" data-note="D#4" style="left: calc(48.0769%);"></div><div class="black-key is-in-range" data-midi="66" data-note="F#4" style="left: calc(51.9231%);"></div><div class="black-key" data-midi="68" data-note="G#4" style="left: calc(53.8462%);"></div><div class="black-key" data-midi="70" data-note="A#4" style="left: calc(55.7692%);"></div><div class="black-key" data-midi="73" data-note="C#5" style="left: calc(59.6154%);"></div><div class="black-key" data-midi="75" data-note="D#5" style="left: calc(61.5385%);"></div><div class="black-key" data-midi="78" data-note="F#5" style="left: calc(65.3846%);"></div><div class="black-key" data-midi="80" data-note="G#5" style="left: calc(67.3077%);"></div><div class="black-key" data-midi="82" data-note="A#5" style="left: calc(69.2308%);"></div><div class="black-key" data-midi="85" data-note="C#6" style="left: calc(73.0769%);"></div><div class="black-key" data-midi="87" data-note="D#6" style="left: calc(75%);"></div><div class="black-key" data-midi="90" data-note="F#6" style="left: calc(78.8462%);"></div><div class="black-key" data-midi="92" data-note="G#6" style="left: calc(80.7692%);"></div><div class="black-key" data-midi="94" data-note="A#6" style="left: calc(82.6923%);"></div><div class="black-key" data-midi="97" data-note="C#7" style="left: calc(86.5385%);"></div><div class="black-key" data-midi="99" data-note="D#7" style="left: calc(88.4615%);"></div><div class="black-key" data-midi="102" data-note="F#7" style="left: calc(92.3077%);"></div><div class="black-key" data-midi="104" data-note="G#7" style="left: calc(94.2308%);"></div><div class="black-key" data-midi="106" data-note="A#7" style="left: calc(96.1538%);"></div></div>
         </div>
         <div class="keyboard-range-overlay" aria-hidden="true">
-          <div class="range-window" id="range-window" style="left: 498.506px; width: 84.3047px; display: none;"></div>
-          <div class="range-bracket range-bracket-start" id="range-bracket-start" data-note="C" style="left: 498.506px; display: none;"></div>
-          <div class="range-bracket range-bracket-end" id="range-bracket-end" data-note="G" style="left: 582.811px; display: none;"></div>
+          <div class="range-window" id="range-window" style="left: 487.592px; width: 105.995px; display: none;"></div>
+          <div class="range-bracket range-bracket-start" id="range-bracket-start" data-note="C" style="left: 487.592px; display: none;"></div>
+          <div class="range-bracket range-bracket-end" id="range-bracket-end" data-note="G" style="left: 593.588px; display: none;"></div>
         </div>
       </div>
     </div>
@@ -1898,7 +1903,7 @@
       </div>
     </div>
     <div class="debug-console-status" id="debug-console-status">Kein MIDI-Keyboard gefunden | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
-    <pre class="debug-console-output" id="debug-console-output">[09:52:31] UI: Debug-Konsole geleert</pre>
+    <pre class="debug-console-output" id="debug-console-output"></pre>
   </aside>
   <script>
     const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
@@ -1992,6 +1997,7 @@
     const keyboardStage = document.getElementById("keyboard-stage");
     const keyboardElement = document.getElementById("keyboard");
     const keyboardKeys = document.getElementById("keyboard-keys");
+    const sheetNoteGroupElement = document.querySelector(".sheet-note-group");
     const whiteKeysContainer = document.getElementById("white-keys");
     const blackKeysContainer = document.getElementById("black-keys");
     const rangeWindow = document.getElementById("range-window");
@@ -2092,6 +2098,30 @@
 
     function currentPanelDebugToggle() {
       return document.getElementById("panel-debug-toggle");
+    }
+
+    function extractScaleFromTransform(transformValue) {
+      if (!transformValue || transformValue === "none") {
+        return 1;
+      }
+      const matrixMatch = transformValue.match(/matrix\(([^)]+)\)/);
+      if (matrixMatch) {
+        const values = matrixMatch[1].split(",").map((value) => Number(value.trim()));
+        const scaleX = Number.isFinite(values[0]) ? values[0] : 1;
+        const scaleY = Number.isFinite(values[3]) ? values[3] : scaleX;
+        return Math.max(Math.abs(scaleX), Math.abs(scaleY), 0.0001);
+      }
+      return 1;
+    }
+
+    function captureNotationBaseScale() {
+      if (!sheetNoteGroupElement) {
+        return 1;
+      }
+      const computedTransform = window.getComputedStyle(sheetNoteGroupElement).transform;
+      const scale = extractScaleFromTransform(computedTransform);
+      document.documentElement.style.setProperty("--notation-base-scale", String(scale));
+      return scale;
     }
 
     function formatDebugTimestamp(value = Date.now()) {
@@ -2607,19 +2637,33 @@
       return keyRect.left - keyboardRect.left + (keyRect.width / 2);
     }
 
+    function keyBoundsInKeyboard(noteName) {
+      const key = findKeyByNote(noteName);
+      if (!key || !keyboardElement) {
+        return null;
+      }
+      const keyboardRect = keyboardElement.getBoundingClientRect();
+      const keyRect = key.getBoundingClientRect();
+      return {
+        left: keyRect.left - keyboardRect.left,
+        right: keyRect.right - keyboardRect.left,
+        width: keyRect.width
+      };
+    }
+
     function positionRangeWindow(range) {
       if (!range?.[0] || !range?.[1]) {
         rangeWindow.style.display = "none";
         return;
       }
-      const startCenter = keyCenterInKeyboard(range[0]);
-      const endCenter = keyCenterInKeyboard(range[1]);
-      if (startCenter === null || endCenter === null) {
+      const startBounds = keyBoundsInKeyboard(range[0]);
+      const endBounds = keyBoundsInKeyboard(range[1]);
+      if (!startBounds || !endBounds) {
         rangeWindow.style.display = "none";
         return;
       }
-      rangeWindow.style.left = `${startCenter}px`;
-      rangeWindow.style.width = `${Math.max(0, endCenter - startCenter)}px`;
+      rangeWindow.style.left = `${startBounds.left}px`;
+      rangeWindow.style.width = `${Math.max(0, endBounds.right - startBounds.left)}px`;
       rangeWindow.style.display = "";
     }
 
@@ -2629,15 +2673,15 @@
         rangeBracketEnd.style.display = "none";
         return;
       }
-      const startCenter = keyCenterInKeyboard(range[0]);
-      const endCenter = keyCenterInKeyboard(range[1]);
-      if (startCenter === null || endCenter === null) {
+      const startBounds = keyBoundsInKeyboard(range[0]);
+      const endBounds = keyBoundsInKeyboard(range[1]);
+      if (!startBounds || !endBounds) {
         rangeBracketStart.style.display = "none";
         rangeBracketEnd.style.display = "none";
         return;
       }
-      rangeBracketStart.style.left = `${startCenter}px`;
-      rangeBracketEnd.style.left = `${endCenter}px`;
+      rangeBracketStart.style.left = `${startBounds.left}px`;
+      rangeBracketEnd.style.left = `${endBounds.right}px`;
       rangeBracketStart.dataset.note = displayNoteName(range[0]).replace(/\d/g, "");
       rangeBracketEnd.dataset.note = displayNoteName(range[1]).replace(/\d/g, "");
       rangeBracketStart.style.display = "";
@@ -4296,6 +4340,7 @@ async function boot() {
   updateTimer();
   buildKeyboard();
   buildAdminCalendar();
+  captureNotationBaseScale();
   updateRevealToggleUi();
   renderAuthUi();
   updateAdminAccessUi();
