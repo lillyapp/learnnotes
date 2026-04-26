@@ -2048,7 +2048,7 @@
       }
 
       .mobile-answer-button:last-child {
-        grid-column: 2;
+        grid-column: 3;
       }
     }
   </style>
@@ -2113,7 +2113,7 @@
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:05</div>
+          <div class="panel-star-time" id="panel-star-time">00:07</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -2123,9 +2123,9 @@
 
     <section class="right-side">
       <div class="practice-stage">
-        <div class="performance-indicator" id="performance-indicator" aria-hidden="false" aria-label="Performance 95 Prozent, Level 1" data-mode="treble">
-          <div class="performance-pill" id="performance-pill" aria-label="Performance 95 Prozent" style="--performance-score: 0.9498658234168209;"></div>
-          <div class="performance-level" id="performance-level">L1</div>
+        <div class="performance-indicator" id="performance-indicator" aria-hidden="false" aria-label="Performance 96 Prozent, Level 4" data-mode="treble">
+          <div class="performance-pill" id="performance-pill" aria-label="Performance 96 Prozent" style="--performance-score: 0.955158664728009;"></div>
+          <div class="performance-level" id="performance-level">L4</div>
         </div>
         <div class="notation" aria-hidden="false">
           <div class="sheet-note-group">
@@ -2231,7 +2231,7 @@
         <button class="debug-console-button" id="debug-console-close" type="button" aria-label="Debug-Konsole schließen">Schließen</button>
       </div>
     </div>
-    <div class="debug-console-status" id="debug-console-status">Noch keine MIDI-Aktivität. | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
+    <div class="debug-console-status" id="debug-console-status">MIDI wird verbunden... | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
     <pre class="debug-console-output" id="debug-console-output"></pre>
   </aside>
   <script>
@@ -2245,7 +2245,7 @@
     const keyboardRange = { start: 21, end: 108 };
     const srsConfig = {
       sampleSize: 20,
-      growThreshold: 0.98,
+      growThreshold: 0.9,
       shrinkThreshold: 0.7
     };
     const roundFeedbackDelayMs = {
@@ -2384,6 +2384,8 @@
     let dailyModeFlip = false;
     let midiAccessRef = null;
     let activeRangeDrag = null;
+    let remoteSaveTimer = null;
+    let isRemoteStateApplying = false;
     let debugConsoleOpen = false;
     let midiStatusMessage = "Noch keine MIDI-Aktivität.";
     let lastFeedbackSignature = "";
@@ -2410,6 +2412,32 @@
         attempts: [],
         newNotes: firstRange ? notesInRange(mode, firstRange) : []
       };
+    }
+
+    function resetLearningProgressState() {
+      srsStates = {
+        treble: createInitialSrsState("treble"),
+        bass: createInitialSrsState("bass")
+      };
+      noteStats = {
+        treble: {},
+        bass: {}
+      };
+    }
+
+    function resetUiProgressState() {
+      manualSelectedRanges = {
+        treble: null,
+        bass: null
+      };
+      isKeyboardVisible = false;
+      revealNoteNames = false;
+      currentState = 0;
+    }
+
+    function resetProgressState() {
+      resetLearningProgressState();
+      resetUiProgressState();
     }
 
     function isSupabaseConfigured() {
@@ -2514,6 +2542,7 @@
       return {
         status: midiStatusMessage,
         viewerBridge: hasViewerMidiBridge,
+        nativeHostBridge: hasNativeMidiHostBridge(),
         connecting: isMidiConnecting,
         connected: midiConnected,
         authReady,
@@ -3442,14 +3471,17 @@
 
     function noteIsSecure(mode, noteName) {
       const stat = noteStatFor(mode, noteName);
-      if (!stat || Number(stat.attempts || 0) < 4) {
+      if (!stat || Number(stat.attempts || 0) < 3) {
         return false;
       }
-      return noteMasteryScore(mode, noteName) >= 0.82;
+      return noteMasteryScore(mode, noteName) >= 0.76;
     }
 
     function rangeReadyForExpansion(mode, range) {
-      const rangeNotes = notesInRange(mode, range);
+      const manualRange = normalizeManualRange(mode, manualSelectedRanges[mode]);
+      const rangeNotes = notesInRange(mode, range).filter((noteName) =>
+        !manualRange || noteRangeIncludes(manualRange, noteName)
+      );
       return rangeNotes.length > 0 && rangeNotes.every((noteName) => noteIsSecure(mode, noteName));
     }
 
@@ -3779,10 +3811,14 @@
       };
     }
 
-    function saveProgress() {
-      if (!authUser) {
-        return;
-      }
+    function collectRemoteProgressPayload() {
+      return {
+        srs_states: srsStates,
+        note_stats: noteStats
+      };
+    }
+
+    function persistLocalProgress() {
       const key = localProgressKey();
       if (!key) {
         return;
@@ -3794,7 +3830,15 @@
       }
     }
 
-    function applyProgressRecord(record) {
+    function saveProgress() {
+      if (!authUser) {
+        return;
+      }
+      persistLocalProgress();
+      queueRemoteSave("progress");
+    }
+
+    function applyUiProgressRecord(record) {
       if (!record || typeof record !== "object") {
         return;
       }
@@ -3805,44 +3849,133 @@
         treble: normalizeManualRange("treble", record.manualSelectedRanges?.treble) || null,
         bass: normalizeManualRange("bass", record.manualSelectedRanges?.bass) || null
       };
+    }
+
+    function applyLearningProgressRecord(record) {
+      if (!record || typeof record !== "object") {
+        return;
+      }
       srsStates = {
-        treble: record.srsStates?.treble || createInitialSrsState("treble"),
-        bass: record.srsStates?.bass || createInitialSrsState("bass")
+        treble: record.srsStates?.treble || record.srs_states?.treble || createInitialSrsState("treble"),
+        bass: record.srsStates?.bass || record.srs_states?.bass || createInitialSrsState("bass")
       };
       noteStats = {
-        treble: record.noteStats?.treble || {},
-        bass: record.noteStats?.bass || {}
+        treble: record.noteStats?.treble || record.note_stats?.treble || {},
+        bass: record.noteStats?.bass || record.note_stats?.bass || {}
       };
       noteStats.treble = noteStats.treble || {};
       noteStats.bass = noteStats.bass || {};
     }
 
-    function loadProgress() {
-      if (!authUser) {
+    function applyProgressRecord(record) {
+      if (!record || typeof record !== "object") {
         return;
+      }
+      applyUiProgressRecord(record);
+      applyLearningProgressRecord(record);
+    }
+
+    function readLocalProgressRecord() {
+      if (!authUser) {
+        return null;
       }
       const key = localProgressKey();
       if (!key) {
-        return;
+        return null;
       }
       try {
         const raw = localStorage.getItem(key);
-        if (!raw) {
-          srsStates = {
-            treble: createInitialSrsState("treble"),
-            bass: createInitialSrsState("bass")
-          };
-          noteStats = { treble: {}, bass: {} };
-          manualSelectedRanges = { treble: null, bass: null };
-          isKeyboardVisible = false;
-          revealNoteNames = false;
-          currentState = 0;
-          return;
-        }
-        applyProgressRecord(JSON.parse(raw));
+        return raw ? JSON.parse(raw) : null;
       } catch (error) {
-        console.warn("[Progress] Laden fehlgeschlagen", error);
+        console.warn("[Progress] Lokalen Fortschritt lesen fehlgeschlagen", error);
+        return null;
       }
+    }
+
+    async function saveRemoteProgress(reason = "auto") {
+      if (!supabaseClient || !authUser || isRemoteStateApplying) {
+        return false;
+      }
+
+      const payload = {
+        user_id: authUser.id,
+        email: String(authUser.email || "").trim().toLowerCase(),
+        ...collectRemoteProgressPayload()
+      };
+
+      const { error } = await supabaseClient
+        .from("trainer_progress")
+        .upsert(payload, { onConflict: "user_id" });
+
+      if (error) {
+        console.warn(`[Progress] Remote-Speichern fehlgeschlagen (${reason})`, error);
+        return false;
+      }
+
+      return true;
+    }
+
+    function queueRemoteSave(reason = "auto") {
+      if (!supabaseClient || !authUser || isRemoteStateApplying) {
+        return;
+      }
+      window.clearTimeout(remoteSaveTimer);
+      remoteSaveTimer = window.setTimeout(() => {
+        void saveRemoteProgress(reason);
+      }, 600);
+    }
+
+    async function loadRemoteProgress() {
+      if (!supabaseClient || !authUser) {
+        return null;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("trainer_progress")
+        .select("srs_states, note_stats")
+        .eq("user_id", authUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.warn("[Progress] Remote-Laden fehlgeschlagen", error);
+        return null;
+      }
+
+      if (!data) {
+        return null;
+      }
+
+      isRemoteStateApplying = true;
+      applyLearningProgressRecord(data);
+      isRemoteStateApplying = false;
+      return data;
+    }
+
+    async function loadProgress() {
+      if (!authUser) {
+        return;
+      }
+
+      const localRecord = readLocalProgressRecord();
+      if (localRecord) {
+        applyUiProgressRecord(localRecord);
+      } else {
+        resetUiProgressState();
+      }
+
+      const remoteRecord = await loadRemoteProgress();
+      if (remoteRecord) {
+        persistLocalProgress();
+        return;
+      }
+
+      if (localRecord) {
+        applyLearningProgressRecord(localRecord);
+        void saveRemoteProgress("migration");
+        return;
+      }
+
+      resetLearningProgressState();
     }
 
     function clearPendingReset() {
@@ -3971,12 +4104,17 @@
       }
     }
 
+    function hasNativeMidiHostBridge() {
+      return Boolean(window.webkit?.messageHandlers);
+    }
+
     function maybeInitMidi(force = false) {
-      if (!force && isPhoneLayout()) {
+      const isNativeAppHost = hasNativeMidiHostBridge();
+      if (!force && isPhoneLayout() && !isNativeAppHost) {
         return;
       }
       if (!midiConnected && !hasViewerMidiBridge) {
-        void initMidi();
+        void initMidi(force || isNativeAppHost);
       }
     }
 
@@ -3984,21 +4122,21 @@
       console.log("[WebMIDIViewer] _callback_addSource", ...args);
       logDebug("WebMIDIViewer", "_callback_addSource", args);
       hasViewerMidiBridge = true;
-      updateMidiUi(true);
+      updateMidiUi(true, "MIDI via App aktiv");
     };
 
     window._callback_addDestination = (...args) => {
       console.log("[WebMIDIViewer] _callback_addDestination", ...args);
       logDebug("WebMIDIViewer", "_callback_addDestination", args);
       hasViewerMidiBridge = true;
-      updateMidiUi(true);
+      updateMidiUi(true, "MIDI via App aktiv");
     };
 
     window._callback_receiveMIDIMessage = (...args) => {
       console.log("[WebMIDIViewer] _callback_receiveMIDIMessage", ...args);
       logDebug("WebMIDIViewer", "_callback_receiveMIDIMessage", args);
       hasViewerMidiBridge = true;
-      updateMidiUi(true);
+      updateMidiUi(true, "MIDI via App aktiv");
 
       const dataArg = args.find((value) =>
         Array.isArray(value) ||
@@ -4242,7 +4380,7 @@
       );
     }
 
-    async function initMidi() {
+    async function initMidi(forceWebMidiRequest = false) {
       logDebug("MIDI", "Initialisierung gestartet", currentMidiSnapshot());
       if (isMidiConnecting) {
         logDebug("MIDI", "Initialisierung übersprungen, Verbindung läuft bereits");
@@ -4250,8 +4388,13 @@
       }
       if (hasViewerMidiBridge) {
         logDebug("MIDI", "Viewer-Bridge erkannt, Web MIDI wird nicht erneut angefragt");
-        updateMidiUi(true);
+        updateMidiUi(true, "MIDI via App aktiv");
         return;
+      }
+      if (hasNativeMidiHostBridge()) {
+        logDebug("MIDI", forceWebMidiRequest
+          ? "Native Host erkannt, Web MIDI wird explizit angefragt"
+          : "Native Host erkannt, Web MIDI wird automatisch angefragt");
       }
       if (!("requestMIDIAccess" in navigator)) {
         logDebug("MIDI", "requestMIDIAccess ist nicht verfügbar");
@@ -4322,7 +4465,7 @@
       }
       await ensureUserProfile();
       timerStartedAt = Date.now();
-      loadProgress();
+      await loadProgress();
       updateRevealToggleUi();
       document.body.dataset.state = String(currentState);
       titleElement.textContent = titles[currentState];
@@ -4334,6 +4477,9 @@
 
     function handleSignedOut() {
       logDebug("Auth", "User abgemeldet");
+      window.clearTimeout(remoteSaveTimer);
+      remoteSaveTimer = null;
+      isRemoteStateApplying = false;
       authUser = null;
       userRole = null;
       currentUserProfile = null;
@@ -4342,6 +4488,7 @@
       authReady = true;
       clearFallbackSession();
       currentNote = null;
+      resetProgressState();
       resetAuthFlow(true);
       setAuthStatus(isSupabaseConfigured() ? "" : "Supabase URL und Anon Key fehlen noch.", isSupabaseConfigured() ? "" : "error");
       updateAdminAccessUi();
@@ -4743,7 +4890,7 @@
       const midiConnectTrigger = event.target.closest("#panel-midi-connect-trigger");
       if (midiConnectTrigger) {
         if (isAuthenticated) {
-          maybeInitMidi(true);
+          void initMidi(true);
         }
         return;
       }
