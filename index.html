@@ -8,6 +8,9 @@
       color-scheme: light;
       --page-bg: #ffffff;
       --panel-bg: #4f46e5;
+      --note-badge-bg: #87ceeb;
+      --note-badge-text: #111111;
+      --keyboard-stage-height: min(24vh, 220px);
       --ink: #111111;
       --muted: #6f6f6f;
       --stave: #111111;
@@ -39,24 +42,28 @@
     body[data-state="0"] {
       --panel-bg: #3300ff;
       --star-fill: #87ceeb;
+      --note-badge-bg: #87ceeb;
       --star-rotation: 0deg;
     }
 
     body[data-state="1"] {
       --panel-bg: #ff00f5;
       --star-fill: #ffb2ef;
+      --note-badge-bg: #ffb2ef;
       --star-rotation: 120deg;
     }
 
     body[data-state="2"] {
       --panel-bg: #ff4911;
       --star-fill: #ffa07a;
+      --note-badge-bg: #ffa07a;
       --star-rotation: 240deg;
     }
 
     body.is-admin {
       --panel-bg: #d8d8d8;
       --star-fill: #efefef;
+      --note-badge-bg: #efefef;
       --star-rotation: 360deg;
     }
 
@@ -70,6 +77,7 @@
       transform-origin: top left;
       touch-action: none;
       user-select: none;
+      overflow: hidden;
     }
 
     .admin-hint {
@@ -124,12 +132,19 @@
       padding: 0.2rem 0.7rem;
     }
 
+    body.is-no-admin .admin-hint {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
     .left-side {
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 5.5vw;
       position: relative;
+      transition: padding 320ms ease, align-items 320ms ease;
     }
 
     .left-stack {
@@ -156,6 +171,7 @@
       overflow: hidden;
       isolation: isolate;
       z-index: 1;
+      transition: background-color 220ms ease, height 320ms ease, padding 320ms ease;
     }
 
     .left-stack.is-expanded .panel {
@@ -486,6 +502,7 @@
       justify-content: center;
       padding: 5.5vw;
       position: relative;
+      transition: padding 320ms ease, align-items 320ms ease;
     }
 
     .notation {
@@ -501,6 +518,9 @@
       padding: 0;
       transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
       will-change: transform, opacity;
+      transition-property: transform, opacity, min-height;
+      transition-duration: 520ms, 260ms, 320ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease, ease;
     }
 
     body.is-auth-view .notation {
@@ -671,6 +691,7 @@
       flex-direction: column;
       overflow: hidden;
       transform: translateX(-2.25vw);
+      transition: height 320ms ease, transform 320ms ease;
     }
 
     .admin-calendar-header {
@@ -1064,6 +1085,232 @@
       display: grid;
       place-items: center;
       transform: translateX(5rem);
+      transition: transform 320ms ease;
+    }
+
+    body.is-keyboard-open .left-side,
+    body.is-keyboard-open .right-side {
+      align-items: flex-start;
+      padding-top: clamp(28px, 3vw, 44px);
+      padding-bottom: calc(var(--keyboard-stage-height) + 40px);
+    }
+
+    body.is-keyboard-open .panel {
+      height: 374px;
+      justify-content: flex-start;
+      padding-top: 110px;
+    }
+
+    body.is-keyboard-open .notation {
+      min-height: 374px;
+    }
+
+    body.is-keyboard-open .admin-calendar-shell {
+      height: 374px;
+    }
+
+    body.is-keyboard-open .sheet-note-group {
+      transform: translate(5rem, -4.9rem);
+    }
+
+    .keyboard-stage {
+      position: absolute;
+      left: var(--keyboard-stage-left, 5.5vw);
+      bottom: clamp(20px, 2.6vw, 36px);
+      width: var(--keyboard-stage-width, calc(100% - 11vw));
+      height: var(--keyboard-stage-height);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(24px);
+      transition: opacity 260ms ease, transform 320ms ease;
+      z-index: 18;
+    }
+
+    body.is-keyboard-open .keyboard-stage {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    body.is-auth-view .keyboard-stage,
+    body.is-admin .keyboard-stage {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(24px);
+    }
+
+    .keyboard {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--ink);
+      border-radius: 24px;
+      background: #fff3e2;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.08);
+    }
+
+    .keyboard-keys {
+      position: absolute;
+      inset: 0;
+    }
+
+    .keyboard-keys.is-cut-mode {
+      opacity: 0.62;
+    }
+
+    .keyboard-range-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .range-window {
+      position: absolute;
+      top: 8px;
+      height: calc(100% - 16px);
+      border-top: 3px solid rgba(17, 17, 17, 0.92);
+      border-bottom: 3px solid rgba(17, 17, 17, 0.92);
+      background: rgba(17, 17, 17, 0.08);
+      pointer-events: auto;
+      touch-action: none;
+      cursor: grab;
+      display: none;
+    }
+
+    .range-window.is-dragging {
+      cursor: grabbing;
+    }
+
+    .range-bracket {
+      position: absolute;
+      top: 8px;
+      width: 28px;
+      height: calc(100% - 16px);
+      border: 3px solid #111111;
+      background: rgba(255, 255, 255, 0.26);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
+      pointer-events: auto;
+      touch-action: none;
+      cursor: grab;
+      display: none;
+    }
+
+    .range-bracket::after {
+      content: attr(data-note);
+      position: absolute;
+      top: -34px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .range-bracket.is-dragging {
+      cursor: grabbing;
+    }
+
+    .range-bracket-start {
+      border-right: 0;
+      border-radius: 12px 0 0 12px;
+      transform: translateX(-100%);
+    }
+
+    .range-bracket-end {
+      border-left: 0;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .white-keys {
+      display: grid;
+      grid-template-columns: repeat(52, 1fr);
+      width: 100%;
+      height: 100%;
+    }
+
+    .white-key {
+      position: relative;
+      border-right: 1px solid #d7d7d7;
+      background: #ffffff;
+      cursor: pointer;
+      transition: background-color 140ms ease;
+    }
+
+    .white-key[data-label]::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 700;
+      color: #222222;
+    }
+
+    .white-key.is-in-range {
+      background: linear-gradient(180deg, rgba(17, 17, 17, 0.06), #ffffff 32%);
+    }
+
+    .white-key.is-target {
+      background: #dcecff;
+    }
+
+    .white-key.is-correct {
+      background: #d9f5df;
+    }
+
+    .white-key.is-wrong {
+      background: #ffdede;
+    }
+
+    .black-keys {
+      position: absolute;
+      inset: 0;
+    }
+
+    .black-key {
+      position: absolute;
+      top: 0;
+      width: calc(100% / 52 * 0.62);
+      height: 62%;
+      transform: translateX(-50%);
+      border-radius: 0 0 6px 6px;
+      background: #111111;
+      cursor: pointer;
+      transition: background-color 140ms ease;
+    }
+
+    .black-key[data-label]::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .black-key.is-in-range {
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.14);
+    }
+
+    .black-key.is-target {
+      background: #4c8df6;
+    }
+
+    .black-key.is-correct {
+      background: #2ea44f;
+    }
+
+    .black-key.is-wrong {
+      background: #d84f4f;
     }
 
     .bar {
@@ -1205,23 +1452,31 @@
     .note-name-badge {
       position: absolute;
       top: 50%;
-      left: calc(50% + 1.8em);
-      width: 2.1em;
-      height: 2.1em;
+      width: 2.2em;
+      height: 2.2em;
       display: grid;
       place-items: center;
       border: 0.14em solid #111111;
       border-radius: 999px;
-      background: var(--panel-bg);
-      color: #ffffff;
+      background: var(--note-badge-bg);
+      color: var(--note-badge-text);
       transform: translate(-50%, calc(-50% + var(--offset)));
-      font-size: 1.02em;
+      font-size: 1.04em;
       font-weight: 900;
       line-height: 1;
       letter-spacing: -0.04em;
       user-select: none;
       pointer-events: none;
       z-index: 4;
+      box-shadow: 0 0 0 0.08em rgba(255, 255, 255, 0.4);
+    }
+
+    .note-name-badge.note-up {
+      left: calc(50% + 2.8em);
+    }
+
+    .note-name-badge.note-down {
+      left: calc(50% + 3.4em);
     }
 
     .note.is-correct {
@@ -1379,14 +1634,14 @@
     }
   </style>
 </head>
-<body data-state="0" class="is-auth-view">
+<body data-state="0" class="is-no-admin">
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
       <span class="admin-hint-text">Hier entlang zur Verwaltung.</span>
     </div>
     <section class="left-side">
-      <div class="auth-stage" id="auth-stage" aria-live="polite" aria-hidden="false">
+      <div class="auth-stage" id="auth-stage" aria-live="polite" aria-hidden="true">
         <div class="auth-card">
           <div class="auth-card-inner">
             <h2 class="auth-title" id="auth-title">Login</h2>
@@ -1404,7 +1659,7 @@
           </div>
         </div>
       </div>
-      <div class="left-stack">
+      <div class="left-stack is-expanded">
         <article class="panel">
           <div class="panel-fluid" aria-hidden="true">
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -1421,7 +1676,7 @@
             </g>
           </svg>
           </div>
-          <button class="panel-corner-button" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="false">
+          <button class="panel-corner-button is-active" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-left" class="lucide lucide-arrow-up-left panel-corner-icon panel-corner-icon-up" aria-hidden="true"><path d="M7 17V7h10"></path><path d="M17 17 7 7"></path></svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-down-right" class="lucide lucide-arrow-down-right panel-corner-icon panel-corner-icon-down" aria-hidden="true"><path d="m7 7 10 10"></path><path d="M17 7v10H7"></path></svg>
           </button>
@@ -1429,8 +1684,8 @@
         <div class="panel-expander" id="panel-expander" aria-hidden="true">
           <div class="panel-expander-panel">
             <div class="panel-expander-icons" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scissors" aria-hidden="true" class="lucide lucide-scissors panel-expander-icon"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="MIDI verbinden" class="lucide lucide-keyboard-music panel-expander-icon is-action" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scissors" aria-label="Cut-Modus umschalten" class="lucide lucide-scissors panel-expander-icon is-action" id="panel-cut-trigger"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="Klavier einblenden" class="lucide lucide-keyboard-music panel-expander-icon is-action" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-hidden="true" class="lucide lucide-message-circle-question-mark panel-expander-icon"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="false" class="lucide lucide-eye panel-expander-icon is-action" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
@@ -1438,7 +1693,7 @@
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:00</div>
+          <div class="panel-star-time" id="panel-star-time">00:06</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1447,12 +1702,16 @@
     </section>
 
     <section class="right-side">
-      <div class="notation" aria-hidden="true">
+      <div class="notation" aria-hidden="false">
         <div class="sheet-note-group">
           <div class="bar">
             <div class="stave-header"></div>
-            <div class="clef-symbol" id="clef-symbol"></div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"></div>
+            <div class="clef-symbol" id="clef-symbol">
+        <svg viewBox="0 0 88 192" aria-hidden="true">
+          <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
+        </svg>
+      </div>
+            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="D4" style="--offset: 5em;"></div></div></div>
             <div class="bar-line" aria-label="bar-line"></div>
           </div>
         </div>
@@ -1515,6 +1774,19 @@
         </div>
       </div>
     </section>
+    <div class="keyboard-stage" id="keyboard-stage" aria-hidden="true">
+      <div class="keyboard" id="keyboard" aria-label="Virtuelles Klavier">
+        <div class="keyboard-keys" id="keyboard-keys">
+          <div class="white-keys" id="white-keys"><div class="white-key" data-midi="21" data-note="A0"></div><div class="white-key" data-midi="23" data-note="B0"></div><div class="white-key" data-midi="24" data-note="C1"></div><div class="white-key" data-midi="26" data-note="D1"></div><div class="white-key" data-midi="28" data-note="E1"></div><div class="white-key" data-midi="29" data-note="F1"></div><div class="white-key" data-midi="31" data-note="G1"></div><div class="white-key" data-midi="33" data-note="A1"></div><div class="white-key" data-midi="35" data-note="B1"></div><div class="white-key" data-midi="36" data-note="C2"></div><div class="white-key" data-midi="38" data-note="D2"></div><div class="white-key" data-midi="40" data-note="E2"></div><div class="white-key" data-midi="41" data-note="F2"></div><div class="white-key" data-midi="43" data-note="G2"></div><div class="white-key" data-midi="45" data-note="A2"></div><div class="white-key" data-midi="47" data-note="B2"></div><div class="white-key" data-midi="48" data-note="C3"></div><div class="white-key" data-midi="50" data-note="D3"></div><div class="white-key" data-midi="52" data-note="E3"></div><div class="white-key" data-midi="53" data-note="F3"></div><div class="white-key" data-midi="55" data-note="G3"></div><div class="white-key" data-midi="57" data-note="A3"></div><div class="white-key" data-midi="59" data-note="B3"></div><div class="white-key" data-midi="60" data-note="C4"></div><div class="white-key" data-midi="62" data-note="D4"></div><div class="white-key" data-midi="64" data-note="E4"></div><div class="white-key" data-midi="65" data-note="F4"></div><div class="white-key" data-midi="67" data-note="G4"></div><div class="white-key" data-midi="69" data-note="A4"></div><div class="white-key" data-midi="71" data-note="B4"></div><div class="white-key" data-midi="72" data-note="C5"></div><div class="white-key" data-midi="74" data-note="D5"></div><div class="white-key" data-midi="76" data-note="E5"></div><div class="white-key" data-midi="77" data-note="F5"></div><div class="white-key" data-midi="79" data-note="G5"></div><div class="white-key" data-midi="81" data-note="A5"></div><div class="white-key" data-midi="83" data-note="B5"></div><div class="white-key" data-midi="84" data-note="C6"></div><div class="white-key" data-midi="86" data-note="D6"></div><div class="white-key" data-midi="88" data-note="E6"></div><div class="white-key" data-midi="89" data-note="F6"></div><div class="white-key" data-midi="91" data-note="G6"></div><div class="white-key" data-midi="93" data-note="A6"></div><div class="white-key" data-midi="95" data-note="B6"></div><div class="white-key" data-midi="96" data-note="C7"></div><div class="white-key" data-midi="98" data-note="D7"></div><div class="white-key" data-midi="100" data-note="E7"></div><div class="white-key" data-midi="101" data-note="F7"></div><div class="white-key" data-midi="103" data-note="G7"></div><div class="white-key" data-midi="105" data-note="A7"></div><div class="white-key" data-midi="107" data-note="B7"></div><div class="white-key" data-midi="108" data-note="C8"></div></div>
+          <div class="black-keys" id="black-keys"><div class="black-key" data-midi="22" data-note="A#0" style="left: calc(1.92308%);"></div><div class="black-key" data-midi="25" data-note="C#1" style="left: calc(5.76923%);"></div><div class="black-key" data-midi="27" data-note="D#1" style="left: calc(7.69231%);"></div><div class="black-key" data-midi="30" data-note="F#1" style="left: calc(11.5385%);"></div><div class="black-key" data-midi="32" data-note="G#1" style="left: calc(13.4615%);"></div><div class="black-key" data-midi="34" data-note="A#1" style="left: calc(15.3846%);"></div><div class="black-key" data-midi="37" data-note="C#2" style="left: calc(19.2308%);"></div><div class="black-key" data-midi="39" data-note="D#2" style="left: calc(21.1538%);"></div><div class="black-key" data-midi="42" data-note="F#2" style="left: calc(25%);"></div><div class="black-key" data-midi="44" data-note="G#2" style="left: calc(26.9231%);"></div><div class="black-key" data-midi="46" data-note="A#2" style="left: calc(28.8462%);"></div><div class="black-key" data-midi="49" data-note="C#3" style="left: calc(32.6923%);"></div><div class="black-key" data-midi="51" data-note="D#3" style="left: calc(34.6154%);"></div><div class="black-key" data-midi="54" data-note="F#3" style="left: calc(38.4615%);"></div><div class="black-key" data-midi="56" data-note="G#3" style="left: calc(40.3846%);"></div><div class="black-key" data-midi="58" data-note="A#3" style="left: calc(42.3077%);"></div><div class="black-key" data-midi="61" data-note="C#4" style="left: calc(46.1538%);"></div><div class="black-key" data-midi="63" data-note="D#4" style="left: calc(48.0769%);"></div><div class="black-key" data-midi="66" data-note="F#4" style="left: calc(51.9231%);"></div><div class="black-key" data-midi="68" data-note="G#4" style="left: calc(53.8462%);"></div><div class="black-key" data-midi="70" data-note="A#4" style="left: calc(55.7692%);"></div><div class="black-key" data-midi="73" data-note="C#5" style="left: calc(59.6154%);"></div><div class="black-key" data-midi="75" data-note="D#5" style="left: calc(61.5385%);"></div><div class="black-key" data-midi="78" data-note="F#5" style="left: calc(65.3846%);"></div><div class="black-key" data-midi="80" data-note="G#5" style="left: calc(67.3077%);"></div><div class="black-key" data-midi="82" data-note="A#5" style="left: calc(69.2308%);"></div><div class="black-key" data-midi="85" data-note="C#6" style="left: calc(73.0769%);"></div><div class="black-key" data-midi="87" data-note="D#6" style="left: calc(75%);"></div><div class="black-key" data-midi="90" data-note="F#6" style="left: calc(78.8462%);"></div><div class="black-key" data-midi="92" data-note="G#6" style="left: calc(80.7692%);"></div><div class="black-key" data-midi="94" data-note="A#6" style="left: calc(82.6923%);"></div><div class="black-key" data-midi="97" data-note="C#7" style="left: calc(86.5385%);"></div><div class="black-key" data-midi="99" data-note="D#7" style="left: calc(88.4615%);"></div><div class="black-key" data-midi="102" data-note="F#7" style="left: calc(92.3077%);"></div><div class="black-key" data-midi="104" data-note="G#7" style="left: calc(94.2308%);"></div><div class="black-key" data-midi="106" data-note="A#7" style="left: calc(96.1538%);"></div></div>
+        </div>
+        <div class="keyboard-range-overlay" aria-hidden="true">
+          <div class="range-window" id="range-window"></div>
+          <div class="range-bracket range-bracket-start" id="range-bracket-start"></div>
+          <div class="range-bracket range-bracket-end" id="range-bracket-end"></div>
+        </div>
+      </div>
+    </div>
   </main>
   <script>
     const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
@@ -1523,8 +1795,8 @@
     const SUPABASE_URL = window.SUPABASE_URL || "https://ontusfifjfbzwlvligrx.supabase.co";
     const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udHVzZmlmamZiendsdmxpZ3J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTM1NzUsImV4cCI6MjA4ODcyOTU3NX0.Yl3Z3DlJP7_7DsND_H0c6TdFRIcBHGxCO92Z05aQrgY";
     const LOCAL_PROGRESS_PREFIX = "learnnotes-srs-v1";
-    const AUTH_SESSION_COOKIE = "learnnotes_auth_session";
-    const AUTH_SESSION_TTL_DAYS = 30;
+    const AUTH_SESSION_STORAGE_KEY = "learnnotes-auth-fallback";
+    const keyboardRange = { start: 21, end: 108 };
     const srsConfig = {
       sampleSize: 20,
       growThreshold: 0.98,
@@ -1585,6 +1857,7 @@
     const panelElement = document.querySelector(".panel");
     const leftStackElement = document.querySelector(".left-stack");
     const cornerButton = document.getElementById("panel-corner-button");
+    const panelCutTrigger = document.getElementById("panel-cut-trigger");
     const panelMidiTrigger = document.getElementById("panel-midi-trigger");
     const panelRevealToggle = document.getElementById("panel-reveal-toggle");
     const authStage = document.getElementById("auth-stage");
@@ -1608,7 +1881,15 @@
     const adminCalendarInputNote = document.getElementById("admin-calendar-input-note");
     const adminTools = document.getElementById("admin-tools");
     const adminToolsButton = document.getElementById("admin-tools-button");
-    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button";
+    const keyboardStage = document.getElementById("keyboard-stage");
+    const keyboardElement = document.getElementById("keyboard");
+    const keyboardKeys = document.getElementById("keyboard-keys");
+    const whiteKeysContainer = document.getElementById("white-keys");
+    const blackKeysContainer = document.getElementById("black-keys");
+    const rangeWindow = document.getElementById("range-window");
+    const rangeBracketStart = document.getElementById("range-bracket-start");
+    const rangeBracketEnd = document.getElementById("range-bracket-end");
+    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key";
 
     let currentState = 0;
     let currentNote = null;
@@ -1628,16 +1909,26 @@
     let isAdminMode = false;
     let isMidiConnecting = false;
     let midiConnected = false;
+    let midiOutputsRef = [];
+    let hasViewerMidiBridge = false;
+    let isKeyboardVisible = false;
+    let isRangeSelectorVisible = false;
     let revealNoteNames = false;
     let isAuthenticated = false;
+    let hasAdminAccess = false;
+    let authReady = false;
     let authBusy = false;
     let authStep = "email";
     let authEmailDraft = "";
     let authUser = null;
+    let userRole = null;
+    let currentUserProfile = null;
     let supabaseClient = null;
     let authSubscription = null;
     let dailyModeFlip = false;
     let midiAccessRef = null;
+    let midiInitScheduled = false;
+    let activeRangeDrag = null;
     let srsStates = {
       treble: createInitialSrsState("treble"),
       bass: createInitialSrsState("bass")
@@ -1645,6 +1936,10 @@
     let noteStats = {
       treble: {},
       bass: {}
+    };
+    let manualSelectedRanges = {
+      treble: null,
+      bass: null
     };
     const recentPromptHistory = [];
     const adminCalendarEvents = new Map();
@@ -1662,44 +1957,93 @@
       return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     }
 
-    function setAuthCookie(session) {
-      if (!session?.access_token || !session?.refresh_token) {
-        return;
+    function resolveAdminAccess(user) {
+      if (!user || typeof user !== "object") {
+        return false;
       }
-      const payload = {
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_at: session.expires_at || null,
-        token_type: session.token_type || "bearer",
-        user: {
-          id: session.user?.id || "",
-          email: session.user?.email || ""
-        },
-        ts: Date.now()
-      };
-      const expires = new Date(Date.now() + (AUTH_SESSION_TTL_DAYS * 24 * 60 * 60 * 1000)).toUTCString();
-      document.cookie = `${AUTH_SESSION_COOKIE}=${encodeURIComponent(JSON.stringify(payload))}; expires=${expires}; path=/; SameSite=Lax`;
+
+      const roleCandidates = [
+        user.role,
+        user.roles,
+        user.user_metadata?.role,
+        user.user_metadata?.roles,
+        user.user_metadata?.access,
+        user.user_metadata?.permissions,
+        user.app_metadata?.role,
+        user.app_metadata?.roles,
+        user.app_metadata?.access,
+        user.app_metadata?.permissions
+      ].flatMap((value) => Array.isArray(value) ? value : [value])
+        .filter(Boolean)
+        .map((value) => String(value).trim().toLowerCase());
+
+      if (user.is_admin === true || user.admin === true) {
+        return true;
+      }
+      if (user.user_metadata?.is_admin === true || user.user_metadata?.admin === true) {
+        return true;
+      }
+      if (user.app_metadata?.is_admin === true || user.app_metadata?.admin === true) {
+        return true;
+      }
+
+      return roleCandidates.some((role) =>
+        ["admin", "owner", "superadmin", "manager", "teacher", "tutor"].includes(role)
+      );
     }
 
-    function getAuthCookie() {
-      const prefix = `${AUTH_SESSION_COOKIE}=`;
-      const cookie = document.cookie
-        .split(";")
-        .map((part) => part.trim())
-        .find((part) => part.startsWith(prefix));
-      if (!cookie) {
-        return null;
+    function updateAdminAccessUi() {
+      hasAdminAccess = resolveAdminAccess(authUser);
+      document.body.classList.toggle("is-no-admin", !hasAdminAccess);
+      if (!hasAdminAccess && isAdminMode) {
+        exitAdminMode();
       }
+    }
+
+    function authFallbackStorage() {
       try {
-        return JSON.parse(decodeURIComponent(cookie.slice(prefix.length)));
+        const storage = window.localStorage;
+        const probeKey = "__learnnotes_auth_probe__";
+        storage.setItem(probeKey, "1");
+        storage.removeItem(probeKey);
+        return storage;
       } catch (error) {
         void error;
         return null;
       }
     }
 
-    function clearAuthCookie() {
-      document.cookie = `${AUTH_SESSION_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+    function persistFallbackSession(session) {
+      if (!session?.access_token || !session?.refresh_token) {
+        return;
+      }
+      const storage = authFallbackStorage();
+      if (!storage) {
+        return;
+      }
+      storage.setItem(AUTH_SESSION_STORAGE_KEY, JSON.stringify({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token
+      }));
+    }
+
+    function readFallbackSession() {
+      const storage = authFallbackStorage();
+      if (!storage) {
+        return null;
+      }
+      try {
+        const rawValue = storage.getItem(AUTH_SESSION_STORAGE_KEY);
+        return rawValue ? JSON.parse(rawValue) : null;
+      } catch (error) {
+        void error;
+        return null;
+      }
+    }
+
+    function clearFallbackSession() {
+      const storage = authFallbackStorage();
+      storage?.removeItem(AUTH_SESSION_STORAGE_KEY);
     }
 
     function formatTimer(totalSeconds) {
@@ -1733,8 +2077,9 @@
     }
 
     function renderAuthUi() {
-      document.body.classList.toggle("is-auth-view", !isAuthenticated);
-      authStage.setAttribute("aria-hidden", isAuthenticated ? "true" : "false");
+      const shouldShowAuth = authReady && !isAuthenticated;
+      document.body.classList.toggle("is-auth-view", shouldShowAuth);
+      authStage.setAttribute("aria-hidden", shouldShowAuth ? "false" : "true");
       notationElement.setAttribute("aria-hidden", isAuthenticated ? "false" : "true");
       authFlowInput.disabled = authBusy;
       authStepButton.disabled = authBusy;
@@ -1901,6 +2246,372 @@
 
     function isBlackKey(midi) {
       return midiNumberToName(midi).includes("#");
+    }
+
+    function keyboardModeForUi() {
+      if (currentState === 0) {
+        return "treble";
+      }
+      if (currentState === 1) {
+        return "bass";
+      }
+      return currentPracticeMode === "bass" ? "bass" : "treble";
+    }
+
+    function keyboardOptionsForMode(mode) {
+      return srsRangeOptionsForMode(mode).map((entry) => entry.name);
+    }
+
+    function noteRangeIncludes(range, noteName) {
+      if (!range?.[0] || !range?.[1] || !noteName) {
+        return false;
+      }
+      const midi = semitoneValue(noteName);
+      return midi >= semitoneValue(range[0]) && midi <= semitoneValue(range[1]);
+    }
+
+    function normalizeManualRange(mode, range) {
+      const options = keyboardOptionsForMode(mode);
+      if (!range?.[0] || !range?.[1] || !options.length) {
+        return null;
+      }
+      const startIndex = options.indexOf(range[0]);
+      const endIndex = options.indexOf(range[1]);
+      if (startIndex === -1 || endIndex === -1) {
+        return null;
+      }
+      return startIndex <= endIndex
+        ? [options[startIndex], options[endIndex]]
+        : [options[endIndex], options[startIndex]];
+    }
+
+    function activeKeyboardRange(mode) {
+      return normalizeManualRange(mode, manualSelectedRanges[mode]) || applySrsRange(mode);
+    }
+
+    function buildKeyboard() {
+      let whiteIndex = 0;
+      const whiteFragment = document.createDocumentFragment();
+      const blackFragment = document.createDocumentFragment();
+
+      for (let midi = keyboardRange.start; midi <= keyboardRange.end; midi += 1) {
+        const noteName = midiNumberToName(midi);
+
+        if (isBlackKey(midi)) {
+          const key = document.createElement("div");
+          key.className = "black-key";
+          key.dataset.midi = String(midi);
+          key.dataset.note = noteName;
+          key.style.left = `calc((100% / 52) * ${whiteIndex})`;
+          blackFragment.appendChild(key);
+          continue;
+        }
+
+        whiteIndex += 1;
+        const key = document.createElement("div");
+        key.className = "white-key";
+        key.dataset.midi = String(midi);
+        key.dataset.note = noteName;
+        whiteFragment.appendChild(key);
+      }
+
+      whiteKeysContainer.replaceChildren(whiteFragment);
+      blackKeysContainer.replaceChildren(blackFragment);
+    }
+
+    function findKeyByNote(noteName) {
+      return keyboardElement?.querySelector(`[data-note="${noteName}"]`) || null;
+    }
+
+    function keyCenterInKeyboard(noteName) {
+      const key = findKeyByNote(noteName);
+      if (!key || !keyboardElement) {
+        return null;
+      }
+      const keyboardRect = keyboardElement.getBoundingClientRect();
+      const keyRect = key.getBoundingClientRect();
+      return keyRect.left - keyboardRect.left + (keyRect.width / 2);
+    }
+
+    function positionRangeWindow(range) {
+      if (!range?.[0] || !range?.[1]) {
+        rangeWindow.style.display = "none";
+        return;
+      }
+      const startCenter = keyCenterInKeyboard(range[0]);
+      const endCenter = keyCenterInKeyboard(range[1]);
+      if (startCenter === null || endCenter === null) {
+        rangeWindow.style.display = "none";
+        return;
+      }
+      rangeWindow.style.left = `${startCenter}px`;
+      rangeWindow.style.width = `${Math.max(0, endCenter - startCenter)}px`;
+      rangeWindow.style.display = "";
+    }
+
+    function positionRangeBrackets(range) {
+      if (!range?.[0] || !range?.[1]) {
+        rangeBracketStart.style.display = "none";
+        rangeBracketEnd.style.display = "none";
+        return;
+      }
+      const startCenter = keyCenterInKeyboard(range[0]);
+      const endCenter = keyCenterInKeyboard(range[1]);
+      if (startCenter === null || endCenter === null) {
+        rangeBracketStart.style.display = "none";
+        rangeBracketEnd.style.display = "none";
+        return;
+      }
+      rangeBracketStart.style.left = `${startCenter}px`;
+      rangeBracketEnd.style.left = `${endCenter}px`;
+      rangeBracketStart.dataset.note = displayNoteName(range[0]).replace(/\d/g, "");
+      rangeBracketEnd.dataset.note = displayNoteName(range[1]).replace(/\d/g, "");
+      rangeBracketStart.style.display = "";
+      rangeBracketEnd.style.display = "";
+    }
+
+    function syncKeyboardFrame() {
+      if (!keyboardStage || !screenElement || !panelElement || !notationElement) {
+        return;
+      }
+      const screenRect = screenElement.getBoundingClientRect();
+      const panelRect = panelElement.getBoundingClientRect();
+      const notationRect = notationElement.getBoundingClientRect();
+      const scale = screenRect.width / screenElement.offsetWidth || 1;
+      const localLeft = (panelRect.left - screenRect.left) / scale;
+      const localWidth = (notationRect.right - panelRect.left) / scale;
+      keyboardStage.style.setProperty("--keyboard-stage-left", `${Math.max(0, localLeft)}px`);
+      keyboardStage.style.setProperty("--keyboard-stage-width", `${Math.max(280, localWidth)}px`);
+    }
+
+    function clearKeyboardClasses() {
+      for (const key of keyboardElement.querySelectorAll(".white-key, .black-key")) {
+        key.classList.remove("is-in-range", "is-range-start", "is-range-end", "is-target", "is-correct", "is-wrong");
+        delete key.dataset.label;
+      }
+    }
+
+    function syncKeyboardRangeUi() {
+      if (!keyboardElement) {
+        return;
+      }
+      clearKeyboardClasses();
+      const mode = keyboardModeForUi();
+      const highlightRange = activeKeyboardRange(mode);
+      const startMidi = semitoneValue(highlightRange[0]);
+      const endMidi = semitoneValue(highlightRange[1]);
+
+      for (const key of keyboardElement.querySelectorAll(".white-key, .black-key")) {
+        const midi = Number(key.dataset.midi);
+        if (midi >= startMidi && midi <= endMidi) {
+          key.classList.add("is-in-range");
+        }
+        if (midi === startMidi) {
+          key.classList.add("is-range-start");
+        }
+        if (midi === endMidi) {
+          key.classList.add("is-range-end");
+        }
+        if (isRangeSelectorVisible) {
+          key.dataset.label = displayNoteName(key.dataset.note).replace(/\d/g, "");
+        }
+      }
+
+      if (currentNote) {
+        const targetKey = keyboardElement.querySelector(`[data-midi="${currentNote.midi}"]`);
+        if (targetKey) {
+          targetKey.classList.add(
+            currentNote.state === "correct" ? "is-correct" :
+            currentNote.state === "wrong" ? "is-wrong" :
+            "is-target"
+          );
+        }
+      }
+
+      keyboardKeys.classList.toggle("is-cut-mode", isRangeSelectorVisible);
+      positionRangeWindow(highlightRange);
+      positionRangeBrackets(highlightRange);
+      rangeWindow.style.display = isRangeSelectorVisible ? rangeWindow.style.display || "" : "none";
+      rangeBracketStart.style.display = isRangeSelectorVisible ? rangeBracketStart.style.display || "" : "none";
+      rangeBracketEnd.style.display = isRangeSelectorVisible ? rangeBracketEnd.style.display || "" : "none";
+    }
+
+    function syncKeyboardUi() {
+      const shouldShowKeyboard = isKeyboardVisible && isAuthenticated && !isAdminMode;
+      document.body.classList.toggle("is-keyboard-open", shouldShowKeyboard);
+      keyboardStage.setAttribute("aria-hidden", shouldShowKeyboard ? "false" : "true");
+      panelMidiTrigger.classList.toggle("is-active", shouldShowKeyboard);
+      panelCutTrigger.classList.toggle("is-active", isRangeSelectorVisible);
+      if (!shouldShowKeyboard) {
+        return;
+      }
+      syncKeyboardFrame();
+      syncKeyboardRangeUi();
+    }
+
+    function ensureManualRangeForMode(mode) {
+      if (!normalizeManualRange(mode, manualSelectedRanges[mode])) {
+        manualSelectedRanges[mode] = activeKeyboardRange(mode);
+      }
+    }
+
+    function updateSelectedRangeByEdge(mode, edge, noteName) {
+      const options = keyboardOptionsForMode(mode);
+      if (!options.includes(noteName)) {
+        return;
+      }
+      const currentRange = normalizeManualRange(mode, manualSelectedRanges[mode]) || activeKeyboardRange(mode);
+      const [currentStart, currentEnd] = currentRange;
+      const nextIndex = options.indexOf(noteName);
+      let nextRange = currentRange;
+
+      if (edge === "start") {
+        const endIndex = options.indexOf(currentEnd);
+        nextRange = nextIndex > endIndex ? [noteName, noteName] : [noteName, currentEnd];
+      } else {
+        const startIndex = options.indexOf(currentStart);
+        nextRange = nextIndex < startIndex ? [noteName, noteName] : [currentStart, noteName];
+      }
+
+      if (nextRange[0] === currentStart && nextRange[1] === currentEnd) {
+        return;
+      }
+
+      manualSelectedRanges[mode] = nextRange;
+      saveProgress();
+      syncKeyboardRangeUi();
+      generateRound();
+    }
+
+    function nearestAvailableNoteFromPointer(clientX, mode) {
+      const options = keyboardOptionsForMode(mode);
+      let nearest = null;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      for (const noteName of options) {
+        const center = keyCenterInKeyboard(noteName);
+        if (center === null) {
+          continue;
+        }
+        const distance = Math.abs(clientX - (keyboardElement.getBoundingClientRect().left + center));
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = noteName;
+        }
+      }
+
+      return nearest;
+    }
+
+    function nearestAvailableNoteIndexFromPointer(clientX, mode) {
+      const options = keyboardOptionsForMode(mode);
+      let nearestIndex = -1;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      for (let index = 0; index < options.length; index += 1) {
+        const center = keyCenterInKeyboard(options[index]);
+        if (center === null) {
+          continue;
+        }
+        const distance = Math.abs(clientX - (keyboardElement.getBoundingClientRect().left + center));
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      }
+
+      return nearestIndex;
+    }
+
+    function shiftManualSelectedRange(mode, stepDelta) {
+      const options = keyboardOptionsForMode(mode);
+      const currentRange = normalizeManualRange(mode, manualSelectedRanges[mode]) || activeKeyboardRange(mode);
+      const startIndex = options.indexOf(currentRange[0]);
+      const endIndex = options.indexOf(currentRange[1]);
+      const width = endIndex - startIndex;
+      const nextStart = Math.max(0, Math.min(options.length - 1 - width, startIndex + stepDelta));
+      const nextRange = [options[nextStart], options[nextStart + width]];
+
+      if (nextRange[0] === currentRange[0] && nextRange[1] === currentRange[1]) {
+        return;
+      }
+
+      manualSelectedRanges[mode] = nextRange;
+      saveProgress();
+      syncKeyboardRangeUi();
+      generateRound();
+    }
+
+    function beginRangeDrag(edge, event) {
+      const mode = keyboardModeForUi();
+      ensureManualRangeForMode(mode);
+      activeRangeDrag = {
+        mode,
+        edge,
+        pointerIndex: nearestAvailableNoteIndexFromPointer(event.clientX, mode)
+      };
+      event.currentTarget.classList.add("is-dragging");
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+
+    function moveRangeDrag(event) {
+      if (!activeRangeDrag) {
+        return;
+      }
+      if (activeRangeDrag.edge === "move") {
+        const nextIndex = nearestAvailableNoteIndexFromPointer(event.clientX, activeRangeDrag.mode);
+        if (nextIndex === -1) {
+          return;
+        }
+        const delta = nextIndex - activeRangeDrag.pointerIndex;
+        if (delta === 0) {
+          return;
+        }
+        activeRangeDrag.pointerIndex = nextIndex;
+        shiftManualSelectedRange(activeRangeDrag.mode, delta);
+        return;
+      }
+
+      const nextNote = nearestAvailableNoteFromPointer(event.clientX, activeRangeDrag.mode);
+      if (!nextNote) {
+        return;
+      }
+      updateSelectedRangeByEdge(activeRangeDrag.mode, activeRangeDrag.edge, nextNote);
+    }
+
+    function endRangeDrag(event) {
+      activeRangeDrag = null;
+      event.currentTarget.classList.remove("is-dragging");
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    function toggleKeyboardVisibility(forceValue = null) {
+      isKeyboardVisible = typeof forceValue === "boolean" ? forceValue : !isKeyboardVisible;
+      if (!isKeyboardVisible) {
+        isRangeSelectorVisible = false;
+      } else {
+        void initMidi();
+      }
+      saveProgress();
+      syncKeyboardUi();
+    }
+
+    function toggleCutMode() {
+      const shouldInitKeyboard = !isKeyboardVisible;
+      if (!isKeyboardVisible) {
+        isKeyboardVisible = true;
+      }
+      isRangeSelectorVisible = !isRangeSelectorVisible;
+      if (isRangeSelectorVisible) {
+        ensureManualRangeForMode(keyboardModeForUi());
+      }
+      if (shouldInitKeyboard) {
+        void initMidi();
+      }
+      saveProgress();
+      syncKeyboardUi();
     }
 
     function deriveClefForNote(noteName) {
@@ -2130,7 +2841,14 @@
       const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
       const range = applySrsRange(mode);
       const allowedNotes = new Set(notesInRange(mode, range));
-      const entries = srsRangeOptionsForMode(mode).filter((entry) => allowedNotes.has(entry.name));
+      const manualRange = normalizeManualRange(mode, manualSelectedRanges[mode]);
+      const entries = srsRangeOptionsForMode(mode).filter((entry) =>
+        allowedNotes.has(entry.name) && (!manualRange || noteRangeIncludes(manualRange, entry.name))
+      );
+      if (!entries.length) {
+        manualSelectedRanges[mode] = null;
+        return pickNextNote();
+      }
       const picked = pickWeightedNote(entries, mode, state);
       rememberPromptedNote(mode, picked.name);
       return {
@@ -2210,7 +2928,7 @@
 
       if (revealNoteNames) {
         const badgeElement = document.createElement("div");
-        badgeElement.className = "note-name-badge";
+        badgeElement.className = `note-name-badge ${stemDirection(note.step)}`;
         badgeElement.style.setProperty("--offset", noteOffset(note.step));
         badgeElement.textContent = displayNoteName(note.name).replace(/\d/g, "");
         badgeElement.setAttribute("aria-hidden", "true");
@@ -2241,6 +2959,7 @@
     function renderPracticeUi() {
       updateClefUi();
       renderNotes();
+      syncKeyboardUi();
     }
 
     function localProgressKey() {
@@ -2250,7 +2969,9 @@
     function serializeProgress() {
       return {
         currentState,
+        isKeyboardVisible,
         revealNoteNames,
+        manualSelectedRanges,
         srsStates,
         noteStats
       };
@@ -2276,7 +2997,12 @@
         return;
       }
       currentState = Number.isInteger(record.currentState) ? Math.max(0, Math.min(titles.length - 1, record.currentState)) : currentState;
+      isKeyboardVisible = Boolean(record.isKeyboardVisible);
       revealNoteNames = Boolean(record.revealNoteNames);
+      manualSelectedRanges = {
+        treble: normalizeManualRange("treble", record.manualSelectedRanges?.treble) || null,
+        bass: normalizeManualRange("bass", record.manualSelectedRanges?.bass) || null
+      };
       srsStates = {
         treble: record.srsStates?.treble || createInitialSrsState("treble"),
         bass: record.srsStates?.bass || createInitialSrsState("bass")
@@ -2305,6 +3031,8 @@
             bass: createInitialSrsState("bass")
           };
           noteStats = { treble: {}, bass: {} };
+          manualSelectedRanges = { treble: null, bass: null };
+          isKeyboardVisible = false;
           revealNoteNames = false;
           currentState = 0;
           return;
@@ -2433,6 +3161,55 @@
       setFeedback(message || (isConnected ? "MIDI aktiv" : "Warte auf MIDI"), isConnected ? "success" : "waiting");
     }
 
+    window._callback_addSource = (...args) => {
+      console.log("[WebMIDIViewer] _callback_addSource", ...args);
+      hasViewerMidiBridge = true;
+      updateMidiUi(true);
+    };
+
+    window._callback_addDestination = (...args) => {
+      console.log("[WebMIDIViewer] _callback_addDestination", ...args);
+      hasViewerMidiBridge = true;
+      updateMidiUi(true);
+    };
+
+    window._callback_receiveMIDIMessage = (...args) => {
+      console.log("[WebMIDIViewer] _callback_receiveMIDIMessage", ...args);
+      hasViewerMidiBridge = true;
+      updateMidiUi(true);
+
+      const dataArg = args.find((value) =>
+        Array.isArray(value) ||
+        value instanceof Uint8Array ||
+        (value && typeof value.length === "number" && typeof value !== "string")
+      );
+
+      if (!dataArg) {
+        return;
+      }
+
+      let data;
+      try {
+        data = Array.from(dataArg);
+      } catch (error) {
+        void error;
+        return;
+      }
+
+      if (data.length < 3) {
+        return;
+      }
+
+      const [status, noteNumber, velocity] = data;
+      const messageType = status & 0xf0;
+
+      sendMidiToOutputs(data);
+
+      if (messageType === 0x90 && velocity > 0) {
+        handlePlayedMidi(noteNumber);
+      }
+    };
+
     function midiPortsToArray(portCollection) {
       if (!portCollection) {
         return [];
@@ -2460,6 +3237,52 @@
       return typeof midiAccess.inputs === "function"
         ? midiPortsToArray(midiAccess.inputs())
         : midiPortsToArray(midiAccess.inputs);
+    }
+
+    function listMidiOutputs(midiAccess) {
+      if (!midiAccess) {
+        return [];
+      }
+      return typeof midiAccess.outputs === "function"
+        ? midiPortsToArray(midiAccess.outputs())
+        : midiPortsToArray(midiAccess.outputs);
+    }
+
+    function hasConnectedMidiOutput(midiAccess) {
+      if (!midiAccess) {
+        return false;
+      }
+      for (const output of listMidiOutputs(midiAccess)) {
+        if (output.state === "connected") {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function bindMidiOutputs(midiAccess) {
+      midiOutputsRef = [];
+      if (!midiAccess) {
+        return;
+      }
+      for (const output of listMidiOutputs(midiAccess)) {
+        if (output.state === "connected") {
+          midiOutputsRef.push(output);
+        }
+      }
+    }
+
+    function sendMidiToOutputs(data) {
+      if (!Array.isArray(data) && !(data instanceof Uint8Array)) {
+        return;
+      }
+      for (const output of midiOutputsRef) {
+        try {
+          output.send(data);
+        } catch (error) {
+          console.warn("[MIDI] Output senden fehlgeschlagen", output.name, error);
+        }
+      }
     }
 
     function hasConnectedMidiInput(midiAccess) {
@@ -2516,6 +3339,7 @@
     function onMidiMessage(event) {
       const [status, noteNumber, velocity] = event.data;
       const messageType = status & 0xf0;
+      sendMidiToOutputs(Array.from(event.data));
       if (messageType === 0x90 && velocity > 0) {
         handlePlayedMidi(noteNumber);
       }
@@ -2525,16 +3349,23 @@
       for (const input of listMidiInputs(midiAccess)) {
         input.onmidimessage = input.state === "connected" ? onMidiMessage : null;
       }
-      const connected = hasConnectedMidiInput(midiAccess);
-      updateMidiUi(connected, connected ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden");
+      bindMidiOutputs(midiAccess);
+      updateMidiUi(
+        hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess),
+        hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden"
+      );
     }
 
     async function initMidi() {
       if (isMidiConnecting) {
         return;
       }
+      if (hasViewerMidiBridge) {
+        updateMidiUi(true);
+        return;
+      }
       if (!("requestMIDIAccess" in navigator)) {
-        updateMidiUi(false, "Web MIDI API ist in diesem Browser nicht verfuegbar");
+        updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfuegbar");
         return;
       }
       isMidiConnecting = true;
@@ -2543,12 +3374,31 @@
         midiAccessRef = await navigator.requestMIDIAccess();
         bindMidiInputs(midiAccessRef);
         midiAccessRef.onstatechange = () => bindMidiInputs(midiAccessRef);
-        updateMidiUi(hasConnectedMidiInput(midiAccessRef), hasConnectedMidiInput(midiAccessRef) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden");
+        updateMidiUi(
+          hasConnectedMidiInput(midiAccessRef) || hasConnectedMidiOutput(midiAccessRef),
+          hasConnectedMidiInput(midiAccessRef) || hasConnectedMidiOutput(midiAccessRef) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden"
+        );
       } catch (error) {
         updateMidiUi(false, error?.message || "MIDI-Freigabe fehlgeschlagen");
       } finally {
         isMidiConnecting = false;
       }
+    }
+
+    function scheduleMidiInit() {
+      if (midiInitScheduled) {
+        return;
+      }
+      midiInitScheduled = true;
+      const runMidiInit = () => {
+        window.removeEventListener("load", runMidiInit);
+        void initMidi();
+      };
+      if (document.readyState === "complete") {
+        runMidiInit();
+        return;
+      }
+      window.addEventListener("load", runMidiInit, { once: true });
     }
 
     async function ensureSupabaseClient() {
@@ -2570,28 +3420,33 @@
     async function handleSignedInUser(user, session = null) {
       authUser = user;
       isAuthenticated = true;
+      authReady = true;
       if (session) {
-        setAuthCookie(session);
-      } else {
-        clearAuthCookie();
+        persistFallbackSession(session);
       }
       timerStartedAt = Date.now();
       loadProgress();
       updateRevealToggleUi();
       document.body.dataset.state = String(currentState);
       titleElement.textContent = titles[currentState];
+      updateAdminAccessUi();
       renderAuthUi();
       generateRound();
+      syncKeyboardUi();
     }
 
     function handleSignedOut() {
       authUser = null;
       isAuthenticated = false;
-      clearAuthCookie();
+      hasAdminAccess = false;
+      authReady = true;
+      clearFallbackSession();
       currentNote = null;
       resetAuthFlow(true);
       setAuthStatus(isSupabaseConfigured() ? "" : "Supabase URL und Anon Key fehlen noch.", isSupabaseConfigured() ? "" : "error");
+      updateAdminAccessUi();
       renderAuthUi();
+      syncKeyboardUi();
       focusAuthInput();
     }
 
@@ -2654,6 +3509,7 @@
 
     async function initAuth() {
       if (!isSupabaseConfigured()) {
+        authReady = true;
         renderAuthUi();
         setAuthStatus("Supabase URL und Anon Key fehlen noch.", "error");
         return;
@@ -2673,34 +3529,32 @@
         const { data, error } = await client.auth.getSession();
         if (error) {
           setAuthStatus(error.message || "Session konnte nicht geladen werden.", "error");
+          authReady = true;
+          renderAuthUi();
           return;
         }
         if (data.session?.user) {
           await handleSignedInUser(data.session.user, data.session);
           return;
         }
-        const localSession = getAuthCookie();
-        if (localSession?.access_token && localSession?.refresh_token) {
-          const { data: restored, error: restoreError } = await client.auth.setSession({
-            access_token: localSession.access_token,
-            refresh_token: localSession.refresh_token
+        const fallbackSession = readFallbackSession();
+        if (fallbackSession?.access_token && fallbackSession?.refresh_token) {
+          const { data: restoredData, error: restoredError } = await client.auth.setSession({
+            access_token: fallbackSession.access_token,
+            refresh_token: fallbackSession.refresh_token
           });
-          if (restoreError) {
-            clearAuthCookie();
-          } else if (restored.session?.user) {
-            await handleSignedInUser(restored.session.user, restored.session);
+          if (!restoredError && restoredData.session?.user) {
+            await handleSignedInUser(restoredData.session.user, restoredData.session);
             return;
           }
-        } else if (localSession?.user?.email) {
-          await handleSignedInUser({
-            id: localSession.user.id || localSession.user.email,
-            email: localSession.user.email
-          });
-          return;
+          clearFallbackSession();
         }
       } catch (error) {
         console.error("[Auth] Initialisierung fehlgeschlagen", error);
         setAuthStatus(error?.message || "Supabase konnte nicht geladen werden.", "error");
+        authReady = true;
+        renderAuthUi();
+        return;
       }
 
       handleSignedOut();
@@ -2742,7 +3596,7 @@
     }
 
     function enterAdminMode() {
-      if (!isAuthenticated || isAdminMode) {
+      if (!isAuthenticated || isAdminMode || !hasAdminAccess) {
         return;
       }
       isAdminMode = true;
@@ -2760,6 +3614,7 @@
       adminHintIconElement.setAttribute("data-lucide", "drum");
       adminHintTextElement.textContent = "Hier gehts zurück zum spielen";
       lucide.createIcons();
+      syncKeyboardUi();
     }
 
     function exitAdminMode() {
@@ -2776,6 +3631,7 @@
       adminHintTextElement.textContent = "Hier entlang zur Verwaltung.";
       lucide.createIcons();
       syncPracticeMode();
+      syncKeyboardUi();
     }
 
     function commitSwipe(deltaX, deltaY) {
@@ -2953,8 +3809,15 @@
 
     panelMidiTrigger.addEventListener("click", () => {
       if (isAuthenticated) {
-        initMidi();
+        toggleKeyboardVisibility();
       }
+    });
+
+    panelCutTrigger.addEventListener("click", () => {
+      if (!isAuthenticated) {
+        return;
+      }
+      toggleCutMode();
     });
 
     panelRevealToggle.addEventListener("click", () => {
@@ -2991,19 +3854,50 @@
       void handleAuthPrimary();
     });
 
+    keyboardElement.addEventListener("click", (event) => {
+      if (!isAuthenticated || isRangeSelectorVisible) {
+        return;
+      }
+      const key = event.target?.closest?.(".white-key, .black-key");
+      if (!key) {
+        return;
+      }
+      const midi = Number(key.dataset.midi);
+      if (Number.isFinite(midi)) {
+        handlePlayedMidi(midi);
+      }
+    });
+
+    rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("move", event));
+    rangeBracketStart.addEventListener("pointerdown", (event) => beginRangeDrag("start", event));
+    rangeBracketEnd.addEventListener("pointerdown", (event) => beginRangeDrag("end", event));
+    rangeWindow.addEventListener("pointermove", moveRangeDrag);
+    rangeBracketStart.addEventListener("pointermove", moveRangeDrag);
+    rangeBracketEnd.addEventListener("pointermove", moveRangeDrag);
+    rangeWindow.addEventListener("pointerup", endRangeDrag);
+    rangeBracketStart.addEventListener("pointerup", endRangeDrag);
+    rangeBracketEnd.addEventListener("pointerup", endRangeDrag);
+    rangeWindow.addEventListener("pointercancel", endRangeDrag);
+    rangeBracketStart.addEventListener("pointercancel", endRangeDrag);
+    rangeBracketEnd.addEventListener("pointercancel", endRangeDrag);
+    window.addEventListener("resize", () => syncKeyboardUi());
+
 async function boot() {
   document.body.dataset.state = "0";
   updateTimer();
+  buildKeyboard();
   buildAdminCalendar();
   updateRevealToggleUi();
   renderAuthUi();
   updateAdminAccessUi();
-  focusAuthInput();
   window.setInterval(updateTimer, 1000);
   lucide.createIcons();
 
-  void initMidi();
+  scheduleMidiInit();
   await initAuth();
+  if (!isAuthenticated) {
+    focusAuthInput();
+  }
 }
 
 // Ganz am Ende steht bei dir:
