@@ -1,4 +1,4 @@
-<html lang="de" style="--notation-base-scale: 0.78;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="de" style="--notation-base-scale: 0.62;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neues Design</title>
@@ -604,9 +604,103 @@
       transition: padding 320ms ease, align-items 320ms ease;
     }
 
-    .notation {
+    .practice-stage {
+      position: relative;
       width: min(616px, 100%);
       min-height: 748px;
+      display: grid;
+      place-items: center;
+    }
+
+    .performance-indicator {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      z-index: 5;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .performance-pill {
+      --performance-score: 0.5;
+      position: relative;
+      width: clamp(124px, 18vw, 184px);
+      height: 1.05rem;
+      border: 3px solid #111111;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e15252 0 33.333%, #f0c64b 33.333% 66.666%, #17a34a 66.666% 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    }
+
+    .performance-pill::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: clamp(0.5rem, calc(var(--performance-score) * 100%), calc(100% - 0.5rem));
+      width: 0.92rem;
+      height: 0.92rem;
+      border: 2px solid #ffffff;
+      border-radius: 999px;
+      background: #111111;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+      transform: translate(-50%, -50%);
+    }
+
+    .performance-level {
+      min-width: 2.7rem;
+      padding: 0.22rem 0.62rem;
+      border: 3px solid #111111;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #111111;
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .mobile-answer-strip {
+      display: none;
+    }
+
+    .mobile-answer-button {
+      appearance: none;
+      border: 3px solid #111111;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #111111;
+      font: inherit;
+      font-size: 1.02rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      min-width: 2.9rem;
+      min-height: 2.9rem;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease, opacity 140ms ease;
+    }
+
+    .mobile-answer-button:active {
+      transform: scale(0.96);
+    }
+
+    .mobile-answer-button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      transform: none;
+    }
+
+    .phone-midi-trigger {
+      display: none;
+    }
+
+    .notation {
+      width: 100%;
+      min-height: 100%;
       background: transparent;
       border-radius: 28px;
       border: none;
@@ -626,6 +720,20 @@
       opacity: 0;
       transform: translateY(24px);
       pointer-events: none;
+    }
+
+    body.is-auth-view .performance-indicator,
+    body.is-admin .performance-indicator {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+    }
+
+    body.is-auth-view .mobile-answer-strip,
+    body.is-admin .mobile-answer-strip {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
     }
 
     .auth-stage {
@@ -1647,9 +1755,17 @@
         bottom: 5.9rem;
       }
 
-      .notation {
+      .practice-stage {
         width: min(517px, 100%);
         min-height: 616px;
+      }
+
+      .performance-indicator {
+        gap: 0.55rem;
+      }
+
+      .performance-pill {
+        width: clamp(112px, 16vw, 156px);
       }
 
       .sheet-note-group {
@@ -1680,15 +1796,39 @@
 
       .screen {
         grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        min-height: 100dvh;
       }
 
       .right-side {
-        min-height: 24vh;
+        min-height: 0;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.15rem;
+      }
+
+      .performance-pill {
+        width: min(42vw, 148px);
+        height: 0.98rem;
+      }
+
+      .performance-level {
+        min-width: 2.45rem;
+        font-size: 0.8rem;
       }
 
       .left-side,
       .right-side {
-        padding: 24px;
+        padding: 18px;
+      }
+
+      .left-side {
+        padding-bottom: 8px;
+      }
+
+      .right-side {
+        padding-top: 8px;
+        padding-bottom: 24px;
       }
 
       .admin-hint {
@@ -1704,27 +1844,105 @@
       .panel {
         width: 100%;
         height: auto;
-        min-height: 572px;
+        min-height: 208px;
+        padding: 24px 24px 82px;
+        gap: 16px;
       }
 
-      .notation {
-        min-height: 616px;
+      body.is-auth-view .left-side {
+        min-height: 100dvh;
+        padding: 18px;
+      }
+
+      body.is-auth-view .panel {
+        min-height: min(572px, calc(100dvh - 36px));
+        padding: 24px;
+      }
+
+      .practice-stage {
+        width: min(100%, 540px);
+        min-height: 252px;
+      }
+
+      .performance-indicator {
+        gap: 0.5rem;
       }
 
       .sheet-note-group {
-        transform: scale(0.78);
+        transform: translate(0, 0) scale(0.76);
         transform-origin: center;
       }
 
       .panel-star {
-        top: -2.35rem;
-        right: -2.35rem;
-        width: 5.8rem;
-        height: 5.8rem;
+        top: -1.6rem;
+        right: -1.6rem;
+        width: 4.8rem;
+        height: 4.8rem;
       }
 
       .panel-star-time {
-        font-size: 1.1rem;
+        font-size: 0.96rem;
+      }
+
+      .panel h1 {
+        font-size: clamp(1.8rem, 8.5vw, 2.35rem);
+      }
+
+      .panel-expander {
+        height: 74px;
+      }
+
+      .panel-expander-panel {
+        height: 74px;
+      }
+
+      .panel-expander-icons {
+        gap: 1rem;
+      }
+
+      #panel-cut-trigger,
+      #panel-midi-trigger {
+        display: none;
+      }
+
+      .keyboard-stage {
+        display: none;
+      }
+
+      .mobile-answer-strip {
+        width: min(100%, 24rem);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.72rem;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .mobile-answer-button {
+        min-width: 3.1rem;
+        min-height: 3.1rem;
+        font-size: 1rem;
+      }
+
+      body.is-keyboard-open .left-side,
+      body.is-keyboard-open .right-side {
+        align-items: center;
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+
+      body.is-keyboard-open .panel {
+        height: auto;
+        justify-content: center;
+        padding-top: 24px;
+      }
+
+      body.is-keyboard-open .practice-stage {
+        min-height: 252px;
+      }
+
+      body.is-keyboard-open .sheet-note-group {
+        transform: translate(0, 0) scale(0.76);
       }
 
       .admin-calendar-shell {
@@ -1741,9 +1959,85 @@
         height: min(300px, 40vh);
       }
     }
+
+    @media (max-width: 640px) {
+      .screen {
+        grid-template-rows: auto auto;
+        align-content: start;
+        min-height: auto;
+      }
+
+      .left-side {
+        padding-bottom: 2px;
+      }
+
+      .right-side {
+        padding-top: 2px;
+        padding-bottom: 12px;
+        justify-content: flex-start;
+        gap: 0.3rem;
+      }
+
+      .phone-midi-trigger {
+        display: block;
+      }
+
+      .practice-stage {
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.28rem;
+      }
+
+      .performance-indicator {
+        position: static;
+        justify-content: center;
+        width: 100%;
+        margin: 0 auto 0.05rem;
+      }
+
+      .notation {
+        min-height: 214px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        overflow: hidden;
+        padding-top: 0;
+      }
+
+      .sheet-note-group {
+        position: relative;
+        inset: auto;
+        width: auto;
+        height: auto;
+        transform: translate(0, 0) scale(0.62);
+      }
+
+      .mobile-answer-strip {
+        width: min(100%, 21rem);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.65rem;
+        margin-top: -0.35rem;
+      }
+
+      .mobile-answer-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 2.85rem;
+        padding: 0.55rem 0.3rem;
+        border-radius: 14px;
+        font-size: 0.98rem;
+      }
+
+      .mobile-answer-button:last-child {
+        grid-column: 2 / 4;
+      }
+    }
   </style>
 </head>
-<body data-state="2" class="is-no-admin">
+<body data-state="0" class="is-no-admin">
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
@@ -1768,7 +2062,7 @@
           </div>
         </div>
       </div>
-      <div class="left-stack is-expanded">
+      <div class="left-stack">
         <article class="panel">
           <div class="panel-fluid" aria-hidden="true">
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -1785,24 +2079,25 @@
             </g>
           </svg>
           </div>
-          <button class="panel-corner-button is-active" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="true">
+          <button class="panel-corner-button" id="panel-corner-button" type="button" aria-label="Bereich umschalten" aria-pressed="false">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-left" class="lucide lucide-arrow-up-left panel-corner-icon panel-corner-icon-up" aria-hidden="true"><path d="M7 17V7h10"></path><path d="M17 17 7 7"></path></svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-down-right" class="lucide lucide-arrow-down-right panel-corner-icon panel-corner-icon-down" aria-hidden="true"><path d="m7 7 10 10"></path><path d="M17 7v10H7"></path></svg>
           </button>
-          <h1 id="title">Daily Challenge</h1>
+          <h1 id="title">Violine</h1>
         <div class="panel-expander" id="panel-expander" aria-hidden="true">
           <div class="panel-expander-panel">
             <div class="panel-expander-icons" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scissors" aria-label="Cut-Modus umschalten" class="lucide lucide-scissors panel-expander-icon is-action" id="panel-cut-trigger"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="keyboard-music" aria-label="Klavier einblenden" class="lucide lucide-keyboard-music panel-expander-icon is-action" id="panel-midi-trigger"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h4"></path><path d="M14 8h.01"></path><path d="M18 8h.01"></path><path d="M2 12h20"></path><path d="M6 12v4"></path><path d="M10 12v4"></path><path d="M14 12v4"></path><path d="M18 12v4"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-label="Debug-Konsole umschalten" aria-pressed="true" class="lucide lucide-message-circle-question-mark panel-expander-icon is-action is-active" id="panel-debug-toggle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="true" class="lucide lucide-eye panel-expander-icon is-action is-active" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="MIDI verbinden" class="panel-expander-icon is-action phone-midi-trigger" id="panel-midi-connect-trigger"><path d="M12 22v-5"></path><path d="M9 8V2"></path><path d="M15 8V2"></path><path d="M18 8a6 6 0 0 1-12 0"></path><path d="M8 16h8"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle-question-mark" aria-label="Debug-Konsole umschalten" aria-pressed="false" class="lucide lucide-message-circle-question-mark panel-expander-icon is-action" id="panel-debug-toggle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" aria-label="Notennamen anzeigen" aria-pressed="false" class="lucide lucide-eye panel-expander-icon is-action" id="panel-reveal-toggle"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
           </div>
         </div>
         </article>
         <div class="panel-star" aria-hidden="true">
-          <div class="panel-star-time" id="panel-star-time">00:17</div>
+          <div class="panel-star-time" id="panel-star-time">00:08</div>
           <svg viewBox="0 0 200 200" preserveAspectRatio="none">
             <path d="M95.713 9.378a6 6 0 0 1 8.574 0l9.515 9.717a6 6 0 0 0 6.496 1.381l12.645-5.007a6 6 0 0 1 7.833 3.487l4.74 12.748a6 6 0 0 0 5.372 3.903l13.589.57a6 6 0 0 1 5.737 6.371l-.855 13.573a6 6 0 0 0 3.321 5.752l12.182 6.046a6 6 0 0 1 2.649 8.154l-6.301 12.053a6 6 0 0 0 .694 6.604l8.67 10.479a6 6 0 0 1-.897 8.527l-10.658 8.447a6 6 0 0 0-2.052 6.316l3.657 13.099a6 6 0 0 1-4.287 7.426l-13.173 3.381a6 6 0 0 0-4.443 4.936l-1.987 13.454a6 6 0 0 1-6.936 5.04l-13.41-2.269a6 6 0 0 0-6.066 2.701l-7.287 11.483a6 6 0 0 1-8.387 1.783l-11.327-7.527a6 6 0 0 0-6.641 0l-11.328 7.527a6 6 0 0 1-8.387-1.783l-7.287-11.483a6 6 0 0 0-6.066-2.701l-13.41 2.269a6 6 0 0 1-6.936-5.04l-1.987-13.454a6 6 0 0 0-4.443-4.936l-13.173-3.381a6 6 0 0 1-4.287-7.426l3.657-13.099a6 6 0 0 0-2.052-6.316l-10.658-8.447a6 6 0 0 1-.897-8.527l8.67-10.479a6 6 0 0 0 .694-6.604l-6.301-12.053a6 6 0 0 1 2.65-8.154l12.181-6.046a6 6 0 0 0 3.32-5.752l-.854-13.573a6 6 0 0 1 5.737-6.372l13.588-.569a6 6 0 0 0 5.373-3.903l4.74-12.748a6 6 0 0 1 7.833-3.487l12.645 5.007a6 6 0 0 0 6.496-1.38z"></path>
           </svg>
@@ -1811,18 +2106,33 @@
     </section>
 
     <section class="right-side">
-      <div class="notation" aria-hidden="false">
-        <div class="sheet-note-group">
-          <div class="bar">
-            <div class="stave-header"></div>
-            <div class="clef-symbol" id="clef-symbol">
+      <div class="practice-stage">
+        <div class="performance-indicator" id="performance-indicator" aria-hidden="false" aria-label="Performance 87 Prozent, Level 1" data-mode="treble">
+          <div class="performance-pill" id="performance-pill" aria-label="Performance 87 Prozent" style="--performance-score: 0.8715072378295973;"></div>
+          <div class="performance-level" id="performance-level">L1</div>
+        </div>
+        <div class="notation" aria-hidden="false">
+          <div class="sheet-note-group">
+            <div class="bar">
+              <div class="stave-header"></div>
+              <div class="clef-symbol" id="clef-symbol">
         <svg viewBox="0 0 88 192" aria-hidden="true">
           <path d="M71.9,117.49c0-12.67-12.67-20.76-21-20.76a13.63,13.63,0,0,0-2.47.23L45.25,81.43C61,67.2,59.55,48.56,59.55,43.82c0-4.9-.64-18.63-9.58-23.32-12.14,4.9-13.1,23.74-13.1,27.15s.21,2.77,2.34,18c.16,1.14.4,2.59.71,4.29C26.77,83.09,16,93.79,16,110.25s12.78,32.58,30.24,32.58a30.19,30.19,0,0,0,8.41-1.12c1.85,9.54,3.09,17,3.09,19.86,0,10.54-7.67,15-13.42,15s-6.81-4-6.81-4c9.26,0,8.2-9.61,8.2-9.61h0a8.53,8.53,0,0,0-17.05,0h0c0,.06,0,.12,0,.19s0,0,0,0,0,.05,0,.08c.08,8,3.39,15.79,16,15.79,12.78,0,16.08-12.25,16.08-17a61.26,61.26,0,0,0-.75-9.15l-2.5-12.13C67.24,136.59,71.9,127,71.9,117.49ZM52,34.23c3.94,0,4.79,2.77,4.79,7.56,0,4.54-2.86,13.45-14.44,25.67-.16-.79-.32-1.54-.47-2.24C37.29,43.39,48,34.23,52,34.23ZM46.13,140.17c-20.44,0-24.06-19.59-24.06-25.34s4-17.18,20.54-31.16c.89,4.33,1.89,9.11,2.94,14.11a20.73,20.73,0,0,0-13.06,19.5c0,12.46,13.1,14.37,13.1,14.37-6.71-5.32-7-8.94-7-11.39,0-2.17,1.09-10.34,9.16-12.19,2.28,10.76,4.61,21.83,6.44,31.17A31.16,31.16,0,0,1,46.13,140.17ZM57,138.28c-1.72-8.36-4-19.38-6.3-30.57h.57c11.28,0,13.52,13.84,13.52,16.18C64.76,125.69,65.84,134.38,57,138.28Z"></path>
         </svg>
       </div>
-            <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="ledger-line" style="--offset: 6em;"></div><div class="note note-up" role="img" aria-label="C4" style="--offset: 6em;"></div><div class="note-name-badge note-up" aria-hidden="true" style="--offset: 6em;">C</div></div></div>
-            <div class="bar-line" aria-label="bar-line"></div>
+              <div class="bar-notes" id="bar-notes" aria-live="polite"><div class="note-slot"><div class="note note-up" role="img" aria-label="F4" style="--offset: 3em;"></div></div></div>
+              <div class="bar-line" aria-label="bar-line"></div>
+            </div>
           </div>
+        </div>
+        <div class="mobile-answer-strip" id="mobile-answer-strip" aria-label="Notennamen auswählen" aria-hidden="false">
+          <button class="mobile-answer-button" type="button" data-note-label="C">C</button>
+          <button class="mobile-answer-button" type="button" data-note-label="D">D</button>
+          <button class="mobile-answer-button" type="button" data-note-label="E">E</button>
+          <button class="mobile-answer-button" type="button" data-note-label="F">F</button>
+          <button class="mobile-answer-button" type="button" data-note-label="G">G</button>
+          <button class="mobile-answer-button" type="button" data-note-label="A">A</button>
+          <button class="mobile-answer-button" type="button" data-note-label="H">H</button>
         </div>
       </div>
       <div class="admin-calendar" aria-hidden="true">
@@ -1897,7 +2207,7 @@
       </div>
     </div>
   </main>
-  <aside class="debug-console is-open" id="debug-console" aria-hidden="false">
+  <aside class="debug-console" id="debug-console" aria-hidden="true">
     <div class="debug-console-header">
       <strong class="debug-console-title">Debug-Konsole</strong>
       <div class="debug-console-actions">
@@ -1905,21 +2215,11 @@
         <button class="debug-console-button" id="debug-console-close" type="button" aria-label="Debug-Konsole schließen">Schließen</button>
       </div>
     </div>
-    <div class="debug-console-status" id="debug-console-status">Kein MIDI-Keyboard gefunden | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
-    <pre class="debug-console-output" id="debug-console-output">[10:15:26] System: Debug-Konsole bereit
-[10:15:26] MIDI: Initialisierung gestartet {"status":"Noch keine MIDI-Aktivität.","viewerBridge":false,"connecting":false,"connected":false,"authReady":false,"isAuthenticated":false,"currentTarget":null,"inputs":[],"outputs":[]}
-[10:15:26] MIDI-Status: MIDI wird verbunden... {"state":"waiting"}
-[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
-[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
-[10:15:26] Auth: Session beim Laden gefunden {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
-[10:15:26] Auth: User angemeldet {"userId":"8a6cac6e-1178-46a2-b1c4-9f3ef6702edc","email":"diejakobs@icloud.com"}
-[10:15:27] MIDI: requestMIDIAccess erfolgreich {"inputs":[],"outputs":[]}
-[10:15:27] MIDI: Inputs gebunden []
-[10:15:27] MIDI-Status: Kein MIDI-Keyboard gefunden {"state":"waiting"}
-[10:15:29] UI: Debug-Konsole umgeschaltet {"open":true}</pre>
+    <div class="debug-console-status" id="debug-console-status">Noch keine MIDI-Aktivität. | Bridge: nein | Auth: ja | Inputs: keine | Outputs: keine</div>
+    <pre class="debug-console-output" id="debug-console-output"></pre>
   </aside>
   <script>
-    const titles = ["Violinenschlüssel", "Bassschlüssel", "Daily Challenge"];
+    const titles = ["Violine", "Bass", "Challange"];
     const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
     const SUPABASE_URL = window.SUPABASE_URL || "https://ontusfifjfbzwlvligrx.supabase.co";
@@ -1961,8 +2261,8 @@
       `
     };
     const clefConfigs = {
-      treble: { label: "Violinschlüssel", reference: "B4", range: ["C4", "A5"] },
-      bass: { label: "Bassschlüssel", reference: "D3", range: ["C2", "B3"] }
+      treble: { label: "Violine", reference: "B4", range: ["C4", "A5"] },
+      bass: { label: "Bass", reference: "D3", range: ["C2", "B3"] }
     };
     const iconMarkup = {
       arrowRight: `
@@ -1975,7 +2275,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M20 6 9 17l-5-5"></path>
         </svg>
-      `
+      `,
     };
 
     const titleElement = document.getElementById("title");
@@ -1995,6 +2295,10 @@
     const notationElement = document.querySelector(".notation");
     const clefSymbol = document.getElementById("clef-symbol");
     const notesContainer = document.getElementById("bar-notes");
+    const performanceIndicator = document.getElementById("performance-indicator");
+    const performancePill = document.getElementById("performance-pill");
+    const performanceLevel = document.getElementById("performance-level");
+    const mobileAnswerStrip = document.getElementById("mobile-answer-strip");
     const adminCalendarGrid = document.getElementById("admin-calendar-grid");
     const adminCalendarTitle = document.getElementById("admin-calendar-title");
     const adminCalendarStage = document.querySelector(".admin-calendar-stage");
@@ -2021,7 +2325,7 @@
     const debugConsoleOutput = document.getElementById("debug-console-output");
     const debugConsoleClearButton = document.getElementById("debug-console-clear");
     const debugConsoleCloseButton = document.getElementById("debug-console-close");
-    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key";
+    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key, .mobile-answer-button";
 
     let currentState = 0;
     let currentNote = null;
@@ -2407,6 +2711,7 @@
       authFlowInput.placeholder = authStep === "password" ? "Passwort" : "E-Mail Adresse";
       authFlowInput.autocomplete = authStep === "password" ? "current-password" : "email";
       authStepButton.setAttribute("aria-label", authStep === "password" ? "Einloggen" : "Weiter");
+      updateMobileAnswerUi();
     }
 
     function shouldIgnoreSwipeTarget(target) {
@@ -2547,6 +2852,25 @@
       return String(name || "").startsWith("B")
         ? `H${String(name).slice(1)}`
         : String(name || "");
+    }
+
+    function isMobileLayout() {
+      return window.matchMedia("(max-width: 900px)").matches;
+    }
+
+    function isPhoneLayout() {
+      return window.matchMedia("(max-width: 640px)").matches;
+    }
+
+    function noteLabelForName(name) {
+      return displayNoteName(name).replace(/\d/g, "");
+    }
+
+    function guessLabelToNoteName(label, referenceName = "") {
+      const referenceMatch = String(referenceName || "").match(/(\d)$/);
+      const octave = referenceMatch ? referenceMatch[1] : "4";
+      const canonicalLetter = label === "H" ? "B" : label;
+      return `${canonicalLetter}${octave}`;
     }
 
     function diatonicValue(name) {
@@ -2767,7 +3091,7 @@
     }
 
     function syncKeyboardUi() {
-      const shouldShowKeyboard = isKeyboardVisible && isAuthenticated && !isAdminMode;
+      const shouldShowKeyboard = isKeyboardVisible && isAuthenticated && !isAdminMode && !isMobileLayout();
       const panelMidiTrigger = currentPanelMidiTrigger();
       const panelCutTrigger = currentPanelCutTrigger();
       document.body.classList.toggle("is-keyboard-open", shouldShowKeyboard);
@@ -2921,6 +3245,9 @@
     }
 
     function toggleKeyboardVisibility(forceValue = null) {
+      if (isMobileLayout()) {
+        return;
+      }
       isKeyboardVisible = typeof forceValue === "boolean" ? forceValue : !isKeyboardVisible;
       if (!isKeyboardVisible) {
         isRangeSelectorVisible = false;
@@ -2932,6 +3259,9 @@
     }
 
     function toggleCutMode() {
+      if (isMobileLayout()) {
+        return;
+      }
       const shouldInitKeyboard = !isKeyboardVisible;
       if (!isKeyboardVisible) {
         isKeyboardVisible = true;
@@ -2949,6 +3279,16 @@
 
     function deriveClefForNote(noteName) {
       return semitoneValue(noteName) < semitoneValue("C4") ? "bass" : "treble";
+    }
+
+    function performanceModeForUi() {
+      if (currentState === 0) {
+        return "treble";
+      }
+      if (currentState === 1) {
+        return "bass";
+      }
+      return currentPracticeMode === "bass" ? "bass" : "treble";
     }
 
     function buildRange(start, end, forcedClef = null) {
@@ -3294,6 +3634,114 @@
       updateClefUi();
       renderNotes();
       syncKeyboardUi();
+      updatePerformanceUi();
+      updateMobileAnswerUi();
+    }
+
+    function recentAccuracyForMode(mode) {
+      const attempts = srsStates[mode]?.attempts || [];
+      return attempts.length ? attempts.filter(Boolean).length / attempts.length : null;
+    }
+
+    function averageMasteryForMode(mode) {
+      const range = applySrsRange(mode);
+      const rangeNotes = notesInRange(mode, range);
+      if (!rangeNotes.length) {
+        return 0;
+      }
+      return rangeNotes.reduce((sum, noteName) => sum + noteMasteryScore(mode, noteName), 0) / rangeNotes.length;
+    }
+
+    function performanceScoreForMode(mode) {
+      const recentAccuracy = recentAccuracyForMode(mode);
+      const mastery = averageMasteryForMode(mode);
+      if (recentAccuracy === null) {
+        return mastery > 0 ? mastery : 0.5;
+      }
+      return Math.max(0, Math.min(1, (recentAccuracy * 0.72) + (mastery * 0.28)));
+    }
+
+    function updatePerformanceUi() {
+      if (!performanceIndicator || !performancePill || !performanceLevel) {
+        return;
+      }
+
+      const shouldShow = isAuthenticated && !isAdminMode;
+      performanceIndicator.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+      if (!shouldShow) {
+        return;
+      }
+
+      const mode = performanceModeForUi();
+      const level = Math.max(1, Number(srsStates[mode]?.level || 1));
+      const score = performanceScoreForMode(mode);
+      const percent = Math.round(score * 100);
+
+      performancePill.style.setProperty("--performance-score", String(score));
+      performancePill.setAttribute("aria-label", `Performance ${percent} Prozent`);
+      performanceLevel.textContent = `L${level}`;
+      performanceIndicator.setAttribute("aria-label", `Performance ${percent} Prozent, Level ${level}`);
+      performanceIndicator.dataset.mode = mode;
+    }
+
+    function updateMobileAnswerUi() {
+      if (!mobileAnswerStrip) {
+        return;
+      }
+      const buttons = mobileAnswerStrip.querySelectorAll(".mobile-answer-button");
+      const shouldEnable = isAuthenticated && !isAdminMode && Boolean(currentNote) && currentNote.state === "idle";
+      mobileAnswerStrip.setAttribute("aria-hidden", shouldEnable ? "false" : "true");
+      for (const button of buttons) {
+        button.disabled = !shouldEnable;
+      }
+    }
+
+    function handleManualAnswer(noteLabel) {
+      if (!isAuthenticated || isAdminMode || !currentNote || currentNote.state !== "idle") {
+        return;
+      }
+
+      clearPendingReset();
+      const responseMs = recordResponseMs();
+      const targetLabel = noteLabelForName(currentNote.name);
+      const isCorrect = noteLabel === targetLabel;
+
+      if (isCorrect) {
+        currentNote.state = "correct";
+        renderPracticeUi();
+        recordNoteStat(currentNote.mode, currentNote.name, true, { responseMs });
+        const rangeChanged = recordSrsAttempt(currentNote.mode, true);
+        const modeState = srsStates[currentNote.mode];
+        modeState.newNotes = (modeState.newNotes || []).filter((noteName) => noteName !== currentNote.name);
+        saveProgress();
+        currentResetTimeout = window.setTimeout(() => {
+          if (rangeChanged) {
+            generateRound();
+            return;
+          }
+          generateRound();
+        }, 550);
+        return;
+      }
+
+      currentNote.state = "wrong";
+      renderPracticeUi();
+      recordNoteStat(currentNote.mode, currentNote.name, false, {
+        responseMs,
+        playedNoteName: guessLabelToNoteName(noteLabel, currentNote.name)
+      });
+      const rangeChanged = recordSrsAttempt(currentNote.mode, false);
+      currentResetTimeout = window.setTimeout(() => {
+        if (rangeChanged) {
+          generateRound();
+          return;
+        }
+        if (currentNote) {
+          currentNote.state = "idle";
+          promptStartedAt = Date.now();
+          renderPracticeUi();
+        }
+      }, 700);
     }
 
     function localProgressKey() {
@@ -3498,6 +3946,18 @@
     function updateMidiUi(isConnected, message = "") {
       midiConnected = isConnected;
       setFeedback(message || (isConnected ? "MIDI aktiv" : "Warte auf MIDI"), isConnected ? "success" : "waiting");
+      if (isConnected && isAuthenticated && !isAdminMode) {
+        syncPracticeMode(true);
+      }
+    }
+
+    function maybeInitMidi(force = false) {
+      if (!force && isPhoneLayout()) {
+        return;
+      }
+      if (!midiConnected && !hasViewerMidiBridge) {
+        void initMidi();
+      }
     }
 
     window._callback_addSource = (...args) => {
@@ -3829,6 +4289,7 @@
       updateAdminAccessUi();
       renderAuthUi();
       syncKeyboardUi();
+      updatePerformanceUi();
       updateDebugConsoleStatus();
       focusAuthInput();
     }
@@ -4003,6 +4464,7 @@
       updateRevealToggleUi();
       renderDebugConsole();
       syncKeyboardUi();
+      updatePerformanceUi();
     }
 
     function exitAdminMode() {
@@ -4023,6 +4485,7 @@
       renderDebugConsole();
       syncPracticeMode();
       syncKeyboardUi();
+      updatePerformanceUi();
     }
 
     function commitSwipe(deltaX, deltaY) {
@@ -4219,6 +4682,14 @@
         return;
       }
 
+      const midiConnectTrigger = event.target.closest("#panel-midi-connect-trigger");
+      if (midiConnectTrigger) {
+        if (isAuthenticated) {
+          maybeInitMidi(true);
+        }
+        return;
+      }
+
       const cutTrigger = event.target.closest("#panel-cut-trigger");
       if (cutTrigger) {
         if (!isAuthenticated) {
@@ -4282,6 +4753,22 @@
       }
     });
 
+    mobileAnswerStrip?.addEventListener("click", (event) => {
+      const button = event.target?.closest?.(".mobile-answer-button");
+      if (!button) {
+        return;
+      }
+      handleManualAnswer(String(button.dataset.noteLabel || ""));
+    });
+
+    document.addEventListener("pointerdown", () => {
+      maybeInitMidi();
+    }, { passive: true });
+
+    document.addEventListener("touchstart", () => {
+      maybeInitMidi();
+    }, { passive: true });
+
     window.addEventListener("keydown", (event) => {
       if (!(event.metaKey || event.ctrlKey) || !event.shiftKey || event.key.toLowerCase() !== "d") {
         return;
@@ -4312,6 +4799,7 @@ async function boot() {
   buildAdminCalendar();
   captureNotationBaseScale();
   updateRevealToggleUi();
+  updatePerformanceUi();
   renderAuthUi();
   updateAdminAccessUi();
   window.setInterval(updateTimer, 1000);
@@ -4319,7 +4807,7 @@ async function boot() {
   renderDebugConsole();
   logDebug("System", "Debug-Konsole bereit");
 
-  void initMidi();
+  maybeInitMidi();
   await initAuth();
   if (!isAuthenticated) {
     focusAuthInput();
