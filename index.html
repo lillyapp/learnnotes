@@ -2400,6 +2400,7 @@
     let midiAccessRef = null;
     let midiRefreshTimer = null;
     let midiRefreshAttempts = 0;
+    let midiAutoInitAttempted = false;
     let midiNoteOnCount = 0;
     let midiLastMessageAt = null;
     let midiLastNoteOnAt = null;
@@ -4205,12 +4206,28 @@
 
     function maybeInitMidi(force = false) {
       const isNativeAppHost = hasNativeMidiHostBridge();
+      if (midiConnected || hasViewerMidiBridge) {
+        return;
+      }
+      if (midiAccessRef) {
+        bindMidiInputs(midiAccessRef);
+        bindMidiPortStateHandlers(midiAccessRef);
+        updateMidiUi(
+          midiPortsReady(midiAccessRef),
+          midiPortsReady(midiAccessRef) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
+        );
+        return;
+      }
       if (!force && isPhoneLayout() && !isNativeAppHost) {
         return;
       }
-      if (!midiConnected && !hasViewerMidiBridge) {
-        void initMidi(force || isNativeAppHost);
+      if (!force) {
+        if (midiAutoInitAttempted) {
+          return;
+        }
+        midiAutoInitAttempted = true;
       }
+      void initMidi(force || isNativeAppHost);
     }
 
     window._callback_addSource = (...args) => {
@@ -4345,13 +4362,6 @@
       midiRefreshTimer = window.setTimeout(async () => {
         midiRefreshAttempts += 1;
         logDebug("MIDI", "Suche erneut nach Ports", { reason, attempt: midiRefreshAttempts });
-        if ("requestMIDIAccess" in navigator) {
-          try {
-            midiAccessRef = await navigator.requestMIDIAccess({ sysex: false });
-          } catch (error) {
-            console.warn("[MIDI] Erneute Portsuche fehlgeschlagen", error);
-          }
-        }
         bindMidiInputs(midiAccessRef);
         bindMidiPortStateHandlers(midiAccessRef);
         if (!midiPortsReady(midiAccessRef)) {
@@ -4628,6 +4638,16 @@
       if (hasViewerMidiBridge) {
         logDebug("MIDI", "Viewer-Bridge erkannt, Web MIDI wird nicht erneut angefragt");
         updateMidiUi(true, "MIDI via App aktiv");
+        return;
+      }
+      if (midiAccessRef) {
+        logDebug("MIDI", "Bestehender MIDI-Zugriff wird wiederverwendet");
+        bindMidiInputs(midiAccessRef);
+        bindMidiPortStateHandlers(midiAccessRef);
+        updateMidiUi(
+          midiPortsReady(midiAccessRef),
+          midiPortsReady(midiAccessRef) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
+        );
         return;
       }
       if (hasNativeMidiHostBridge()) {
@@ -5215,14 +5235,6 @@
       handleManualAnswer(String(button.dataset.noteName || ""));
     });
 
-    document.addEventListener("pointerdown", () => {
-      maybeInitMidi();
-    }, { passive: true });
-
-    document.addEventListener("touchstart", () => {
-      maybeInitMidi();
-    }, { passive: true });
-
     window.addEventListener("keydown", (event) => {
       if (!(event.metaKey || event.ctrlKey) || !event.shiftKey || event.key.toLowerCase() !== "d") {
         return;
@@ -5275,18 +5287,17 @@ window.addEventListener("load", () => {
     secureContext: window.isSecureContext,
     readyState: document.readyState
   });
-  maybeInitMidi(true);
-  window.setTimeout(() => maybeInitMidi(true), 600);
+  maybeInitMidi();
 });
 
 window.addEventListener("focus", () => {
   logDebug("System", "window.focus");
-  maybeInitMidi(true);
+  maybeInitMidi();
 });
 
 window.addEventListener("pageshow", () => {
   logDebug("System", "window.pageshow");
-  maybeInitMidi(true);
+  maybeInitMidi();
 });
 
 document.addEventListener("visibilitychange", () => {
@@ -5294,7 +5305,7 @@ document.addEventListener("visibilitychange", () => {
     return;
   }
   logDebug("System", "visibilitychange: visible");
-  maybeInitMidi(true);
+  maybeInitMidi();
 });
 
 window.learnnotesDebug = {
