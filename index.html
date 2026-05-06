@@ -306,8 +306,8 @@
       position: fixed;
       right: clamp(16px, 2vw, 24px);
       bottom: clamp(16px, 2vw, 24px);
-      width: min(520px, calc(100vw - 32px));
-      height: min(320px, 46vh);
+      width: min(860px, calc(100vw - 32px));
+      height: min(680px, 78vh);
       background: rgba(13, 14, 20, 0.96);
       color: #f5f7ff;
       border: 3px solid var(--ink);
@@ -385,8 +385,8 @@
     .debug-console-panels {
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(120px, 1fr) minmax(88px, 0.72fr);
-      gap: 10px;
+      grid-template-rows: minmax(220px, 1fr) minmax(180px, 0.9fr);
+      gap: 12px;
     }
 
     .debug-console-panel {
@@ -412,7 +412,7 @@
       padding: 0.9rem;
       overflow: auto;
       font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       line-height: 1.45;
       white-space: pre-wrap;
       word-break: break-word;
@@ -2063,7 +2063,7 @@
         right: 12px;
         bottom: 12px;
         width: auto;
-        height: min(300px, 40vh);
+        height: min(620px, 78vh);
       }
     }
 
@@ -2474,8 +2474,8 @@
     let isAdminMode = false;
     let isMidiConnecting = false;
     let midiConnected = false;
+    let midiInputsRef = [];
     let midiOutputsRef = [];
-    let hasViewerMidiBridge = false;
     let isKeyboardVisible = false;
     let isRangeSelectorVisible = false;
     let revealNoteNames = false;
@@ -2492,8 +2492,6 @@
     let authSubscription = null;
     let dailyModeFlip = false;
     let midiAccessRef = null;
-    let midiRefreshTimer = null;
-    let midiRefreshAttempts = 0;
     let midiAutoInitAttempted = false;
     let midiNoteOnCount = 0;
     let midiLastMessageAt = null;
@@ -2692,12 +2690,11 @@
     }
 
     function currentMidiSnapshot() {
-      const inputPorts = listMidiInputs(midiAccessRef).map(describeMidiPort);
-      const outputPorts = listMidiOutputs(midiAccessRef).map(describeMidiPort);
+      const inputPorts = midiInputsRef.map(describeMidiPort);
+      const outputPorts = midiOutputsRef.map(describeMidiPort);
       return {
         status: midiStatusMessage,
-        viewerBridge: hasViewerMidiBridge,
-        nativeHostBridge: hasNativeMidiHostBridge(),
+        nativeHostBridge: Boolean(window.webkit?.messageHandlers),
         connecting: isMidiConnecting,
         connected: midiConnected,
         noteOnCount: midiNoteOnCount,
@@ -2721,7 +2718,6 @@
         : "keine";
       debugConsoleStatus.textContent = [
         snapshot.status,
-        `Bridge: ${snapshot.viewerBridge ? "ja" : "nein"}`,
         `Host: ${snapshot.nativeHostBridge ? "App" : "Browser"}`,
         `Auth: ${snapshot.isAuthenticated ? "ja" : "nein"}`,
         `Inputs: ${inputSummary}`,
@@ -4308,60 +4304,6 @@
       }
     }
 
-    function hasNativeMidiHostBridge() {
-      return Boolean(window.webkit?.messageHandlers);
-    }
-
-    function maybeInitMidi(force = false) {
-      const isNativeAppHost = hasNativeMidiHostBridge();
-      if (midiConnected || hasViewerMidiBridge) {
-        return;
-      }
-      if (midiAccessRef) {
-        bindMidiInputs(midiAccessRef);
-        bindMidiPortStateHandlers(midiAccessRef);
-        updateMidiUi(
-          midiPortsReady(midiAccessRef),
-          midiPortsReady(midiAccessRef) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
-        );
-        return;
-      }
-      if (!force && isPhoneLayout() && !isNativeAppHost) {
-        return;
-      }
-      if (!force) {
-        if (midiAutoInitAttempted) {
-          return;
-        }
-        midiAutoInitAttempted = true;
-      }
-      void initMidi(force || isNativeAppHost);
-    }
-
-    window._callback_addSource = (...args) => {
-      console.log("[WebMIDIViewer] _callback_addSource", ...args);
-      logDebug("WebMIDIViewer", "_callback_addSource", args);
-      pushMidiMonitorLine(`AppBridge addSource ${formatDebugDetails(args)}`);
-      hasViewerMidiBridge = true;
-      updateMidiUi(true, "MIDI via App aktiv");
-    };
-
-    window._callback_addDestination = (...args) => {
-      console.log("[WebMIDIViewer] _callback_addDestination", ...args);
-      logDebug("WebMIDIViewer", "_callback_addDestination", args);
-      pushMidiMonitorLine(`AppBridge addDestination ${formatDebugDetails(args)}`);
-      hasViewerMidiBridge = true;
-      updateMidiUi(true, "MIDI via App aktiv");
-    };
-
-    window._callback_receiveMIDIMessage = (...args) => {
-      console.log("[WebMIDIViewer] _callback_receiveMIDIMessage", ...args);
-      logDebug("WebMIDIViewer", "_callback_receiveMIDIMessage", args);
-      hasViewerMidiBridge = true;
-      updateMidiUi(true, "MIDI via App aktiv");
-      processIncomingMidiArgs(args, "WebMIDIViewer");
-    };
-
     function midiPortsToArray(portCollection) {
       if (!portCollection) {
         return [];
@@ -4389,6 +4331,19 @@
       return [];
     }
 
+    function maybeInitMidi(force = false) {
+      if (midiAccessRef) {
+        setupMidiEventHandlers();
+        updateMidiUi(midiInputsRef.length > 0 || midiOutputsRef.length > 0, "MIDI aktiv, warte auf Note-On");
+        return;
+      }
+      if (!force && midiAutoInitAttempted) {
+        return;
+      }
+      midiAutoInitAttempted = true;
+      void initMidi();
+    }
+
     function listMidiInputs(midiAccess) {
       if (!midiAccess) {
         return [];
@@ -4407,107 +4362,8 @@
         : midiPortsToArray(midiAccess.outputs);
     }
 
-    function midiPortIsUsable(port) {
-      if (!port) {
-        return false;
-      }
-      return port.state === "connected" || port.connection === "open" || port.connection === "pending";
-    }
-
-    function midiPortAppearsAvailable(port) {
-      if (!port) {
-        return false;
-      }
-      return midiPortIsUsable(port) || (port.state == null && port.connection == null);
-    }
-
-    function clearMidiRefreshTimer() {
-      window.clearTimeout(midiRefreshTimer);
-      midiRefreshTimer = null;
-    }
-
-    function openMidiPort(port) {
-      if (!port || typeof port.open !== "function") {
-        return;
-      }
-      try {
-        const maybePromise = port.open();
-        if (maybePromise && typeof maybePromise.catch === "function") {
-          maybePromise.catch((error) => {
-            console.warn("[MIDI] Port öffnen fehlgeschlagen", port?.name, error);
-          });
-        }
-      } catch (error) {
-        console.warn("[MIDI] Port öffnen fehlgeschlagen", port?.name, error);
-      }
-    }
-
-    function midiPortCount(midiAccess) {
-      return listMidiInputs(midiAccess).length + listMidiOutputs(midiAccess).length;
-    }
-
-    function midiPortsReady(midiAccess) {
-      return (
-        hasConnectedMidiInput(midiAccess) ||
-        hasConnectedMidiOutput(midiAccess) ||
-        midiPortCount(midiAccess) > 0
-      );
-    }
-
-    async function scheduleMidiRefresh(reason = "poll") {
-      if (!midiAccessRef || hasViewerMidiBridge) {
-        return;
-      }
-      clearMidiRefreshTimer();
-      if (midiPortsReady(midiAccessRef)) {
-        midiRefreshAttempts = 0;
-        return;
-      }
-      if (midiRefreshAttempts >= 18) {
-        logDebug("MIDI", "Port-Suche beendet, weiterhin keine Geräte sichtbar", { reason, snapshot: currentMidiSnapshot() });
-        return;
-      }
-      midiRefreshTimer = window.setTimeout(async () => {
-        midiRefreshAttempts += 1;
-        logDebug("MIDI", "Suche erneut nach Ports", { reason, attempt: midiRefreshAttempts });
-        bindMidiInputs(midiAccessRef);
-        bindMidiPortStateHandlers(midiAccessRef);
-        if (!midiPortsReady(midiAccessRef)) {
-          updateMidiUi(false, "Suche MIDI-Keyboard...");
-          void scheduleMidiRefresh(reason);
-          return;
-        }
-        midiRefreshAttempts = 0;
-        updateMidiUi(true, "MIDI aktiv, warte auf Note-On");
-      }, 700);
-    }
-
-    function hasConnectedMidiOutput(midiAccess) {
-      if (!midiAccess) {
-        return false;
-      }
-      for (const output of listMidiOutputs(midiAccess)) {
-        if (midiPortAppearsAvailable(output)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function bindMidiOutputs(midiAccess) {
-      midiOutputsRef = [];
-      if (!midiAccess) {
-        return;
-      }
-      for (const output of listMidiOutputs(midiAccess)) {
-        openMidiPort(output);
-        midiOutputsRef.push(output);
-      }
-    }
-
     function sendMidiToOutputs(data) {
-      const isUint8Array = typeof Uint8Array !== "undefined" && data instanceof Uint8Array;
-      if (!Array.isArray(data) && !isUint8Array) {
+      if (!Array.isArray(data)) {
         return;
       }
       for (const output of midiOutputsRef) {
@@ -4519,64 +4375,28 @@
       }
     }
 
-    function hasConnectedMidiInput(midiAccess) {
-      return listMidiInputs(midiAccess).some((input) => midiPortAppearsAvailable(input));
-    }
-
     function isMidiByte(value) {
       const numberValue = Number(value);
       return Number.isInteger(numberValue) && numberValue >= 0 && numberValue <= 255;
     }
 
-    function normalizeMidiByteArray(value) {
-      if (value?.data) {
-        return normalizeMidiByteArray(value.data);
-      }
-      if (value == null || typeof value === "string") {
-        return null;
-      }
+    function midiMessageDataToArray(data) {
       let values;
       try {
-        values = Array.from(value);
+        values = Array.from(data || []);
       } catch (_error) {
-        return null;
+        return [];
       }
-      if (values.length < 1 || !values.every(isMidiByte)) {
-        return null;
+      if (!values.every(isMidiByte)) {
+        return [];
       }
       return values.map((item) => Number(item));
     }
 
-    function normalizeMidiArgs(args) {
-      const values = Array.from(args || []);
-      if (values.length >= 3 && values.slice(0, 3).every(isMidiByte)) {
-        return values.slice(0, 3).map((item) => Number(item));
-      }
-      for (const value of values) {
-        const data = normalizeMidiByteArray(value);
-        if (data) {
-          return data;
-        }
-      }
-      return null;
-    }
-
-    function midiSourceLabelFromEvent(event) {
-      return event?.port?.name ? `WebMIDI:${event.port.name}` : "WebMIDI";
-    }
-
-    function updateMidiReadinessAfterMessage() {
-      if (!midiConnected) {
-        updateMidiUi(true, "MIDI aktiv");
-        return;
-      }
-      updateDebugConsoleStatus();
-    }
-
-    function processIncomingMidiData(rawData, sourceLabel = "MIDI") {
-      const data = normalizeMidiByteArray(rawData);
-      if (!data || data.length < 3) {
-        logDebug(sourceLabel, "MIDI-Nachricht ignoriert: keine gueltigen MIDI-Bytes", rawData);
+    function printReceivedMidiMessage(portName, rawData) {
+      const data = midiMessageDataToArray(rawData);
+      if (data.length < 3) {
+        logDebug("MIDI", "MIDI-Nachricht ignoriert: keine gueltigen Daten", rawData);
         return;
       }
 
@@ -4584,8 +4404,9 @@
       const messageType = status & 0xf0;
       midiLastMessageAt = Date.now();
 
-      recordMidiMessageMonitorLine(sourceLabel, data);
-      logDebug(sourceLabel, "Nachricht empfangen", {
+      recordMidiMessageMonitorLine(portName, data);
+      logDebug("MIDI", "Nachricht empfangen", {
+        port: String(portName || "MIDI"),
         data,
         noteNumber,
         velocity,
@@ -4593,7 +4414,7 @@
       });
 
       sendMidiToOutputs(data);
-      updateMidiReadinessAfterMessage();
+      updateDebugConsoleStatus();
 
       if (messageType === 0x90 && velocity > 0) {
         midiNoteOnCount += 1;
@@ -4603,20 +4424,11 @@
       }
 
       if (messageType === 0x80 || (messageType === 0x90 && velocity === 0)) {
-        logDebug(sourceLabel, "Note-Off ignoriert", { noteNumber, velocity });
+        logDebug("MIDI", "Note-Off ignoriert", { noteNumber, velocity });
         return;
       }
 
-      logDebug(sourceLabel, "Nicht-Note-On ignoriert", { messageType, noteNumber, velocity });
-    }
-
-    function processIncomingMidiArgs(args, sourceLabel = "MIDI") {
-      const data = normalizeMidiArgs(args);
-      if (!data) {
-        logDebug(sourceLabel, "MIDI-Nachricht ignoriert: unbekanntes Callback-Format", args);
-        return;
-      }
-      processIncomingMidiData(data, sourceLabel);
+      logDebug("MIDI", "Nicht-Note-On ignoriert", { messageType, noteNumber, velocity });
     }
 
     function handlePlayedMidi(midiNote) {
@@ -4688,126 +4500,88 @@
       }, roundFeedbackDelayMs.wrong);
     }
 
-    function onMidiMessage(event) {
-      processIncomingMidiArgs([event], midiSourceLabelFromEvent(event));
+    function midiPortDisplayName(port, fallback = "MIDI") {
+      return typeof port === "string" ? port : midiMonitorPortName(port, fallback);
     }
 
-    function bindMidiPortStateHandlers(midiAccess) {
-      if (!midiAccess) {
+    function onMidiMessage(event) {
+      const port = event?.port || event?.target || null;
+      printReceivedMidiMessage(midiPortDisplayName(port, "MIDI IN"), event?.data);
+    }
+
+    function setupMidiEventHandlers() {
+      if (!midiAccessRef) {
         return;
       }
 
-      for (const input of listMidiInputs(midiAccess)) {
+      midiInputsRef = listMidiInputs(midiAccessRef);
+      midiOutputsRef = listMidiOutputs(midiAccessRef);
+
+      for (const input of midiInputsRef) {
+        input.onmidimessage = (event) => {
+          printReceivedMidiMessage(midiPortDisplayName(event?.port || input, "MIDI IN"), event?.data);
+        };
         input.onstatechange = (event) => {
           const port = event?.port || input;
           recordMidiPortMonitorLine("MIDIInputPort onstatechange", port, "MIDI IN");
-          logDebug("MIDI", "Input-Port Status geändert", describeMidiPort(port));
-          openMidiPort(port);
-          port.onmidimessage = onMidiMessage;
-          bindMidiInputs(midiAccess);
+          if (port?.type === "input") {
+            port.onmidimessage = onMidiMessage;
+          }
         };
+        recordMidiPortMonitorLine("MIDIInputPort ready", input, "MIDI IN");
       }
 
-      for (const output of listMidiOutputs(midiAccess)) {
+      for (const output of midiOutputsRef) {
         output.onstatechange = (event) => {
           const port = event?.port || output;
           recordMidiPortMonitorLine("MIDIOutputPort onstatechange", port, "MIDI OUT");
-          logDebug("MIDI", "Output-Port Status geändert", describeMidiPort(port));
-          bindMidiOutputs(midiAccess);
-          updateMidiUi(
-            hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess),
-            hasConnectedMidiInput(midiAccess) || hasConnectedMidiOutput(midiAccess) ? "MIDI aktiv" : "Kein MIDI-Keyboard gefunden"
-          );
         };
       }
-    }
 
-    function bindMidiInputs(midiAccess) {
-      if (!midiAccess) {
-        return;
-      }
-      for (const input of listMidiInputs(midiAccess)) {
-        openMidiPort(input);
-        input.onmidimessage = onMidiMessage;
-        recordMidiPortMonitorLine("MIDIInputPort ready", input, "MIDI IN");
-      }
-      bindMidiOutputs(midiAccess);
-      logDebug("MIDI", "Inputs gebunden", listMidiInputs(midiAccess).map(describeMidiPort));
       updateMidiUi(
-        midiPortsReady(midiAccess),
-        midiPortsReady(midiAccess) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
+        midiInputsRef.length > 0 || midiOutputsRef.length > 0,
+        midiInputsRef.length > 0 || midiOutputsRef.length > 0 ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
       );
     }
 
-    async function initMidi(forceWebMidiRequest = false) {
+    async function initMidi() {
       logDebug("MIDI", "Initialisierung gestartet", currentMidiSnapshot());
       if (isMidiConnecting) {
         logDebug("MIDI", "Initialisierung übersprungen, Verbindung läuft bereits");
         return;
       }
-      if (hasViewerMidiBridge) {
-        logDebug("MIDI", "Viewer-Bridge erkannt, Web MIDI wird nicht erneut angefragt");
-        updateMidiUi(true, "MIDI via App aktiv");
-        return;
-      }
       if (midiAccessRef) {
-        logDebug("MIDI", "Bestehender MIDI-Zugriff wird wiederverwendet");
-        bindMidiInputs(midiAccessRef);
-        bindMidiPortStateHandlers(midiAccessRef);
-        updateMidiUi(
-          midiPortsReady(midiAccessRef),
-          midiPortsReady(midiAccessRef) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
-        );
+        setupMidiEventHandlers();
         return;
       }
-      if (hasNativeMidiHostBridge()) {
-        logDebug("MIDI", forceWebMidiRequest
-          ? "Native Host erkannt, Web MIDI wird explizit angefragt"
-          : "Native Host erkannt, Web MIDI wird automatisch angefragt");
-      }
-      if (!("requestMIDIAccess" in navigator)) {
+      if (!window.navigator.requestMIDIAccess) {
         logDebug("MIDI", "requestMIDIAccess ist nicht verfügbar");
         updateMidiUi(false, "Web MIDI API ist in dieser App nicht verfuegbar");
         return;
       }
+
       isMidiConnecting = true;
       updateMidiUi(false, "MIDI wird verbunden...");
+
       try {
-        midiAccessRef = await navigator.requestMIDIAccess({ sysex: false });
+        midiAccessRef = await window.navigator.requestMIDIAccess({ sysex: false });
         logDebug("MIDI", "requestMIDIAccess erfolgreich", {
           inputs: listMidiInputs(midiAccessRef).map(describeMidiPort),
           outputs: listMidiOutputs(midiAccessRef).map(describeMidiPort)
         });
-        bindMidiInputs(midiAccessRef);
-        bindMidiPortStateHandlers(midiAccessRef);
+
         midiAccessRef.onstatechange = (event) => {
           const port = event?.port || null;
           recordMidiPortMonitorLine("MIDIAccess onstatechange", port, "Session");
-          logDebug("MIDI", "Port-Status geändert", {
-            changedPort: describeMidiPort(port),
-            inputs: listMidiInputs(midiAccessRef).map(describeMidiPort),
-            outputs: listMidiOutputs(midiAccessRef).map(describeMidiPort)
-          });
-          if (port?.type === "input" && midiPortIsUsable(port)) {
+          if (port?.type === "input") {
             port.onmidimessage = onMidiMessage;
           }
-          bindMidiInputs(midiAccessRef);
-          if (midiPortsReady(midiAccessRef) && midiNoteOnCount === 0) {
-            updateMidiUi(true, "MIDI aktiv, warte auf Note-On");
-          }
+          setupMidiEventHandlers();
         };
-        updateMidiUi(
-          midiPortsReady(midiAccessRef),
-          midiPortsReady(midiAccessRef) ? "MIDI aktiv, warte auf Note-On" : "Kein MIDI-Keyboard gefunden"
-        );
-        if (!midiPortsReady(midiAccessRef)) {
-          void scheduleMidiRefresh("initial-empty");
-        } else {
-          midiRefreshAttempts = 0;
-          clearMidiRefreshTimer();
-        }
+
+        setupMidiEventHandlers();
       } catch (error) {
-        logDebug("MIDI", "Initialisierung fehlgeschlagen", error?.message || String(error));
+        logDebug("MIDI", "requestMIDIAccess fehlgeschlagen", error?.message || String(error));
         updateMidiUi(false, error?.message || "MIDI-Freigabe fehlgeschlagen");
       } finally {
         isMidiConnecting = false;
@@ -5439,7 +5213,10 @@ window.learnnotesDebug = {
 
 window.learnnotesMidi = {
   init: () => initMidi(true),
-  receive: (...args) => processIncomingMidiArgs(args, "learnnotesMidi.receive"),
+  receive: (...args) => {
+    const data = args.length >= 3 ? args.slice(0, 3) : args[0];
+    printReceivedMidiMessage("learnnotesMidi.receive", data);
+  },
   snapshot: () => currentMidiSnapshot()
 };
 
