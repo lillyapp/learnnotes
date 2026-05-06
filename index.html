@@ -805,6 +805,15 @@
       color: #ffffff;
     }
 
+    body.debug-controls-hidden .midi-connect-button,
+    body.debug-controls-hidden .debug-toggle-button,
+    body.debug-controls-hidden .phone-midi-trigger,
+    body.debug-controls-hidden #panel-debug-toggle {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(0.5rem) scale(0.94);
+    }
+
     .notation {
       width: 100%;
       min-height: 100%;
@@ -2356,6 +2365,15 @@
     const srsConfig = {
       sampleSize: 20,
       transitionSampleSize: 20,
+      maxStepwiseWhiteKeyDistance: 3,
+      reviewPromptBaseInterval: 24,
+      reviewPromptMinInterval: 8,
+      reviewPromptMaxInterval: 72,
+      practiceBlockMs: 10 * 60 * 1000,
+      practiceBreakMs: 5 * 60 * 1000,
+      resumePianoSequence: ["C4", "D4", "E4"],
+      resumePianoSequenceStepMs: 760,
+      resumePianoSequenceDurationMs: 560,
       growThreshold: 0.9,
       shrinkThreshold: 0.7
     };
@@ -2464,7 +2482,14 @@
     let currentNote = null;
     let currentResetTimeout = null;
     let currentPracticeMode = "treble";
-    let timerStartedAt = Date.now();
+    let timerActiveStartedAt = Date.now();
+    let timerAccumulatedActiveMs = 0;
+    let nextPracticeBreakAtMs = srsConfig.practiceBlockMs;
+    let practicePaused = false;
+    let practiceResumePending = false;
+    let practiceBreakCount = 0;
+    let practicePauseEndsAt = 0;
+    let resumeSequenceIgnoreInputUntil = 0;
     let promptStartedAt = 0;
     let selectedCalendarCell = null;
     let selectedCalendarDateKey = null;
@@ -2504,6 +2529,7 @@
     let remoteSaveTimer = null;
     let isRemoteStateApplying = false;
     let debugConsoleOpen = false;
+    let debugControlsVisible = true;
     let midiStatusMessage = "Noch keine MIDI-Aktivität.";
     let lastFeedbackSignature = "";
     let srsStates = {
@@ -2518,6 +2544,10 @@
       treble: null,
       bass: null
     };
+    let lastPickedNotesByMode = {
+      treble: null,
+      bass: null
+    };
     const recentPromptHistory = [];
     const adminCalendarEvents = new Map();
     const debugLogEntries = [];
@@ -2527,6 +2557,7 @@
       const firstRange = levelRangesByMode[mode]?.[0];
       return {
         level: 1,
+        promptCount: 0,
         attempts: [],
         newNotes: firstRange ? notesInRange(mode, firstRange) : [],
         transition: null
@@ -2546,6 +2577,10 @@
       noteStats = {
         treble: {},
         bass: {}
+      };
+      lastPickedNotesByMode = {
+        treble: null,
+        bass: null
       };
     }
 
@@ -2568,6 +2603,7 @@
       const fallback = createInitialSrsState(mode);
       const nextState = state && typeof state === "object" ? state : fallback;
       nextState.level = clampLevelForMode(mode, nextState.level);
+      nextState.promptCount = Math.max(0, Number(nextState.promptCount || 0));
       nextState.attempts = Array.isArray(nextState.attempts) ? nextState.attempts.slice(-srsConfig.sampleSize) : [];
       nextState.newNotes = Array.isArray(nextState.newNotes) ? nextState.newNotes : [];
       const transition = transitionForState(mode, nextState);
@@ -2767,6 +2803,27 @@
       debugToggle?.setAttribute("aria-pressed", debugConsoleOpen ? "true" : "false");
     }
 
+    function setDebugControlsVisible(isVisible) {
+      debugControlsVisible = Boolean(isVisible);
+      document.body.classList.toggle("debug-controls-hidden", !debugControlsVisible);
+      if (!debugControlsVisible && debugConsoleOpen) {
+        debugConsoleOpen = false;
+      }
+      renderDebugConsole();
+      const hiddenValue = debugControlsVisible ? "false" : "true";
+      midiConnectButton?.setAttribute("aria-hidden", hiddenValue);
+      debugToggleButton?.setAttribute("aria-hidden", hiddenValue);
+      document.getElementById("panel-midi-connect-trigger")?.setAttribute("aria-hidden", hiddenValue);
+      currentPanelDebugToggle()?.setAttribute("aria-hidden", hiddenValue);
+    }
+
+    function toggleDebugControlsVisibility() {
+      setDebugControlsVisible(!debugControlsVisible);
+      logDebug("UI", "Debug- und Verbindungsbuttons per Tastatur umgeschaltet", {
+        visible: debugControlsVisible
+      });
+    }
+
     function setDebugConsoleOpen(isOpen) {
       debugConsoleOpen = Boolean(isOpen);
       renderDebugConsole();
@@ -2908,9 +2965,99 @@
       return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     }
 
+    function formatPauseTimer(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${minutes}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function activePracticeElapsedMs() {
+      return timerAccumulatedActiveMs + (practicePaused || practiceResumePending ? 0 : Math.max(0, Date.now() - timerActiveStartedAt));
+    }
+
+    function startPracticeTimer() {
+      timerActiveStartedAt = Date.now();
+      timerAccumulatedActiveMs = 0;
+      nextPracticeBreakAtMs = srsConfig.practiceBlockMs;
+      practicePaused = false;
+      practiceResumePending = false;
+      practiceBreakCount = 0;
+      practicePauseEndsAt = 0;
+      resumeSequenceIgnoreInputUntil = 0;
+      updateTimer();
+    }
+
+    function beginPracticeBreak() {
+      if (!isAuthenticated || isAdminMode || practicePaused) {
+        return;
+      }
+      timerAccumulatedActiveMs = activePracticeElapsedMs();
+      practicePaused = true;
+      practiceBreakCount += 1;
+      practicePauseEndsAt = Date.now() + srsConfig.practiceBreakMs;
+      clearPendingReset();
+      currentNote = null;
+      promptStartedAt = 0;
+      renderPracticeUi();
+      logDebug("Timer", "Pause gestartet", {
+        activeSeconds: Math.floor(timerAccumulatedActiveMs / 1000),
+        pauseSeconds: Math.floor(srsConfig.practiceBreakMs / 1000)
+      });
+    }
+
+    function finishPracticeBreak() {
+      if (!practicePaused) {
+        return;
+      }
+      practicePaused = false;
+      practiceResumePending = true;
+      practicePauseEndsAt = 0;
+      while (nextPracticeBreakAtMs <= timerAccumulatedActiveMs) {
+        nextPracticeBreakAtMs += srsConfig.practiceBlockMs;
+      }
+      logDebug("Timer", "Pause beendet, wartet auf Anspielen", {
+        nextBreakAtSeconds: Math.floor(nextPracticeBreakAtMs / 1000)
+      });
+      playResumePianoSequence();
+      generateRound();
+    }
+
+    function resumePracticeTimerFromInput() {
+      if (!practiceResumePending) {
+        return;
+      }
+      practiceResumePending = false;
+      timerActiveStartedAt = Date.now();
+      promptStartedAt = Date.now();
+      logDebug("Timer", "Uebungszeit nach Anspielen fortgesetzt", {
+        activeSeconds: Math.floor(timerAccumulatedActiveMs / 1000)
+      });
+      updateTimer();
+    }
+
     function updateTimer() {
-      const elapsedSeconds = Math.floor((Date.now() - timerStartedAt) / 1000);
-      timerElement.textContent = formatTimer(elapsedSeconds);
+      if (practicePaused) {
+        const remainingSeconds = Math.max(0, Math.ceil((practicePauseEndsAt - Date.now()) / 1000));
+        timerElement.textContent = `p${practiceBreakCount} ${formatPauseTimer(remainingSeconds)}`;
+        timerElement.setAttribute("title", `Pause ${practiceBreakCount}`);
+        if (remainingSeconds <= 0) {
+          finishPracticeBreak();
+        }
+        return;
+      }
+
+      if (practiceResumePending) {
+        timerElement.textContent = `p${practiceBreakCount} 0:00`;
+        timerElement.setAttribute("title", `Pause ${practiceBreakCount} beendet - spiele eine Note`);
+        return;
+      }
+
+      const elapsedMs = activePracticeElapsedMs();
+      timerElement.textContent = formatTimer(Math.floor(elapsedMs / 1000));
+      timerElement.setAttribute("title", "Uebungszeit");
+      if (isAuthenticated && !isAdminMode && elapsedMs >= nextPracticeBreakAtMs) {
+        beginPracticeBreak();
+      }
     }
 
     function setAuthStatus(message = "", state = "") {
@@ -3595,14 +3742,14 @@
 
     function srsRangeFromState(mode, state) {
       const transition = transitionForState(mode, state);
-      if (transition) {
-        return mergedRange(
-          levelRangeFor(mode, transition.fromLevel),
-          levelRangeFor(mode, transition.toLevel),
-          mode
-        );
-      }
-      return levelRangeFor(mode, state?.level || 1);
+      const highestUnlockedLevel = transition
+        ? Math.max(transition.fromLevel, transition.toLevel)
+        : clampLevelForMode(mode, state?.level || 1);
+      return mergedRange(
+        levelRangeFor(mode, 1),
+        levelRangeFor(mode, highestUnlockedLevel),
+        mode
+      );
     }
 
     function srsTrainingRangeFromState(mode, state) {
@@ -3712,6 +3859,131 @@
       return recentPromptHistory.includes(`${mode}:${noteName}`);
     }
 
+    function reviewIntervalForStat(stat, isCorrect) {
+      if (!isCorrect) {
+        return srsConfig.reviewPromptMinInterval;
+      }
+      const attempts = Number(stat?.attempts || 0);
+      const streak = Number(stat?.streak || 0);
+      const accuracy = noteAccuracy(stat);
+      const accuracyBoost = Math.max(0, accuracy - 0.65) * 24;
+      const interval =
+        srsConfig.reviewPromptBaseInterval +
+        Math.min(24, attempts * 2) +
+        Math.min(18, streak * 3) +
+        accuracyBoost;
+      return Math.max(
+        srsConfig.reviewPromptMinInterval,
+        Math.min(srsConfig.reviewPromptMaxInterval, Math.round(interval))
+      );
+    }
+
+    function scheduleNoteReview(mode, noteName, stats, isCorrect) {
+      const state = srsStates[mode] = srsStates[mode] || createInitialSrsState(mode);
+      const interval = reviewIntervalForStat(stats, isCorrect);
+      stats.review_interval_prompts = interval;
+      stats.last_prompt_index = Math.max(0, Number(state.promptCount || 0));
+      stats.next_review_prompt = stats.last_prompt_index + interval;
+    }
+
+    function noteReviewDueScore(mode, noteName, state) {
+      const stat = noteStatFor(mode, noteName);
+      if (!stat || !Number.isFinite(Number(stat.next_review_prompt))) {
+        return 0;
+      }
+      const promptCount = Math.max(0, Number(state?.promptCount || 0));
+      const dueAt = Number(stat.next_review_prompt);
+      if (promptCount < dueAt) {
+        return 0;
+      }
+      const interval = Math.max(1, Number(stat.review_interval_prompts || srsConfig.reviewPromptBaseInterval));
+      return 1 + ((promptCount - dueAt) / interval);
+    }
+
+    function reviewTargetForMode(mode, entries, state) {
+      let bestTarget = null;
+      const lastIndex = whiteKeyIndexForMode(mode, lastPickedNotesByMode[mode]);
+      for (const entry of entries) {
+        const dueScore = noteReviewDueScore(mode, entry.name, state);
+        if (dueScore <= 0) {
+          continue;
+        }
+        const entryIndex = whiteKeyIndexForMode(mode, entry.name);
+        const distance = lastIndex >= 0 && entryIndex >= 0 ? Math.abs(entryIndex - lastIndex) : null;
+        const targetScore = dueScore + (distance !== null ? Math.max(0, 1 - distance / 40) : 0);
+        if (!bestTarget || targetScore > bestTarget.score) {
+          bestTarget = { ...entry, dueScore, score: targetScore };
+        }
+      }
+      return bestTarget;
+    }
+
+    function whiteKeyIndexForMode(mode, noteName) {
+      return srsRangeOptionsForMode(mode).findIndex((entry) => entry.name === noteName);
+    }
+
+    function stepwiseEntriesForMode(mode, entries) {
+      const lastNoteName = lastPickedNotesByMode[mode];
+      if (!lastNoteName || entries.length <= 1) {
+        return entries;
+      }
+      const lastIndex = whiteKeyIndexForMode(mode, lastNoteName);
+      if (lastIndex < 0) {
+        return entries;
+      }
+      const maxDistance = Math.max(1, Number(srsConfig.maxStepwiseWhiteKeyDistance || 3));
+      const narrowed = entries.filter((entry) => {
+        const index = whiteKeyIndexForMode(mode, entry.name);
+        return index >= 0 && Math.abs(index - lastIndex) <= maxDistance;
+      });
+      return narrowed.length ? narrowed : entries;
+    }
+
+    function directionalEntriesForReviewTarget(mode, entries, reviewTarget) {
+      if (!reviewTarget || entries.length <= 1) {
+        return entries;
+      }
+      const lastIndex = whiteKeyIndexForMode(mode, lastPickedNotesByMode[mode]);
+      const targetIndex = whiteKeyIndexForMode(mode, reviewTarget.name);
+      if (lastIndex < 0 || targetIndex < 0) {
+        return entries;
+      }
+      const currentDistance = Math.abs(targetIndex - lastIndex);
+      const maxDistance = Math.max(1, Number(srsConfig.maxStepwiseWhiteKeyDistance || 3));
+      if (currentDistance <= maxDistance) {
+        return entries;
+      }
+      const directional = entries.filter((entry) => {
+        const entryIndex = whiteKeyIndexForMode(mode, entry.name);
+        return entryIndex >= 0 && Math.abs(targetIndex - entryIndex) < currentDistance;
+      });
+      return directional.length ? directional : entries;
+    }
+
+    function reviewFlowFactor(mode, noteName, reviewTarget) {
+      if (!reviewTarget) {
+        return 1;
+      }
+      if (noteName === reviewTarget.name) {
+        return 7 + Math.min(5, reviewTarget.dueScore || 0);
+      }
+      const lastIndex = whiteKeyIndexForMode(mode, lastPickedNotesByMode[mode]);
+      const noteIndex = whiteKeyIndexForMode(mode, noteName);
+      const targetIndex = whiteKeyIndexForMode(mode, reviewTarget.name);
+      if (lastIndex < 0 || noteIndex < 0 || targetIndex < 0) {
+        return 1;
+      }
+      const currentDistance = Math.abs(targetIndex - lastIndex);
+      const nextDistance = Math.abs(targetIndex - noteIndex);
+      if (nextDistance < currentDistance) {
+        return 3.2;
+      }
+      if (nextDistance === currentDistance) {
+        return 1;
+      }
+      return 0.35;
+    }
+
     function transitionSelectionFactor(mode, noteName, state) {
       const transition = transitionForState(mode, state);
       if (!transition) {
@@ -3729,11 +4001,14 @@
       return 1;
     }
 
-    function noteSelectionWeight(mode, noteName, state, isNew = false) {
+    function noteSelectionWeight(mode, noteName, state, isNew = false, reviewTarget = null) {
       const stat = noteStatFor(mode, noteName);
       const transitionFactor = transitionSelectionFactor(mode, noteName, state);
+      const dueScore = noteReviewDueScore(mode, noteName, state);
+      const reviewBoost = dueScore > 0 ? 3 + Math.min(7, dueScore * 2) : 1;
+      const flowFactor = reviewFlowFactor(mode, noteName, reviewTarget);
       if (!stat || Number(stat.attempts || 0) === 0) {
-        return (isNew ? 12 : 8) * transitionFactor;
+        return (isNew ? 12 : 8) * transitionFactor * flowFactor;
       }
       const accuracy = noteAccuracy(stat);
       const masteryGap = 1 - noteMasteryScore(mode, noteName);
@@ -3745,12 +4020,12 @@
       const accuracyPenalty = 1 + Math.max(0, 0.9 - accuracy) * 5;
       const newNoteBoost = isNew ? 1.6 : 1;
       const recentPenalty = isRecentlyPrompted(mode, noteName) ? 0.2 : 1;
-      return Math.max(0.25, (1 + masteryGap * 5) * freshnessBoost * confusionBoost * accuracyPenalty * retentionPenalty * newNoteBoost * recentPenalty * transitionFactor);
+      return Math.max(0.25, (1 + masteryGap * 5) * freshnessBoost * confusionBoost * accuracyPenalty * retentionPenalty * newNoteBoost * recentPenalty * transitionFactor * reviewBoost * flowFactor);
     }
 
-    function pickWeightedNote(entries, mode, state) {
+    function pickWeightedNote(entries, mode, state, reviewTarget = null) {
       const weights = entries.map((entry) =>
-        noteSelectionWeight(mode, entry.name, state, Boolean(state?.newNotes?.includes(entry.name)))
+        noteSelectionWeight(mode, entry.name, state, Boolean(state?.newNotes?.includes(entry.name)), reviewTarget)
       );
       const total = weights.reduce((sum, weight) => sum + weight, 0);
       let threshold = Math.random() * (total || 1);
@@ -3798,7 +4073,12 @@
         manualSelectedRanges[mode] = null;
         return pickNextNote();
       }
-      const picked = pickWeightedNote(entries, mode, state);
+      state.promptCount = Math.max(0, Number(state.promptCount || 0)) + 1;
+      const reviewTarget = reviewTargetForMode(mode, entries, state);
+      const stepwiseEntries = stepwiseEntriesForMode(mode, entries);
+      const flowEntries = directionalEntriesForReviewTarget(mode, stepwiseEntries, reviewTarget);
+      const picked = pickWeightedNote(flowEntries, mode, state, reviewTarget);
+      lastPickedNotesByMode[mode] = picked.name;
       rememberPromptedNote(mode, picked.name);
       return {
         ...picked,
@@ -3996,7 +4276,7 @@
       }
       renderMobileAnswerChoices();
       const buttons = mobileAnswerStrip.querySelectorAll(".mobile-answer-button");
-      const shouldEnable = isAuthenticated && !isAdminMode && Boolean(currentNote) && currentNote.state === "idle";
+      const shouldEnable = isAuthenticated && !isAdminMode && !practicePaused && Boolean(currentNote) && currentNote.state === "idle";
       mobileAnswerStrip.setAttribute("aria-hidden", shouldEnable ? "false" : "true");
       for (const button of buttons) {
         button.disabled = !shouldEnable;
@@ -4004,10 +4284,11 @@
     }
 
     function handleManualAnswer(answerNoteName) {
-      if (!isAuthenticated || isAdminMode || !currentNote || currentNote.state !== "idle") {
+      if (!isAuthenticated || isAdminMode || practicePaused || !currentNote || currentNote.state !== "idle") {
         return;
       }
 
+      resumePracticeTimerFromInput();
       clearPendingReset();
       const responseMs = recordResponseMs();
       const normalizedAnswer = String(answerNoteName || "");
@@ -4281,6 +4562,7 @@
         stats.fastest_ms = stats.fastest_ms === null ? responseMs : Math.min(Number(stats.fastest_ms || responseMs), responseMs);
         stats.slowest_ms = stats.slowest_ms === null ? responseMs : Math.max(Number(stats.slowest_ms || responseMs), responseMs);
       }
+      scheduleNoteReview(mode, noteName, stats, isCorrect);
       noteStats[mode][noteName] = stats;
       saveProgress();
     }
@@ -4355,7 +4637,7 @@
     }
 
     function generateRound() {
-      if (!isAuthenticated || isAdminMode) {
+      if (!isAuthenticated || isAdminMode || practicePaused) {
         return;
       }
       clearPendingReset();
@@ -4462,6 +4744,50 @@
       }
     }
 
+    function sendPianoNoteToOutputs(noteName, velocity = 72, durationMs = 240) {
+      const midi = semitoneValue(noteName);
+      if (!Number.isInteger(midi)) {
+        return;
+      }
+      sendMidiToOutputs([0x90, midi, velocity]);
+      window.setTimeout(() => {
+        sendMidiToOutputs([0x80, midi, 0]);
+      }, durationMs);
+    }
+
+    function sendSustainPedalToOutputs(isDown) {
+      sendMidiToOutputs([0xb0, 64, isDown ? 127 : 0]);
+    }
+
+    function playResumePianoSequence() {
+      maybeInitMidi();
+      const sequence = Array.isArray(srsConfig.resumePianoSequence) ? srsConfig.resumePianoSequence : [];
+      if (!sequence.length) {
+        return;
+      }
+      const stepMs = Math.max(120, Number(srsConfig.resumePianoSequenceStepMs || 760));
+      const durationMs = Math.max(80, Number(srsConfig.resumePianoSequenceDurationMs || 560));
+      resumeSequenceIgnoreInputUntil = Date.now() + (sequence.length * stepMs) + durationMs + 450;
+      logDebug("MIDI", "Resume-Sequenz wird langsam mit Pedal auf MIDI-Out gespielt", {
+        notes: sequence,
+        stepMs,
+        durationMs,
+        outputs: midiOutputsRef.map(describeMidiPort)
+      });
+      if (!midiOutputsRef.length) {
+        logDebug("MIDI", "Resume-Sequenz ohne sichtbaren MIDI-Out", { notes: sequence });
+      }
+      sendSustainPedalToOutputs(true);
+      sequence.forEach((noteName, index) => {
+        window.setTimeout(() => {
+          sendPianoNoteToOutputs(noteName, 72, durationMs);
+        }, index * stepMs);
+      });
+      window.setTimeout(() => {
+        sendSustainPedalToOutputs(false);
+      }, (sequence.length * stepMs) + durationMs);
+    }
+
     function isMidiByte(value) {
       const numberValue = Number(value);
       return Number.isInteger(numberValue) && numberValue >= 0 && numberValue <= 255;
@@ -4506,6 +4832,10 @@
       if (messageType === 0x90 && velocity > 0) {
         midiNoteOnCount += 1;
         midiLastNoteOnAt = Date.now();
+        if (Date.now() < resumeSequenceIgnoreInputUntil) {
+          logDebug("MIDI", "Resume-Sequenz-Echo ignoriert", { noteNumber, velocity });
+          return;
+        }
         handlePlayedMidi(noteNumber);
         return;
       }
@@ -4519,14 +4849,15 @@
     }
 
     function handlePlayedMidi(midiNote) {
-      if (!isAuthenticated || !currentNote) {
-        logDebug("handlePlayedMidi", isAuthenticated ? "ignored: no current note" : "ignored: unauthenticated", {
+      if (!isAuthenticated || practicePaused || !currentNote) {
+        logDebug("handlePlayedMidi", practicePaused ? "ignored: pause" : isAuthenticated ? "ignored: no current note" : "ignored: unauthenticated", {
           midiNote,
           noteName: midiNumberToName(midiNote)
         });
         return;
       }
 
+      resumePracticeTimerFromInput();
       clearPendingReset();
       const responseMs = recordResponseMs();
       const playedNoteName = midiNumberToName(midiNote);
@@ -4704,7 +5035,7 @@
         persistFallbackSession(session);
       }
       await ensureUserProfile();
-      timerStartedAt = Date.now();
+      startPracticeTimer();
       await loadProgress();
       updateRevealToggleUi();
       document.body.dataset.state = String(currentState);
@@ -4728,6 +5059,7 @@
       authReady = true;
       clearFallbackSession();
       currentNote = null;
+      startPracticeTimer();
       resetProgressState();
       resetAuthFlow(true);
       setAuthStatus(isSupabaseConfigured() ? "" : "Supabase URL und Anon Key fehlen noch.", isSupabaseConfigured() ? "" : "error");
@@ -5217,13 +5549,28 @@
       handleManualAnswer(String(button.dataset.noteName || ""));
     });
 
+    function shouldIgnoreGlobalKey(event) {
+      const target = event.target;
+      return Boolean(
+        target?.closest?.("input, textarea, select, button") ||
+        target?.isContentEditable
+      );
+    }
+
     window.addEventListener("keydown", (event) => {
-      if (!(event.metaKey || event.ctrlKey) || !event.shiftKey || event.key.toLowerCase() !== "d") {
+      if (shouldIgnoreGlobalKey(event) || event.key.toLowerCase() !== "d") {
         return;
       }
       event.preventDefault();
-      setDebugConsoleOpen(!debugConsoleOpen);
-      logDebug("UI", "Debug-Konsole per Tastatur umgeschaltet", { open: debugConsoleOpen });
+      if ((event.metaKey || event.ctrlKey) && event.shiftKey) {
+        setDebugConsoleOpen(!debugConsoleOpen);
+        logDebug("UI", "Debug-Konsole per Tastatur umgeschaltet", { open: debugConsoleOpen });
+        return;
+      }
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+      toggleDebugControlsVisibility();
     });
 
     rangeWindow.addEventListener("pointerdown", (event) => beginRangeDrag("move", event));
