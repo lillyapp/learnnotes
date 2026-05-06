@@ -4306,9 +4306,8 @@
       const canGrow = state.level < ranges.length;
       const canShrink = state.level > 1;
       const currentRange = srsTrainingRangeFromState(mode, state);
-      const readyForExpansion = rangeReadyForExpansion(mode, currentRange);
 
-      if (accuracy >= srsConfig.growThreshold && canGrow && readyForExpansion) {
+      if (accuracy >= srsConfig.growThreshold && canGrow) {
         const previousRange = currentRange;
         const previousLevel = state.level;
         state.level += 1;
