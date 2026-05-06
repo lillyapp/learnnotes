@@ -771,6 +771,40 @@
       color: #ffffff;
     }
 
+    .debug-toggle-button {
+      position: fixed;
+      right: calc(16px + env(safe-area-inset-right));
+      bottom: calc(78px + env(safe-area-inset-bottom));
+      z-index: 90;
+      width: 3.05rem;
+      height: 3.05rem;
+      display: grid;
+      place-items: center;
+      border: 3px solid #111111;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 5px 0 rgba(17, 17, 17, 0.22);
+      cursor: pointer;
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .debug-toggle-button svg {
+      width: 1.38rem;
+      height: 1.38rem;
+      pointer-events: none;
+    }
+
+    .debug-toggle-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(17, 17, 17, 0.22);
+    }
+
+    .debug-toggle-button.is-active {
+      background: #111111;
+      color: #ffffff;
+    }
+
     .notation {
       width: 100%;
       min-height: 100%;
@@ -2131,6 +2165,13 @@
       <path d="M12 9.5V7.75A1.75 1.75 0 0 1 13.75 6h.5A1.75 1.75 0 0 1 16 7.75V9.5"></path>
     </svg>
   </button>
+  <button class="debug-toggle-button" id="debug-toggle-button" type="button" aria-label="Debug-Konsole öffnen" aria-pressed="false">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <path d="M12 17h.01"></path>
+    </svg>
+  </button>
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
@@ -2412,7 +2453,8 @@
     const debugConsoleClearButton = document.getElementById("debug-console-clear");
     const debugConsoleCloseButton = document.getElementById("debug-console-close");
     const midiConnectButton = document.getElementById("midi-connect-button");
-    const swipeIgnoreSelector = ".midi-connect-button, .panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key, .mobile-answer-button";
+    const debugToggleButton = document.getElementById("debug-toggle-button");
+    const swipeIgnoreSelector = ".midi-connect-button, .debug-toggle-button, .panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key, .mobile-answer-button";
 
     let currentState = 0;
     let currentNote = null;
@@ -2691,6 +2733,11 @@
     function renderDebugConsole() {
       debugConsoleElement.classList.toggle("is-open", debugConsoleOpen);
       debugConsoleElement.setAttribute("aria-hidden", debugConsoleOpen ? "false" : "true");
+      if (debugToggleButton) {
+        debugToggleButton.classList.toggle("is-active", debugConsoleOpen);
+        debugToggleButton.setAttribute("aria-pressed", debugConsoleOpen ? "true" : "false");
+        debugToggleButton.setAttribute("aria-label", debugConsoleOpen ? "Debug-Konsole schließen" : "Debug-Konsole öffnen");
+      }
       debugConsoleMonitorOutput.textContent = midiMonitorEntries.join("\n");
       debugConsoleMonitorOutput.scrollTop = debugConsoleMonitorOutput.scrollHeight;
       debugConsoleOutput.textContent = debugLogEntries.join("\n");
@@ -4588,7 +4635,9 @@
       logDebug("handlePlayedMidi", "Nachricht empfangen", {
         midiNote,
         noteName: playedNoteName,
-        target: currentNote.name
+        target: currentNote.name,
+        targetMidi: currentNote.midi,
+        result: midiNote === currentNote.midi ? "correct" : "wrong"
       });
 
       if (midiNote === currentNote.midi) {
@@ -5253,6 +5302,12 @@
     midiConnectButton.addEventListener("click", (event) => {
       event.preventDefault();
       void initMidi(true);
+    });
+
+    debugToggleButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      setDebugConsoleOpen(!debugConsoleOpen);
+      logDebug("UI", "Debug-Konsole per Button umgeschaltet", { open: debugConsoleOpen });
     });
 
     authFlowInput.addEventListener("input", () => {
