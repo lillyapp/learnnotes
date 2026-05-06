@@ -727,6 +727,50 @@
       display: none;
     }
 
+    .midi-connect-button {
+      position: fixed;
+      right: calc(16px + env(safe-area-inset-right));
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      z-index: 90;
+      width: 3.35rem;
+      height: 3.35rem;
+      display: grid;
+      place-items: center;
+      border: 3px solid #111111;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 5px 0 rgba(17, 17, 17, 0.22);
+      cursor: pointer;
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .midi-connect-button svg {
+      width: 1.42rem;
+      height: 1.42rem;
+      pointer-events: none;
+    }
+
+    .midi-connect-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(17, 17, 17, 0.22);
+    }
+
+    .midi-connect-button[data-state="connected"] {
+      background: #17a34a;
+      color: #ffffff;
+    }
+
+    .midi-connect-button[data-state="waiting"] {
+      background: #f0c64b;
+      color: #111111;
+    }
+
+    .midi-connect-button[data-state="error"] {
+      background: #e15252;
+      color: #ffffff;
+    }
+
     .notation {
       width: 100%;
       min-height: 100%;
@@ -2080,6 +2124,13 @@
   </style>
 </head>
 <body data-state="0" class="">
+  <button class="midi-connect-button" id="midi-connect-button" type="button" aria-label="MIDI verbinden" data-state="waiting">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 9.5h14a1 1 0 0 1 1 1V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6.5a1 1 0 0 1 1-1Z"></path>
+      <path d="M8 9.5V7.75A1.75 1.75 0 0 1 9.75 6h.5A1.75 1.75 0 0 1 12 7.75V9.5"></path>
+      <path d="M12 9.5V7.75A1.75 1.75 0 0 1 13.75 6h.5A1.75 1.75 0 0 1 16 7.75V9.5"></path>
+    </svg>
+  </button>
   <main class="screen">
     <div class="admin-hint" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wrench" aria-hidden="true" class="lucide lucide-wrench admin-hint-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"></path></svg>
@@ -2360,7 +2411,8 @@
     const debugConsoleOutput = document.getElementById("debug-console-output");
     const debugConsoleClearButton = document.getElementById("debug-console-clear");
     const debugConsoleCloseButton = document.getElementById("debug-console-close");
-    const swipeIgnoreSelector = ".panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key, .mobile-answer-button";
+    const midiConnectButton = document.getElementById("midi-connect-button");
+    const swipeIgnoreSelector = ".midi-connect-button, .panel-corner-button, .panel-expander-icon.is-action, .auth-step-button, .auth-input, .admin-calendar input, .admin-calendar textarea, .admin-calendar button, .admin-tools-button, .keyboard, .range-window, .range-bracket, .white-key, .black-key, .mobile-answer-button";
 
     let currentState = 0;
     let currentNote = null;
@@ -4195,6 +4247,15 @@
     function updateMidiUi(isConnected, message = "") {
       midiConnected = isConnected;
       setFeedback(message || (isConnected ? "MIDI aktiv" : "Warte auf MIDI"), isConnected ? "success" : "waiting");
+      if (midiConnectButton) {
+        const nextState = isConnected
+          ? "connected"
+          : String(message || "").toLowerCase().includes("fehl") || String(message || "").toLowerCase().includes("nicht verfuegbar")
+            ? "error"
+            : "waiting";
+        midiConnectButton.dataset.state = nextState;
+        midiConnectButton.setAttribute("aria-label", isConnected ? "MIDI verbunden" : "MIDI verbinden");
+      }
       if (isConnected && isAuthenticated && !isAdminMode) {
         syncPracticeMode(true);
       }
@@ -5187,6 +5248,11 @@
 
     debugConsoleCloseButton.addEventListener("click", () => {
       setDebugConsoleOpen(false);
+    });
+
+    midiConnectButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      void initMidi(true);
     });
 
     authFlowInput.addEventListener("input", () => {
