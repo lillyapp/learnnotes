@@ -2345,7 +2345,7 @@
     </div>
   </aside>
   <script>
-    const titles = ["Violine", "Bass", "Challange"];
+    const titles = ["Violine", "Bass", "Challenge"];
     const semitoneNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
     const SUPABASE_URL = window.SUPABASE_URL || "https://ontusfifjfbzwlvligrx.supabase.co";
@@ -2355,6 +2355,7 @@
     const keyboardRange = { start: 21, end: 108 };
     const srsConfig = {
       sampleSize: 20,
+      transitionSampleSize: 20,
       growThreshold: 0.9,
       shrinkThreshold: 0.7
     };
@@ -2365,9 +2366,12 @@
     const levelRangesByMode = {
       treble: [
         ["C4", "B4"],
-        ["C5", "A5"]
+        ["C5", "A5"],
+        ["B5", "G6"],
+        ["A6", "C8"]
       ],
       bass: [
+        ["A0", "B1"],
         ["C2", "B2"],
         ["C3", "B3"]
       ]
@@ -2387,8 +2391,8 @@
       `
     };
     const clefConfigs = {
-      treble: { label: "Violine", reference: "B4", range: ["C4", "A5"] },
-      bass: { label: "Bass", reference: "D3", range: ["C2", "B3"] }
+      treble: { label: "Violine", reference: "B4", range: ["C4", "C8"] },
+      bass: { label: "Bass", reference: "D3", range: ["A0", "B3"] }
     };
     const iconMarkup = {
       arrowRight: `
@@ -2524,7 +2528,8 @@
       return {
         level: 1,
         attempts: [],
-        newNotes: firstRange ? notesInRange(mode, firstRange) : []
+        newNotes: firstRange ? notesInRange(mode, firstRange) : [],
+        transition: null
       };
     }
 
@@ -2557,6 +2562,24 @@
     function resetProgressState() {
       resetLearningProgressState();
       resetUiProgressState();
+    }
+
+    function normalizeSrsState(mode, state) {
+      const fallback = createInitialSrsState(mode);
+      const nextState = state && typeof state === "object" ? state : fallback;
+      nextState.level = clampLevelForMode(mode, nextState.level);
+      nextState.attempts = Array.isArray(nextState.attempts) ? nextState.attempts.slice(-srsConfig.sampleSize) : [];
+      nextState.newNotes = Array.isArray(nextState.newNotes) ? nextState.newNotes : [];
+      const transition = transitionForState(mode, nextState);
+      nextState.transition = transition
+        ? {
+            fromLevel: transition.fromLevel,
+            toLevel: transition.toLevel,
+            count: transition.count,
+            total: transition.total
+          }
+        : null;
+      return nextState;
     }
 
     function isSupabaseConfigured() {
@@ -3551,10 +3574,35 @@
       return [notes[Math.min(...indexes)], notes[Math.max(...indexes)]];
     }
 
-    function srsRangeFromState(mode, state) {
+    function levelRangeFor(mode, level) {
       const ranges = levelRangesByMode[mode] || [];
-      const levelIndex = clampLevelForMode(mode, state?.level || 1) - 1;
-      return ranges[levelIndex] || clefConfigs[mode].range;
+      return ranges[clampLevelForMode(mode, level) - 1] || clefConfigs[mode].range;
+    }
+
+    function transitionForState(mode, state) {
+      if (!state?.transition) {
+        return null;
+      }
+      const fromLevel = clampLevelForMode(mode, state.transition.fromLevel);
+      const toLevel = clampLevelForMode(mode, state.transition.toLevel);
+      if (fromLevel === toLevel) {
+        return null;
+      }
+      const total = Math.max(1, Number(state.transition.total || srsConfig.transitionSampleSize));
+      const count = Math.max(0, Math.min(total, Number(state.transition.count || 0)));
+      return { fromLevel, toLevel, total, count };
+    }
+
+    function srsRangeFromState(mode, state) {
+      const transition = transitionForState(mode, state);
+      if (transition) {
+        return mergedRange(
+          levelRangeFor(mode, transition.fromLevel),
+          levelRangeFor(mode, transition.toLevel),
+          mode
+        );
+      }
+      return levelRangeFor(mode, state?.level || 1);
     }
 
     function srsTrainingRangeFromState(mode, state) {
@@ -3664,10 +3712,28 @@
       return recentPromptHistory.includes(`${mode}:${noteName}`);
     }
 
-    function noteSelectionWeight(mode, noteName, isNew = false) {
+    function transitionSelectionFactor(mode, noteName, state) {
+      const transition = transitionForState(mode, state);
+      if (!transition) {
+        return 1;
+      }
+      const fromNotes = new Set(notesInRange(mode, levelRangeFor(mode, transition.fromLevel)));
+      const toNotes = new Set(notesInRange(mode, levelRangeFor(mode, transition.toLevel)));
+      const progress = transition.count / transition.total;
+      if (toNotes.has(noteName) && !fromNotes.has(noteName)) {
+        return 0.35 + (progress * 1.65);
+      }
+      if (fromNotes.has(noteName) && !toNotes.has(noteName)) {
+        return Math.max(0.2, 1.1 - progress);
+      }
+      return 1;
+    }
+
+    function noteSelectionWeight(mode, noteName, state, isNew = false) {
       const stat = noteStatFor(mode, noteName);
+      const transitionFactor = transitionSelectionFactor(mode, noteName, state);
       if (!stat || Number(stat.attempts || 0) === 0) {
-        return isNew ? 12 : 8;
+        return (isNew ? 12 : 8) * transitionFactor;
       }
       const accuracy = noteAccuracy(stat);
       const masteryGap = 1 - noteMasteryScore(mode, noteName);
@@ -3679,12 +3745,12 @@
       const accuracyPenalty = 1 + Math.max(0, 0.9 - accuracy) * 5;
       const newNoteBoost = isNew ? 1.6 : 1;
       const recentPenalty = isRecentlyPrompted(mode, noteName) ? 0.2 : 1;
-      return Math.max(0.25, (1 + masteryGap * 5) * freshnessBoost * confusionBoost * accuracyPenalty * retentionPenalty * newNoteBoost * recentPenalty);
+      return Math.max(0.25, (1 + masteryGap * 5) * freshnessBoost * confusionBoost * accuracyPenalty * retentionPenalty * newNoteBoost * recentPenalty * transitionFactor);
     }
 
     function pickWeightedNote(entries, mode, state) {
       const weights = entries.map((entry) =>
-        noteSelectionWeight(mode, entry.name, Boolean(state?.newNotes?.includes(entry.name)))
+        noteSelectionWeight(mode, entry.name, state, Boolean(state?.newNotes?.includes(entry.name)))
       );
       const total = weights.reduce((sum, weight) => sum + weight, 0);
       let threshold = Math.random() * (total || 1);
@@ -4045,11 +4111,9 @@
         return;
       }
       srsStates = {
-        treble: record.srsStates?.treble || record.srs_states?.treble || createInitialSrsState("treble"),
-        bass: record.srsStates?.bass || record.srs_states?.bass || createInitialSrsState("bass")
+        treble: normalizeSrsState("treble", record.srsStates?.treble || record.srs_states?.treble),
+        bass: normalizeSrsState("bass", record.srsStates?.bass || record.srs_states?.bass)
       };
-      srsStates.treble.level = clampLevelForMode("treble", srsStates.treble.level);
-      srsStates.bass.level = clampLevelForMode("bass", srsStates.bass.level);
       noteStats = {
         treble: record.noteStats?.treble || record.note_stats?.treble || {},
         bass: record.noteStats?.bass || record.note_stats?.bass || {}
@@ -4223,6 +4287,16 @@
 
     function maybeAdjustSrsRange(mode) {
       const state = srsStates[mode];
+      const activeTransition = transitionForState(mode, state);
+      if (activeTransition) {
+        state.transition.count = activeTransition.count + 1;
+        if (state.transition.count >= activeTransition.total) {
+          state.transition = null;
+          state.attempts = [];
+        }
+        saveProgress();
+        return false;
+      }
       if (!state || state.attempts.length < srsConfig.sampleSize) {
         return false;
       }
@@ -4236,19 +4310,33 @@
 
       if (accuracy >= srsConfig.growThreshold && canGrow && readyForExpansion) {
         const previousRange = currentRange;
+        const previousLevel = state.level;
         state.level += 1;
         state.attempts = [];
         const nextRange = srsTrainingRangeFromState(mode, state);
         const previousNotes = new Set(notesInRange(mode, previousRange));
         state.newNotes = notesInRange(mode, nextRange).filter((noteName) => !previousNotes.has(noteName));
+        state.transition = {
+          fromLevel: previousLevel,
+          toLevel: state.level,
+          count: 0,
+          total: srsConfig.transitionSampleSize
+        };
         saveProgress();
         return true;
       }
 
       if (accuracy < srsConfig.shrinkThreshold && canShrink) {
+        const previousLevel = state.level;
         state.level -= 1;
         state.attempts = [];
         state.newNotes = [];
+        state.transition = {
+          fromLevel: previousLevel,
+          toLevel: state.level,
+          count: 0,
+          total: srsConfig.transitionSampleSize
+        };
         saveProgress();
         return true;
       }
